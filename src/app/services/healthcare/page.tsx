@@ -184,27 +184,27 @@ export default function HealthcareServicesPage() {
               {
                 icon: Calendar, title: "Patient Appointment Agent", 
                 desc: "Automated bookings via WhatsApp and voice. Reminders at 48 hours, 24 hours, and 2 hours before appointment. No-show follow-up with rebooking workflow.",
-                outcome: "Build from ₹35,000"
+                outcome: "Scoped to your requirements"
               },
               {
                 icon: Heart, title: "Post-Visit Follow-up System", 
                 desc: "Medication reminders, revisit scheduling, and patient satisfaction collection after every appointment. Automated and personalised per patient.",
-                outcome: "Build from ₹30,000"
+                outcome: "Scoped to your requirements"
               },
               {
                 icon: CreditCard, title: "Billing and Revenue Cycle Automation", 
                 desc: "Automated invoice generation, insurance claim processing, payment reconciliation, and overdue follow-up. Revenue cycle errors eliminated.",
-                outcome: "Build from ₹50,000"
+                outcome: "Scoped to your requirements"
               },
               {
                 icon: LayoutDashboard, title: "Clinical Operations Dashboard", 
                 desc: "Doctor performance, patient flow, revenue by department, and staff utilisation in a single live dashboard. Management clarity without manual reporting.",
-                outcome: "Build from ₹50,000"
+                outcome: "Scoped to your requirements"
               },
               {
                 icon: FileSearch, title: "Diagnostic Report Delivery Agent", 
                 desc: "Automated delivery of lab reports to patients via WhatsApp with personalised messaging. Eliminates manual report distribution and reduces support calls.",
-                outcome: "Build from ₹30,000"
+                outcome: "Scoped to your requirements"
               }
             ].map((product, idx) => {
               const Icon = product.icon;
@@ -255,7 +255,7 @@ export default function HealthcareServicesPage() {
             className="text-center mt-12"
           >
             <p className="text-[#6B7280] text-[14px]">
-              All products include a monthly AI Growth Plan option starting from ₹6,000 per month.
+              All products include a monthly AI Growth Plan option.
             </p>
           </motion.div>
 

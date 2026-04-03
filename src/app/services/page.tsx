@@ -79,17 +79,17 @@ export default function ServicesPage() {
               {
                 num: "2", icon: ClipboardList, title: "Operational Audit", 
                 desc: "Four to six recorded stakeholder interviews, process mapping, and a full AI opportunity matrix with ROI projections. The most thorough operational analysis most businesses have ever had.",
-                deliverable: "Six-document audit package — from ₹30,000"
+                deliverable: "Full six-document audit package"
               },
               {
                 num: "3", icon: Cpu, title: "AI Product Build", 
                 desc: "Fixed scope, fixed price, fixed timeline. We build your highest-impact AI system in four to six weeks with ROI tracked from day one. No scope creep, no surprises.",
-                deliverable: "Production-ready AI system — from ₹35,000"
+                deliverable: "Production-ready AI system"
               },
               {
                 num: "4", icon: TrendingUp, title: "AI Growth Plan", 
                 desc: "Ongoing monitoring, optimisation, and quarterly expansion of your AI systems. New capabilities layered in as your business grows and trust compounds.",
-                deliverable: "Monthly AI management — from ₹6,000 per month"
+                deliverable: "Ongoing AI management and optimisation"
               }
             ].map((stage, idx) => {
               const Icon = stage.icon;

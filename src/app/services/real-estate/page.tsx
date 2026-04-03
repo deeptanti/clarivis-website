@@ -184,27 +184,27 @@ export default function RealEstateServicesPage() {
               {
                 icon: PhoneCall, title: "AI Lead Qualifier and Follow-up Agent", 
                 desc: "Calls inbound leads within 60 seconds, qualifies based on your criteria, books site visits automatically. Works 24 hours a day, 7 days a week, in Hindi and English.",
-                outcome: "Build from ₹40,000"
+                outcome: "Scoped to your requirements"
               },
               {
                 icon: Users, title: "Broker and Channel Partner Portal", 
                 desc: "Replaces WhatsApp chaos with a structured portal. Real-time inventory updates, commission tracking, document sharing, and performance dashboards for every channel partner.",
-                outcome: "Build from ₹75,000"
+                outcome: "Scoped to your requirements"
               },
               {
                 icon: Bell, title: "Payment and Collections Agent", 
                 desc: "Automated installment reminders via voice call and WhatsApp. Escalation workflows for overdue payments. Full collections visibility for management.",
-                outcome: "Build from ₹35,000"
+                outcome: "Scoped to your requirements"
               },
               {
                 icon: BarChart2, title: "Sales Pipeline and Revenue Dashboard", 
                 desc: "Live management intelligence. Pipeline by project, agent performance, lead conversion rates, and revenue forecasting in a single real-time dashboard.",
-                outcome: "Build from ₹50,000"
+                outcome: "Scoped to your requirements"
               },
               {
                 icon: FileText, title: "Document and Compliance Automation", 
                 desc: "Auto-generation of sale agreements, allotment letters, and RERA-compliant documents. Reduces documentation time from days to minutes.",
-                outcome: "Build from ₹1,00,000"
+                outcome: "Scoped to your requirements"
               }
             ].map((product, idx) => {
               const Icon = product.icon;
@@ -255,7 +255,7 @@ export default function RealEstateServicesPage() {
             className="text-center mt-12"
           >
             <p className="text-[#6B7280] text-[14px]">
-              All products include a monthly AI Growth Plan option starting from ₹6,000 per month.
+              All products include a monthly AI Growth Plan option.
             </p>
           </motion.div>
 
