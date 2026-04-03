@@ -734,8 +734,8 @@ export default function Home() {
                   className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6"
                 >
                   {[
-                    { icon: PhoneCall, name: "Voice Qualification", desc: "Instantly call and qualify inbound leads 24/7." },
-                    { icon: Users, name: "Omnichannel Bot", desc: "WhatsApp and web chat agents converting traffic." },
+                    { icon: PhoneCall, name: "AI Lead Qualifier", desc: "Instantly call and qualify inbound leads 24/7." },
+                    { icon: Users, name: "Broker Portal", desc: "WhatsApp and web chat agents converting traffic." },
                     { icon: Bell, name: "Collections Agent", desc: "Automated installment reminders via voice and WhatsApp." },
                     { icon: BarChart2, name: "Sales Dashboard", desc: "Live pipeline and revenue visibility for management." },
                     { icon: FileText, name: "Document Automation", desc: "Auto-generation of agreements and RERA compliance documents." }
