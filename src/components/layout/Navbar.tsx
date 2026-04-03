@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
@@ -41,7 +42,7 @@ export default function Navbar() {
             href="/"
             className="text-[#0F6E56] font-bold text-2xl tracking-tight z-50 relative"
           >
-            Clarivis Intelligence
+            <Image src='/images/logo.png' alt='Clarivis Intelligence' width={220} height={55} priority />
           </Link>
 
           {/* Desktop Navigation */}

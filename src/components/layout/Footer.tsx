@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   const navLinks = [
@@ -18,7 +19,7 @@ export default function Footer() {
           {/* Left Column: Brand */}
           <div className="flex flex-col space-y-4">
             <span className="text-[#0F6E56] font-bold text-2xl tracking-tight">
-              Clarivis Intelligence
+              <Image src='/images/logo.png' alt='Clarivis Intelligence' width={240} height={60} />
             </span>
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
               Clarity in every decision. Intelligence in every system.
