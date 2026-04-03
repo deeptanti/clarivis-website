@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from 'next/script';
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
@@ -60,6 +61,27 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans bg-white text-[#1A1A2E]">
+        <Script
+          src='https://www.googletagmanager.com/gtag/js?id=G-KYGBCC5DTC'
+          strategy='afterInteractive'
+        />
+        <Script id='google-analytics' strategy='afterInteractive'>
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-KYGBCC5DTC');
+          `}
+        </Script>
+        <Script id='clarity' strategy='afterInteractive'>
+          {`
+            (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, 'clarity', 'script', 'w5w4s29qzh');
+          `}
+        </Script>
         <Navbar />
         <main className="flex-grow">
           {children}
