@@ -10,8 +10,46 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Clarivis Intelligence",
-  description: "Clarity in every decision. Intelligence in every system.",
+  metadataBase: new URL('https://clarivisintelligence.com'),
+  title: {
+    default: 'Clarivis Intelligence — AI Consulting and Technology for Real Estate and Healthcare',
+    template: '%s | Clarivis Intelligence'
+  },
+  description: 'Clarivis Intelligence is an AI-first consulting and technology firm helping real estate and healthcare businesses deploy AI systems that generate measurable ROI within 90 days. Based in Rajkot, India.',
+  keywords: ['AI consulting India', 'AI for real estate India', 'AI for healthcare India', 'AI automation Rajkot', 'business AI consulting', 'AI systems real estate', 'healthcare AI automation', 'Clarivis Intelligence'],
+  authors: [{ name: 'Clarivis Intelligence' }],
+  creator: 'Clarivis Intelligence',
+  openGraph: {
+    type: 'website',
+    locale: 'en_IN',
+    url: 'https://clarivisintelligence.com',
+    siteName: 'Clarivis Intelligence',
+    title: 'Clarivis Intelligence — AI Consulting for Real Estate and Healthcare',
+    description: 'Deploy AI systems that generate measurable ROI within 90 days. Specialists in real estate and healthcare automation.',
+    images: [{
+      url: '/images/og-image.png',
+      width: 1200,
+      height: 630,
+      alt: 'Clarivis Intelligence'
+    }]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Clarivis Intelligence — AI Consulting for Real Estate and Healthcare',
+    description: 'Deploy AI systems that generate measurable ROI within 90 days.',
+    images: ['/images/og-image.png']
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1
+    }
+  }
 };
 
 export default function RootLayout({
