@@ -100,8 +100,13 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-gray-500 text-xs">
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-3 text-gray-500 text-xs">
           <p>© 2026 Clarivis Intelligence Private Limited. All rights reserved.</p>
+          <div className="flex items-center gap-2">
+            <Link href="/privacy" className="hover:text-[#0F6E56] transition-colors">Privacy Policy</Link>
+            <span className="text-gray-600">·</span>
+            <Link href="/terms" className="hover:text-[#0F6E56] transition-colors">Terms of Use</Link>
+          </div>
         </div>
       </div>
     </footer>
