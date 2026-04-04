@@ -99,7 +99,7 @@ export default function BookPage() {
       {/* Section 2: Two column — what to expect + Calendly */}
       <section className="relative w-full py-[80px] bg-[#0d1117]">
         <div className="container mx-auto px-6 max-w-[1200px]">
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
+          <div className="flex flex-col lg:flex-row gap-8 items-stretch">
             
             {/* Left column — 40% */}
             <motion.div
@@ -107,7 +107,7 @@ export default function BookPage() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.7, ease: "easeOut" }}
-              className="w-full lg:w-[40%]"
+              className="w-full lg:w-[40%] h-full"
             >
               <div className="bg-[#111827] border border-[#1f2937] rounded-[20px] p-8 lg:p-[40px] h-full">
                 <h2 className="text-white text-[22px] font-bold mb-8">
