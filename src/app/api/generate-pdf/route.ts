@@ -85,13 +85,13 @@ export async function POST(request: NextRequest) {
       const resend = new Resend(process.env.RESEND_API_KEY)
       await Promise.all([
         resend.emails.send({
-          from: 'Deep Tanti — Clarivis Intelligence <deeptanti1@gmail.com>',
+          from: 'Deep Tanti — Clarivis Intelligence <onboarding@resend.dev>',
           to: userProfile.email,
           subject: `Your AI Opportunity Snapshot — ${userProfile.company || userProfile.name}`,
           html: emailHTML
         }),
         resend.emails.send({
-          from: 'Clarivis Assessment <deeptanti1@gmail.com>',
+          from: 'Clarivis Assessment <onboarding@resend.dev>',
           to: 'deeptanti1@gmail.com',
           subject: `Assessment Complete — ${userProfile.name} — ${userProfile.company} — ${userProfile.industry}`,
           html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;">
