@@ -35,32 +35,37 @@ const problems = [
 const processSteps = [
   {
     icon: Search,
+    week: "WEEK 1",
     name: "Founder Discovery Session",
-    desc: "A 90-minute recorded session with the business owner or MD. We map the full operational picture, revenue model, team structure, and strategic priorities. This session sets the context for everything that follows.",
+    desc: "A 90-minute recorded session with the business owner or MD. We map your full operational picture, revenue model, team structure, current challenges, and strategic priorities. This session anchors everything that follows.",
     side: "left",
   },
   {
     icon: Users,
-    name: "Operations Deep Dive",
-    desc: "Recorded sessions with your operations, sales, and frontline team leads. We map every workflow, identify every manual process, and document every point where things slow down or break.",
+    week: "WEEK 1-2",
+    name: "Operations and Team Deep Dive",
+    desc: "Recorded sessions with your operations, sales, and frontline team leads. We map every workflow, document every manual process, and identify every point where time and revenue are being lost.",
     side: "right",
   },
   {
     icon: BarChart2,
-    name: "Data and Systems Audit",
-    desc: "We review your current tools, data sources, and reporting structure. We identify what data you have, what data you are missing, and what your AI systems will need to operate effectively.",
+    week: "WEEK 2",
+    name: "Data and Systems Review",
+    desc: "We review your current tools, data sources, and reporting infrastructure. We identify what data you have, what is missing, and what your AI systems will need to operate effectively from day one.",
     side: "left",
   },
   {
     icon: Cpu,
-    name: "AI Opportunity Mapping",
-    desc: "Using everything gathered, we map every viable AI opportunity against four criteria: impact, feasibility, cost, and time to ROI. Each opportunity is scored and ranked to identify your highest-value starting point.",
+    week: "WEEK 3",
+    name: "AI Opportunity Mapping and Scoring",
+    desc: "Using everything gathered, we map every viable AI opportunity and score each against four criteria: business impact, implementation feasibility, cost, and time to ROI. Your highest-value starting point becomes crystal clear.",
     side: "right",
   },
   {
     icon: FileText,
-    name: "Roadmap Presentation",
-    desc: "A final session where we present your complete AI roadmap, walk through every recommendation, answer every question, and agree on the implementation sequence.",
+    week: "WEEK 4",
+    name: "Roadmap Presentation and Handover",
+    desc: "A final session where we present your complete AI roadmap, walk through every recommendation in detail, answer every question, and hand over all six deliverables. You leave with a complete plan and the confidence to act on it.",
     side: "left",
   },
 ];
@@ -184,13 +189,16 @@ export default function AuditPage() {
               className="w-full lg:w-[55%]"
             >
               <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-[#0F6E56]/30 bg-[#0F6E56]/15">
-                <span className="text-[#0F6E56] text-xs font-semibold uppercase tracking-widest">OPERATIONAL AUDIT</span>
+                <span className="text-[#0F6E56] text-xs font-semibold uppercase tracking-widest">THE CLARIVIS AUDIT™</span>
               </div>
               <h1 className="text-white text-[36px] lg:text-[52px] font-extrabold leading-[1.1] tracking-tight">
-                Know exactly where AI will move the needle. Before you spend a rupee on building it.
+                Know exactly where AI will move the needle. Before you spend a rupee building it.
               </h1>
               <p className="text-[#9CA3AF] text-[18px] leading-[1.8] mt-5">
-                Most businesses guess their way into AI. They pick a tool, deploy it, and hope for results. The Clarivis Operational Audit replaces guesswork with a complete, data-backed AI roadmap built specifically for your operation.
+                The Clarivis Audit™ is a comprehensive four-week operational deep dive that maps your business, quantifies your AI opportunities, and delivers a complete implementation roadmap. No guesswork. No generic advice. Just a precise, data-backed plan built specifically for your operation.
+              </p>
+              <p className="text-[#6B7280] text-[12px] italic mt-3">
+                The Clarivis Audit is a trademark of Clarivis Intelligence Private Limited.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
                 <Link
@@ -218,7 +226,7 @@ export default function AuditPage() {
             >
               <div className="bg-[#111827] border border-[#1f2937] rounded-[20px] p-8 lg:p-[40px]">
                 <p className="text-white text-[18px] font-bold">Founding Client Offer</p>
-                <p className="text-[#9CA3AF] text-[14px] mt-1">First five clients only.</p>
+                <p className="text-[#9CA3AF] text-[14px] mt-1">A four-week comprehensive audit. Six deliverables. One complete AI strategy.</p>
 
                 {/* Pricing */}
                 <div className="mt-6">
@@ -296,10 +304,10 @@ export default function AuditPage() {
               <span className="text-[#0F6E56] text-xs font-semibold uppercase tracking-widest">THE PROCESS</span>
             </motion.div>
             <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.6, delay: 0.1 }} className="text-white text-[32px] lg:text-[44px] font-bold mb-4">
-              A structured deep dive into every corner of your operation.
+              Four weeks. Five sessions. One complete operational picture.
             </motion.h2>
             <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.6, delay: 0.2 }} className="text-[#9CA3AF] text-[18px] max-w-[560px] mx-auto mb-20">
-              Four to five weeks. Four to six recorded sessions. One complete picture.
+              Every session is recorded and transcribed. You never need to take a single note.
             </motion.p>
           </div>
 
@@ -346,7 +354,7 @@ export default function AuditPage() {
                           <ChevronLeft className="w-8 h-8" />
                         </div>
                       )}
-                      <div className="text-[#0F6E56] text-[12px] uppercase tracking-[0.2em] opacity-60 mb-2 font-bold">Step 0{idx + 1}</div>
+                      <div className="text-[#0F6E56] text-[11px] uppercase tracking-[0.2em] font-bold mb-1 opacity-80">{step.week}</div>
                       <h3 className="text-white font-bold text-[20px] mb-3">{step.name}</h3>
                       <p className="text-[#CBD5E1] text-[15px] leading-[1.7]">{step.desc}</p>
                     </div>
@@ -372,7 +380,7 @@ export default function AuditPage() {
               Six documents. One complete AI strategy.
             </motion.h2>
             <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.6, delay: 0.2 }} className="text-[#9CA3AF] text-[18px] max-w-[560px] mx-auto mb-16">
-              Everything you need to make informed decisions and move forward with confidence.
+              Yours to keep. Yours to use. With or without us.
             </motion.p>
           </div>
 
@@ -466,16 +474,16 @@ export default function AuditPage() {
             <span className="text-[#0F6E56] text-xs font-semibold uppercase tracking-widest">FOUNDING CLIENT PROGRAMME</span>
           </motion.div>
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.6, delay: 0.1 }} className="text-white text-[40px] lg:text-[48px] font-extrabold leading-[1.1] mb-4">
-            <span className="text-[#0F6E56]">Five spots.</span> One opportunity.
+            <span className="text-[#0F6E56]">Five spots.</span> One opportunity to be part of something.
           </motion.h2>
           <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.6, delay: 0.2 }} className="text-[#9CA3AF] text-[18px] max-w-[600px] mx-auto mb-16">
-            We are accepting five founding clients for the Clarivis Operational Audit at a significantly reduced investment. In exchange we ask for your time, your honesty, and permission to document your results.
+            We are accepting five founding clients for The Clarivis Audit™ at a significantly reduced investment. You get our best work. We get our first documented case studies. Everyone wins.
           </motion.p>
 
           {/* Three columns */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             {[
-              { icon: Tag, title: "₹10,000 investment", desc: "Full audit experience at founding client pricing. Standard investment is ₹30,000." },
+              { icon: Tag, title: "₹10,000 founding investment", desc: "The Clarivis Audit™ is priced at ₹30,000. Founding clients access the full experience at ₹10,000 — our investment in building our case study library." },
               { icon: Star, title: "Priority attention", desc: "Founding clients receive more of our time, more sessions, and more detailed documentation than any future client." },
               { icon: Award, title: "Case study feature", desc: "Your results will be documented and published as a Clarivis case study. Your business gets visibility. We get proof." },
             ].map((col, idx) => {

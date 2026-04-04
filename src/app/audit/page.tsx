@@ -1,9 +1,9 @@
 import AuditPageContent from "./page-client";
 
 export const metadata = {
-  title: "Operational Audit — AI Opportunity Mapping",
+  title: "The Clarivis Audit™ — Your Complete AI Roadmap",
   description:
-    "The Clarivis Intelligence Operational Audit maps your entire operation, identifies your highest-impact AI opportunities, and gives you a complete implementation roadmap with ROI projections.",
+    "The Clarivis Audit is a comprehensive 4-week operational audit that maps your business, identifies your highest-impact AI opportunities, and delivers a complete implementation roadmap with ROI projections.",
 };
 
 export default function Page() {
