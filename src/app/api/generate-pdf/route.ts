@@ -91,8 +91,8 @@ export async function POST(request: NextRequest) {
           html: emailHTML
         }),
         resend.emails.send({
-          from: 'Clarivis Assessment <hello@clarivisintelligence.com>',
-          to: 'hello@clarivisintelligence.com',
+          from: 'Clarivis Assessment <deeptanti1@gmail.com>',
+          to: 'deeptanti1@gmail.com',
           subject: `Assessment Complete — ${userProfile.name} — ${userProfile.company} — ${userProfile.industry}`,
           html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;">
             <h2 style="color:#0F6E56;">New Assessment Submission</h2>
