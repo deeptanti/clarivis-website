@@ -232,7 +232,7 @@ export default function ProductsPageContent() {
                           href="/assessment"
                           className="flex-1 text-center bg-[#0F6E56] hover:bg-[#0c5945] text-white font-medium py-3 rounded-lg transition-colors"
                         >
-                          Start Assessment
+                          Start the Clarivis Assessment
                         </Link>
                         <button className="flex-1 text-center bg-transparent border border-[#0F6E56]/40 hover:bg-[#0F6E56]/10 text-[#0F6E56] font-medium py-3 rounded-lg transition-colors">
                           Learn More
@@ -290,7 +290,7 @@ export default function ProductsPageContent() {
             
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-6 relative z-10">
               {[
-                { num: "1", title: "Discovery", desc: "Free AI Readiness Assessment and 45-minute discovery call to understand your specific operation." },
+                { num: "1", title: "Discovery", desc: "The Clarivis Assessment and a 45-minute AI Opportunity Session to understand your specific operation." },
                 { num: "2", title: "Audit", desc: "Operational audit with stakeholder interviews and process mapping to define exact scope." },
                 { num: "3", title: "Build", desc: "Four to six week build with weekly progress updates. Fixed scope, fixed timeline." },
                 { num: "4", title: "Launch and Measure", desc: "Go-live support and ROI tracking from day one. Monthly optimisation included." }
@@ -343,7 +343,7 @@ export default function ProductsPageContent() {
             transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
             className="text-[#9CA3AF] text-[18px] max-w-[560px] mx-auto mt-6"
           >
-            The free AI Readiness Assessment identifies your highest-impact opportunity and tells you exactly which product will deliver the fastest ROI for your specific business.
+            The Clarivis Assessment identifies your highest-impact opportunity and tells you exactly which product will deliver the fastest ROI for your specific business.
           </motion.p>
 
           <motion.div
@@ -357,7 +357,7 @@ export default function ProductsPageContent() {
               href="/assessment"
               className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-md bg-[#0F6E56] text-white font-medium transition-all duration-300 hover:scale-105 hover:bg-[#0c5945]"
             >
-              Start Free Assessment
+              Start the Clarivis Assessment
             </Link>
             <Link
               href="/contact"

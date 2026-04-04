@@ -193,7 +193,7 @@ export default function Home() {
                 href="/assessment"
                 className="w-full sm:w-auto px-8 py-3.5 rounded-md bg-[#0F6E56] text-white font-medium transition-all duration-300 hover:scale-105 hover:bg-[#0c5945]"
               >
-                Start Free Assessment
+                Start the Clarivis Assessment
               </Link>
               <Link
                 href="#how-it-works"
@@ -211,7 +211,7 @@ export default function Home() {
             transition={{ duration: 0.5, delay: 1.3, ease: "easeOut" }}
           >
             <p className="text-gray-500 text-sm">
-              No credit card required. Free AI Opportunity Snapshot included.
+              Free AI Opportunity Snapshot included. No credit card required.
             </p>
           </motion.div>
 
@@ -388,9 +388,9 @@ export default function Home() {
                   </div>
 
                   <div className="text-[#0F6E56] text-[12px] uppercase tracking-[0.2em] opacity-60 mb-2 font-bold">Stage 01</div>
-                  <h3 className="text-white font-bold text-[22px] mb-3">AI Readiness Assessment</h3>
+                  <h3 className="text-white font-bold text-[22px] mb-3">Clarivis Assessment</h3>
                   <p className="text-[#CBD5E1] text-[15px] leading-[1.7]">
-                    Free 45-minute discovery call. We identify your top three AI opportunities and document them in a personalised snapshot report.
+                    A structured self-serve assessment that maps your AI opportunities. Complete it in 5 to 30 minutes and receive your personalised AI Opportunity Snapshot instantly.
                   </p>
                 </div>
               </motion.div>
@@ -505,7 +505,7 @@ export default function Home() {
               href="/assessment"
               className="px-8 py-3.5 rounded-md bg-[#0F6E56] text-white font-medium transition-all duration-300 hover:scale-105 hover:bg-[#0c5945]"
             >
-              Start Your Free Assessment
+              Start the Clarivis Assessment
             </Link>
           </motion.div>
 
@@ -869,7 +869,7 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
             className="text-[#9CA3AF] text-[18px] max-w-[560px] mx-auto mt-6"
           >
-            Start with a free AI Readiness Assessment. No commitment, no credit card. Just clarity on where AI can move the needle for your business.
+            Start the Clarivis Assessment. No commitment, no credit card. Just clarity on where AI can move the needle for your business.
           </motion.p>
 
           {/* Buttons */}
@@ -884,7 +884,7 @@ export default function Home() {
               href="/assessment"
               className="w-full sm:w-auto px-8 py-3.5 rounded-md bg-[#0F6E56] text-white font-medium transition-all duration-300 hover:scale-105 hover:bg-[#0c5945]"
             >
-              Start Free Assessment
+              Start the Clarivis Assessment
             </Link>
             <Link
               href="/contact"

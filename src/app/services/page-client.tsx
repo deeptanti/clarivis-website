@@ -72,9 +72,9 @@ export default function ServicesPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full max-w-[1000px] mx-auto">
             {[
               {
-                num: "1", icon: Search, title: "AI Readiness Assessment", 
-                desc: "A structured 45-minute discovery call backed by an AI-assisted analysis pipeline. We map your operations, identify your top three AI opportunities, and deliver a personalised snapshot report.",
-                deliverable: "AI Opportunity Snapshot report — always free"
+                num: "1", icon: Search, title: "Clarivis Assessment", 
+                desc: "A structured self-serve assessment that maps your AI opportunities. Complete it in 5 to 30 minutes and receive your personalised AI Opportunity Snapshot instantly.",
+                deliverable: "AI Opportunity Snapshot — always free"
               },
               {
                 num: "2", icon: ClipboardList, title: "Operational Audit", 
@@ -241,7 +241,7 @@ export default function ServicesPage() {
             transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
             className="text-[#9CA3AF] text-[18px] max-w-[560px] mx-auto mt-6"
           >
-            The free AI Readiness Assessment tells you exactly which opportunity will deliver the highest ROI for your specific business.
+            The Clarivis Assessment tells you exactly which opportunity will deliver the highest ROI for your specific business.
           </motion.p>
 
           <motion.div
@@ -255,7 +255,7 @@ export default function ServicesPage() {
               href="/assessment"
               className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-md bg-[#0F6E56] text-white font-medium transition-all duration-300 hover:scale-105 hover:bg-[#0c5945]"
             >
-              Start Free Assessment
+              Start the Clarivis Assessment
             </Link>
           </motion.div>
         </div>

@@ -297,7 +297,7 @@ export default function BookPage() {
             transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
             className="text-[#9CA3AF] text-[16px] leading-[1.8] mb-8"
           >
-            Take the free online assessment and receive your AI Opportunity Snapshot instantly, then book a session to go deeper.
+            Start the Clarivis Assessment and receive your AI Opportunity Snapshot instantly, then book a session to go deeper.
           </motion.p>
 
           <motion.div
@@ -310,7 +310,7 @@ export default function BookPage() {
               href="/assessment"
               className="inline-flex items-center justify-center px-8 py-3.5 rounded-md border border-[#0F6E56] text-[#0F6E56] font-medium transition-all duration-300 hover:bg-[#0F6E56] hover:text-white"
             >
-              Take the Free Assessment
+              Start the Clarivis Assessment
             </Link>
           </motion.div>
         </div>

@@ -37,7 +37,7 @@ export default function HealthcareServicesPage() {
                   href="/assessment"
                   className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-3.5 rounded-md bg-[#0F6E56] text-white font-medium transition-all duration-300 hover:bg-[#0c5945]"
                 >
-                  Start Free Assessment
+                  Start the Clarivis Assessment
                 </Link>
                 <Link
                   href="/products"
@@ -289,7 +289,7 @@ export default function HealthcareServicesPage() {
             transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
             className="text-[#9CA3AF] text-[18px] max-w-[560px] mx-auto mt-6"
           >
-            Start with a free AI Readiness Assessment. We will map your clinical operations and identify your highest-impact AI opportunity.
+            Start the Clarivis Assessment. We will map your clinical operations and identify your highest-impact AI opportunity.
           </motion.p>
 
           <motion.div
@@ -303,7 +303,7 @@ export default function HealthcareServicesPage() {
               href="/assessment"
               className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-md bg-[#0F6E56] text-white font-medium transition-all duration-300 hover:scale-105 hover:bg-[#0c5945]"
             >
-              Start Free Assessment
+              Start the Clarivis Assessment
             </Link>
           </motion.div>
         </div>

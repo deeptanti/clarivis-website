@@ -178,7 +178,7 @@ export default function ContactPage() {
                   </span>
                 </div>
                 <h3 className="text-white text-[20px] font-bold leading-tight mb-3">
-                  Start with a free AI Readiness Assessment
+                  Start the Clarivis Assessment
                 </h3>
                 <p className="text-[#9CA3AF] text-[14px] leading-relaxed mb-6">
                   No commitment required. Walk away with a personalised AI Opportunity Snapshot for your business.
@@ -187,7 +187,7 @@ export default function ContactPage() {
                   href="/assessment"
                   className="block w-full text-center bg-[#0F6E56] text-white font-medium py-3.5 rounded-lg hover:bg-[#0c5945] transition-colors"
                 >
-                  Start Free Assessment
+                  Start the Clarivis Assessment
                 </Link>
               </motion.div>
 
