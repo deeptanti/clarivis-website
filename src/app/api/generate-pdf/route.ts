@@ -17,12 +17,12 @@ export async function POST(request: NextRequest) {
           system: 'You are generating a structured AI Opportunity Snapshot from an assessment conversation. Return ONLY valid JSON, no other text.',
           messages: [{
             role: 'user',
-            content: `Based on this assessment for ${userProfile.name} at ${userProfile.company || 'their company'} in ${userProfile.industry}:\n\n${conversationHistory.map((m: {role: string, content: string}) => `${m.role}: ${m.content}`).join('\n')}\n\nReturn this exact JSON:\n{"executiveSummary":"2-3 sentence summary","readinessScore":65,"opportunities":[{"rank":1,"title":"name","problem":"specific problem","solution":"how AI solves it","indicativeROI":"measurable outcome","timeToROI":"X weeks"}],"recommendedFirstStep":"recommendation"}`
+            content: `Based on this assessment for ${userProfile.name} at ${userProfile.company || 'their company'} in ${userProfile.industry}:\n\n${conversationHistory.map((m: { role: string, content: string }) => `${m.role}: ${m.content}`).join('\n')}\n\nReturn this exact JSON:\n{"executiveSummary":"2-3 sentence summary","readinessScore":65,"opportunities":[{"rank":1,"title":"name","problem":"specific problem","solution":"how AI solves it","indicativeROI":"measurable outcome","timeToROI":"X weeks"}],"recommendedFirstStep":"recommendation"}`
           }]
         })
       })
       const summaryResult = await summaryResponse.json()
-      try { snapshotContent = JSON.parse(summaryResult.content[0].text) } catch {}
+      try { snapshotContent = JSON.parse(summaryResult.content[0].text) } catch { }
     }
 
     const defaultOpps = userProfile.industry === 'Real Estate' ? [
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     const opportunities = snapshotContent?.opportunities || defaultOpps
     const dateStr = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
 
-    const oppHTML = opportunities.slice(0, 3).map((o: {rank: number, title: string, problem: string, solution: string, indicativeROI: string, timeToROI: string}) => `
+    const oppHTML = opportunities.slice(0, 3).map((o: { rank: number, title: string, problem: string, solution: string, indicativeROI: string, timeToROI: string }) => `
       <div style="background:#111827;border:1px solid #1f2937;border-radius:12px;padding:24px;margin-bottom:16px;">
         <div style="display:flex;align-items:center;margin-bottom:12px;">
           <div style="background:#0F6E56;color:#fff;font-size:12px;font-weight:700;width:28px;height:28px;border-radius:50%;text-align:center;line-height:28px;margin-right:12px;">0${o.rank}</div>
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
       const resend = new Resend(process.env.RESEND_API_KEY)
       await Promise.all([
         resend.emails.send({
-          from: 'Deep Tanti — Clarivis Intelligence <hello@clarivisintelligence.com>',
+          from: 'Deep Tanti — Clarivis Intelligence <deeptanti1@gmail.com>',
           to: userProfile.email,
           subject: `Your AI Opportunity Snapshot — ${userProfile.company || userProfile.name}`,
           html: emailHTML
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
             <p><strong>Main Challenge:</strong> ${userProfile.mainChallenge}</p>
             <h3>Conversation</h3>
             <div style="background:#f9f9f9;padding:16px;border-radius:8px;">
-              ${conversationHistory.map((m: {role: string, content: string}) => `<p><strong>${m.role === 'user' ? userProfile.name : 'AI Agent'}:</strong> ${m.content}</p>`).join('')}
+              ${conversationHistory.map((m: { role: string, content: string }) => `<p><strong>${m.role === 'user' ? userProfile.name : 'AI Agent'}:</strong> ${m.content}</p>`).join('')}
             </div>
             <div style="margin-top:24px;padding:16px;background:#0F6E56;border-radius:8px;text-align:center;">
               <a href="mailto:${userProfile.email}" style="color:white;text-decoration:none;font-weight:600;">Reply to ${userProfile.name}</a>
