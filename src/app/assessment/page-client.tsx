@@ -228,7 +228,7 @@ function Phase4({timeSelected,formData,onChange,onComplete,onBack}:{timeSelected
 }
 
 /* ─── Phase 5: Chat ── */
-function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete}:{formData:FormData;timeSelected:TimeOption;maxTurns:number;messages:Message[];setMessages:React.Dispatch<React.SetStateAction<Message[]>>;onComplete:()=>void}) {
+function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,onLogData}:{formData:FormData;timeSelected:TimeOption;maxTurns:number;messages:Message[];setMessages:React.Dispatch<React.SetStateAction<Message[]>>;onComplete:()=>void;onLogData:(d:{model:string;systemPromptVersion:string})=>void}) {
   const [input,setInput] = useState("");
   const [isTyping,setIsTyping] = useState(false);
   const [showModal,setShowModal] = useState(false);
@@ -246,6 +246,7 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete}
       const res = await fetch("/api/assessment-chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:history,userProfile:formData,timeSelected,maxTurns})});
       const data = await res.json();
       setMessages(m=>[...m,{role:"assistant",content:data.response}]);
+      if(data.logData) onLogData(data.logData);
       if(data.isLastTurn) setTimeout(()=>onComplete(),1500);
     } catch { setMessages(m=>[...m,{role:"assistant",content:"I apologise for the interruption. Your report will be generated from our conversation so far."}]); }
     setIsTyping(false);
@@ -336,13 +337,16 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete}
 }
 
 /* ─── Phase 6: Loading ── */
-function Phase6({formData,messages,timeSelected,setOpportunities,onComplete}:{formData:FormData;messages:Message[];timeSelected:TimeOption;setOpportunities:(o:Opp[])=>void;onComplete:()=>void}) {
+function Phase6({formData,messages,timeSelected,setOpportunities,onComplete,logData}:{formData:FormData;messages:Message[];timeSelected:TimeOption;setOpportunities:(o:Opp[])=>void;onComplete:()=>void;logData:{model:string;systemPromptVersion:string}}) {
   const steps = ["Analysing your conversation","Identifying your top opportunities","Calculating indicative ROI","Preparing your PDF report"];
   useEffect(()=>{
     const t = setTimeout(async()=>{
       try {
-        const res = await fetch("/api/generate-pdf",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userProfile:formData,conversationHistory:messages,timeSelected})});
-        const data = await res.json();
+        const [pdfRes] = await Promise.all([
+          fetch("/api/generate-pdf",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userProfile:formData,conversationHistory:messages,timeSelected})}),
+          fetch("/api/log-conversation",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userProfile:formData,conversationHistory:messages,model:logData.model,systemPromptVersion:logData.systemPromptVersion,timeSelected,completedAt:new Date().toISOString()})}).catch(()=>{})
+        ]);
+        const data = await pdfRes.json();
         if(data.opportunities) setOpportunities(data.opportunities);
       } catch {}
       onComplete();
@@ -431,6 +435,7 @@ export default function AssessmentClient() {
   const [formData,setFormData] = useState<FormData>(INIT);
   const [messages,setMessages] = useState<Message[]>([]);
   const [opportunities,setOpportunities] = useState<Opp[]>([]);
+  const [logData,setLogData] = useState({model:"claude-sonnet-4-20250514",systemPromptVersion:"1.0"});
 
   const updateForm = (key:keyof FormData,val:string|string[])=>setFormData(d=>({...d,[key]:val}));
 
@@ -448,8 +453,8 @@ export default function AssessmentClient() {
         {phase===2&&<Phase2 key="p2" timeSelected={timeSelected} onSelect={handleTimeSelect} onContinue={()=>setPhase(3)}/>}
         {phase===3&&<Phase3 key="p3" formData={formData} onChange={(k,v)=>updateForm(k,v as string)} onContinue={()=>{fireEarlyCapture();setPhase(4);}} onBack={()=>setPhase(2)}/>}
         {phase===4&&<Phase4 key="p4" timeSelected={timeSelected} formData={formData} onChange={updateForm} onComplete={()=>setPhase(5)} onBack={()=>setPhase(3)}/>}
-        {phase===5&&<Phase5 key="p5" formData={formData} timeSelected={timeSelected} maxTurns={maxTurns} messages={messages} setMessages={setMessages} onComplete={()=>setPhase(6)}/>}
-        {phase===6&&<Phase6 key="p6" formData={formData} messages={messages} timeSelected={timeSelected} setOpportunities={setOpportunities} onComplete={()=>setPhase(7)}/>}
+        {phase===5&&<Phase5 key="p5" formData={formData} timeSelected={timeSelected} maxTurns={maxTurns} messages={messages} setMessages={setMessages} onComplete={()=>setPhase(6)} onLogData={(d)=>setLogData(d)}/>}
+        {phase===6&&<Phase6 key="p6" formData={formData} messages={messages} timeSelected={timeSelected} setOpportunities={setOpportunities} onComplete={()=>setPhase(7)} logData={logData}/>}
         {phase===7&&<Phase7 key="p7" formData={formData} opportunities={opportunities}/>}
       </AnimatePresence>
     </div>

@@ -56,7 +56,15 @@ ${messages.length === 0 ? `Start by greeting ${userProfile.name} by name and ref
     })
 
     const result = await response.json()
-    return NextResponse.json({ response: result.content[0].text, isLastTurn })
+    return NextResponse.json({
+      response: result.content[0].text,
+      isLastTurn,
+      logData: {
+        model: 'claude-sonnet-4-20250514',
+        systemPromptVersion: '1.0',
+        timestamp: new Date().toISOString()
+      }
+    })
 
   } catch (error) {
     console.error('Chat error:', error)
