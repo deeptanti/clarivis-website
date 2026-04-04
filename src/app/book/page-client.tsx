@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { InlineWidget } from "react-calendly";
+import Image from "next/image";
 import { Calendar, Clock, Zap, User, Plus, X, ChevronDown } from "lucide-react";
 
 const faqs = [
@@ -133,8 +134,13 @@ export default function BookPage() {
 
                 {/* Founder profile */}
                 <div className="flex items-start gap-4">
-                  <div className="w-16 h-16 rounded-full bg-[#1f2937] flex items-center justify-center shrink-0">
-                    <User className="w-7 h-7 text-[#4B5563]" />
+                  <div className='relative w-16 h-16 rounded-full overflow-hidden border-2 border-[#0F6E56]'>
+                    <Image
+                      src='/images/founder.jpg'
+                      alt='Deep Tanti, Founder of Clarivis Intelligence'
+                      fill
+                      className='object-cover'
+                    />
                   </div>
                   <div>
                     <p className="text-white text-[16px] font-semibold">Deep Tanti</p>
