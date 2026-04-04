@@ -134,7 +134,7 @@ export default function BookPage() {
 
                 {/* Founder profile */}
                 <div className="flex items-start gap-4">
-                  <div className='relative w-16 h-16 rounded-full overflow-hidden border-2 border-[#0F6E56]'>
+                  <div className='relative w-16 h-16 rounded-full overflow-hidden border-2 border-[#0F6E56] shrink-0'>
                     <Image
                       src='/images/founder.jpg'
                       alt='Deep Tanti, Founder of Clarivis Intelligence'
