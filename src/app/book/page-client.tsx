@@ -34,7 +34,7 @@ const sessionSteps = [
   {
     num: "1",
     title: "We review your business",
-    desc: "Deep shares observations based on your industry and the details you provided when booking.",
+    desc: "We share observations based on your industry and the details you provided when booking.",
   },
   {
     num: "2",
@@ -77,7 +77,7 @@ export default function BookPage() {
               Book Your AI Opportunity Session
             </h1>
             <p className="text-[#9CA3AF] text-[18px] leading-[1.8] mt-4 max-w-[600px] mx-auto">
-              A focused 45-minute conversation with our founder. No pitch, no pressure. Walk away knowing exactly where AI can move the needle for your business.
+              A structured 45-minute diagnostic with our founder. We identify your top AI opportunities, quantify what they are costing you today, and give you a clear recommendation on where to start.
             </p>
 
             {/* Trust signals */}
@@ -101,7 +101,7 @@ export default function BookPage() {
       <section className="relative w-full py-[80px] bg-[#0d1117]">
         <div className="container mx-auto px-6 max-w-[1200px]">
           <div className="flex flex-col lg:flex-row gap-8 items-stretch">
-            
+
             {/* Left column — 40% */}
             <motion.div
               initial={{ opacity: 0, x: -40 }}
@@ -159,7 +159,7 @@ export default function BookPage() {
                         fill="currentColor"
                         className="text-[#6B7280] hover:text-[#0F6E56] transition-colors duration-200 shrink-0"
                       >
-                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                       </svg>
                     </div>
                     <p className="text-[#0F6E56] text-[14px] mt-0.5">Founder, Clarivis Intelligence</p>
