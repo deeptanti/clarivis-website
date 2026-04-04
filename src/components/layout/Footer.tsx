@@ -9,6 +9,7 @@ export default function Footer() {
     { name: "Services", path: "/services" },
     { name: "Products", path: "/products" },
     { name: "Assessment", path: "/assessment" },
+    { name: "Book a Call", path: "/book" },
     { name: "Contact", path: "/contact" },
   ];
 
