@@ -189,16 +189,13 @@ export default function AuditPage() {
               className="w-full lg:w-[55%]"
             >
               <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-[#0F6E56]/30 bg-[#0F6E56]/15">
-                <span className="text-[#0F6E56] text-xs font-semibold uppercase tracking-widest">THE CLARIVIS AUDIT™</span>
+                <span className="text-[#0F6E56] text-xs font-semibold uppercase tracking-widest">THE CLARIVIS AUDIT</span>
               </div>
               <h1 className="text-white text-[36px] lg:text-[52px] font-extrabold leading-[1.1] tracking-tight">
                 Know exactly where AI will move the needle. Before you spend a rupee building it.
               </h1>
               <p className="text-[#9CA3AF] text-[18px] leading-[1.8] mt-5">
-                The Clarivis Audit™ is a comprehensive four-week operational deep dive that maps your business, quantifies your AI opportunities, and delivers a complete implementation roadmap. No guesswork. No generic advice. Just a precise, data-backed plan built specifically for your operation.
-              </p>
-              <p className="text-[#6B7280] text-[12px] italic mt-3">
-                The Clarivis Audit is a trademark of Clarivis Intelligence Private Limited.
+                The Clarivis Audit is a comprehensive four-week operational deep dive that maps your business, quantifies your AI opportunities, and delivers a complete implementation roadmap. No guesswork. No generic advice. Just a precise, data-backed plan built specifically for your operation.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
                 <Link
@@ -230,6 +227,7 @@ export default function AuditPage() {
 
                 {/* Pricing */}
                 <div className="mt-6">
+                  <p className="text-[#6B7280] text-[12px] mb-1">Starts from</p>
                   <div className="flex items-baseline gap-3">
                     <span className="text-[#6B7280] text-[24px] line-through">₹30,000</span>
                   </div>
@@ -477,13 +475,13 @@ export default function AuditPage() {
             <span className="text-[#0F6E56]">Five spots.</span> One opportunity to be part of something.
           </motion.h2>
           <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.6, delay: 0.2 }} className="text-[#9CA3AF] text-[18px] max-w-[600px] mx-auto mb-16">
-            We are accepting five founding clients for The Clarivis Audit™ at a significantly reduced investment. You get our best work. We get our first documented case studies. Everyone wins.
+            We are accepting five founding clients for The Clarivis Audit at a significantly reduced investment. You get our best work. We get our first documented case studies. Everyone wins.
           </motion.p>
 
           {/* Three columns */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             {[
-              { icon: Tag, title: "₹10,000 founding investment", desc: "The Clarivis Audit™ is priced at ₹30,000. Founding clients access the full experience at ₹10,000 — our investment in building our case study library." },
+              { icon: Tag, title: "₹10,000 founding investment", desc: "The Clarivis Audit starts from ₹30,000. Founding clients access the full experience at ₹10,000 — our investment in building our case study library." },
               { icon: Star, title: "Priority attention", desc: "Founding clients receive more of our time, more sessions, and more detailed documentation than any future client." },
               { icon: Award, title: "Case study feature", desc: "Your results will be documented and published as a Clarivis case study. Your business gets visibility. We get proof." },
             ].map((col, idx) => {
