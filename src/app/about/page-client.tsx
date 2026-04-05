@@ -126,7 +126,7 @@ export default function AboutPage() {
                 Founder, Clarivis Intelligence
               </div>
               <p className="text-[#9CA3AF] text-[16px] leading-[1.8] mt-6">
-                Before founding Clarivis Intelligence, I built AI and data systems that operated at scale. At Medmate in Australia, I joined as a backend engineer during Covid and architected core infrastructure through two complete company pivots, eventually leading ML development for fraud prevention and recommendations on a platform serving over 150,000 users. I then completed a Master of Science in Analytics at Harrisburg University in the United States, specialising in AI, NLP, and cloud engineering. I also co-founded Assiduous Technology, an AI consultancy serving the US market. Clarivis Intelligence brings that international experience to real estate and healthcare businesses in India.
+                Before founding Clarivis Intelligence, I built AI and data systems that operated at scale. At Medmate in Australia, I joined as a backend engineer during Covid and architected core infrastructure through a complete company pivot, eventually leading ML development for fraud prevention and recommendations on a platform serving over 150,000 users. I then completed a Master of Science in Analytics at Harrisburg University in the United States, specialising in AI, and Cloud Engineering. I also co-founded Assiduous Technology, an AI consultancy serving the US market. Clarivis Intelligence brings that international experience to real estate and healthcare businesses in India.
               </p>
               
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 mt-8">
