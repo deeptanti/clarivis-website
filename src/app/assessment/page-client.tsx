@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { trackEvent, setupDropoffTracking } from "@/lib/tracker";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
@@ -176,14 +177,26 @@ function Phase3({formData,onChange,onContinue,onBack}:{formData:FormData;onChang
 }
 
 /* ─── Phase 4 ── */
-function Phase4({timeSelected,formData,onChange,onComplete,onBack}:{timeSelected:TimeOption;formData:FormData;onChange:(k:keyof FormData,v:string|string[])=>void;onComplete:()=>void;onBack:()=>void}) {
+function Phase4({timeSelected,formData,onChange,onComplete,onBack,onScreenChange}:{timeSelected:TimeOption;formData:FormData;onChange:(k:keyof FormData,v:string|string[])=>void;onComplete:()=>void;onBack:()=>void;onScreenChange:(label:string)=>void}) {
   const [step,setStep] = useState(1);
   const [dir,setDir] = useState(1);
   const total = getTotalSteps(timeSelected);
   const stepType = getStepType(step,timeSelected);
   const valid = isStepValid(step,timeSelected,formData);
   const progress = Math.round((step/total)*100);
-  const goNext = ()=>{ if(stepType==="confirm"){onComplete();return;} if(!valid)return; setDir(1);setStep(s=>s+1); };
+
+  /* ── Track every step entry (including first) ── */
+  useEffect(()=>{
+    const sType = getStepType(step,timeSelected);
+    const label = sType==="confirm"
+      ? "Phase 4: Confirm — Ready to Chat"
+      : `Phase 4: Step ${step} — ${QUESTIONS[sType]||sType}`;
+    onScreenChange(label);
+    trackEvent("p4_step_entered",{phase:4,screenDetail:label,stepNumber:step,stepType:sType,timeSelected});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[step]);
+
+  const goNext = ()=>{ if(stepType==="confirm"){trackEvent("p4_complete",{phase:4,screenDetail:"Phase 4: Confirm — Start AI Chat",timeSelected,industry:formData.industry,company:formData.company});onComplete();return;} if(!valid)return; setDir(1);setStep(s=>s+1); };
   const goBack = ()=>{ if(step<=1){onBack();return;} setDir(-1);setStep(s=>s-1); };
   return (
     <motion.div variants={phaseV} initial="hidden" animate="show" exit="exit" className="flex flex-col min-h-[calc(100vh-73px)]">
@@ -258,6 +271,8 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
     if(!input.trim()||disabled) return;
     const msg:Message = {role:"user",content:input.trim()};
     const next = [...messages,msg];
+    const turnNum = turnsUsed+1;
+    trackEvent("p5_turn_sent",{phase:5,screenDetail:`Phase 5: AI Chat — Turn ${turnNum}`,chatTurns:turnNum,timeSelected});
     setMessages(next); setInput(""); await callAPI(next);
   };
 
@@ -327,7 +342,7 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
           <h3 className="text-white text-[20px] font-bold mb-3">End your session now?</h3>
           <p className="text-[#9CA3AF] text-[15px] mb-8">Your report will be generated from the conversation so far.</p>
           <div className="flex flex-col gap-3">
-            <button onClick={()=>{setShowModal(false);onComplete();}} className="w-full bg-[#0F6E56] text-white font-semibold py-3 rounded-lg hover:bg-[#0c5945] transition-all">Generate My Report</button>
+            <button onClick={()=>{trackEvent("p5_chat_ended",{phase:5,screenDetail:"Phase 5: AI Chat — Ended Early",chatTurns:turnsUsed,timeSelected});setShowModal(false);onComplete();}} className="w-full bg-[#0F6E56] text-white font-semibold py-3 rounded-lg hover:bg-[#0c5945] transition-all">Generate My Report</button>
             <button onClick={()=>setShowModal(false)} className="w-full border border-[#374151] text-[#9CA3AF] font-medium py-3 rounded-lg hover:border-[#6B7280] transition-all">Continue Chatting</button>
           </div>
         </motion.div>
@@ -437,6 +452,32 @@ export default function AssessmentClient() {
   const [opportunities,setOpportunities] = useState<Opp[]>([]);
   const [logData,setLogData] = useState({model:"claude-sonnet-4-20250514",systemPromptVersion:"1.0"});
 
+  /* ── Tracking ── */
+  const currentScreenRef = useRef("Phase 1: Welcome");
+
+  // Track phase transitions (Phase 4 tracks itself via onScreenChange)
+  const PHASE_LABELS: Partial<Record<Phase,string>> = {
+    1:"Phase 1: Welcome",
+    2:"Phase 2: Time Selection",
+    3:"Phase 3: Contact Details",
+    5:"Phase 5: AI Chat",
+    6:"Phase 6: Generating Report",
+    7:"Phase 7: Complete",
+  };
+  useEffect(()=>{
+    const label = PHASE_LABELS[phase];
+    if(label){
+      currentScreenRef.current = label;
+      trackEvent(`p${phase}_entered`,{phase,screenDetail:label});
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[phase]);
+
+  // Dropoff tracking — fires on tab close / navigate away / phone screen off
+  useEffect(()=>{
+    return setupDropoffTracking(()=>currentScreenRef.current);
+  },[]);
+
   const updateForm = (key:keyof FormData,val:string|string[])=>setFormData(d=>({...d,[key]:val}));
 
   const fireEarlyCapture = ()=>{
@@ -449,11 +490,11 @@ export default function AssessmentClient() {
     <div className="fixed inset-0 z-[60] bg-[#0a0f1a] overflow-y-auto flex flex-col">
       <TopBar/>
       <AnimatePresence mode="wait">
-        {phase===1&&<Phase1 key="p1" onStart={()=>setPhase(2)}/>}
-        {phase===2&&<Phase2 key="p2" timeSelected={timeSelected} onSelect={handleTimeSelect} onContinue={()=>setPhase(3)}/>}
-        {phase===3&&<Phase3 key="p3" formData={formData} onChange={(k,v)=>updateForm(k,v as string)} onContinue={()=>{fireEarlyCapture();setPhase(4);}} onBack={()=>setPhase(2)}/>}
-        {phase===4&&<Phase4 key="p4" timeSelected={timeSelected} formData={formData} onChange={updateForm} onComplete={()=>setPhase(5)} onBack={()=>setPhase(3)}/>}
-        {phase===5&&<Phase5 key="p5" formData={formData} timeSelected={timeSelected} maxTurns={maxTurns} messages={messages} setMessages={setMessages} onComplete={()=>setPhase(6)} onLogData={(d)=>setLogData(d)}/>}
+        {phase===1&&<Phase1 key="p1" onStart={()=>{trackEvent("p1_start_clicked",{phase:1,screenDetail:"Phase 1: Welcome"});setPhase(2);}}/>}
+        {phase===2&&<Phase2 key="p2" timeSelected={timeSelected} onSelect={handleTimeSelect} onContinue={()=>{trackEvent("p2_time_selected",{phase:2,screenDetail:"Phase 2: Time Selection",timeValue:timeSelected});setPhase(3);}}/>}
+        {phase===3&&<Phase3 key="p3" formData={formData} onChange={(k,v)=>updateForm(k,v as string)} onContinue={()=>{trackEvent("p3_contact_submitted",{phase:3,screenDetail:"Phase 3: Contact Details",name:formData.name,email:formData.email,phone:formData.phone,timeSelected});fireEarlyCapture();setPhase(4);}} onBack={()=>setPhase(2)}/>}
+        {phase===4&&<Phase4 key="p4" timeSelected={timeSelected} formData={formData} onChange={updateForm} onComplete={()=>setPhase(5)} onBack={()=>setPhase(3)} onScreenChange={(label)=>{currentScreenRef.current=label;}}/>}
+        {phase===5&&<Phase5 key="p5" formData={formData} timeSelected={timeSelected} maxTurns={maxTurns} messages={messages} setMessages={setMessages} onComplete={()=>{trackEvent("p5_chat_ended",{phase:5,screenDetail:"Phase 5: AI Chat — Max Turns",chatTurns:Math.floor(messages.length/2),timeSelected});setPhase(6);}} onLogData={(d)=>setLogData(d)}/>}
         {phase===6&&<Phase6 key="p6" formData={formData} messages={messages} timeSelected={timeSelected} setOpportunities={setOpportunities} onComplete={()=>setPhase(7)} logData={logData}/>}
         {phase===7&&<Phase7 key="p7" formData={formData} opportunities={opportunities}/>}
       </AnimatePresence>

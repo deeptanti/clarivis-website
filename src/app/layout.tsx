@@ -5,6 +5,7 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CookieBanner from "@/components/CookieBanner";
+import VisitorTracker from "@/components/VisitorTracker";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -83,6 +84,7 @@ export default function RootLayout({
             })(window, document, 'clarity', 'script', 'w5w4s29qzh');
           `}
         </Script>
+        <VisitorTracker />
         <Navbar />
         <main className="flex-grow">
           {children}
