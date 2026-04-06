@@ -123,7 +123,7 @@ export default function AboutPage() {
                 Deep Tanti
               </h2>
               <div className="text-[#0F6E56] text-[16px] font-medium mt-1">
-                Founder, Clarivis Intelligence
+                Founder, Clarivis Intelligence 
               </div>
               <p className="text-[#9CA3AF] text-[16px] leading-[1.8] mt-6">
                 Before founding Clarivis Intelligence, I built AI and data systems that operated at scale. At Medmate in Australia, I joined as a backend engineer during Covid and architected core infrastructure through a complete company pivot, eventually leading ML development for fraud prevention and recommendations on a platform serving over 150,000 users. I then completed a Master of Science in Analytics at Harrisburg University in the United States, specialising in AI, and Cloud Engineering. I also co-founded Assiduous Technology, an AI consultancy serving the US market. Clarivis Intelligence brings that international experience to real estate and healthcare businesses in India.
