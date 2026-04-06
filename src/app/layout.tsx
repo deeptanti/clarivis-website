@@ -6,6 +6,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CookieBanner from "@/components/CookieBanner";
 import VisitorTracker from "@/components/VisitorTracker";
+import { PostHogProvider } from "@/components/PostHogProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -63,34 +64,36 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans bg-white text-[#1A1A2E]">
-        <Script
-          src='https://www.googletagmanager.com/gtag/js?id=G-KYGBCC5DTC'
-          strategy='afterInteractive'
-        />
-        <Script id='google-analytics' strategy='afterInteractive'>
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-KYGBCC5DTC');
-          `}
-        </Script>
-        <Script id='clarity' strategy='afterInteractive'>
-          {`
-            (function(c,l,a,r,i,t,y){
-              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-              t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;
-              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-            })(window, document, 'clarity', 'script', 'w5w4s29qzh');
-          `}
-        </Script>
-        <VisitorTracker />
-        <Navbar />
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Footer />
-        <CookieBanner />
+        <PostHogProvider>
+          <Script
+            src='https://www.googletagmanager.com/gtag/js?id=G-KYGBCC5DTC'
+            strategy='afterInteractive'
+          />
+          <Script id='google-analytics' strategy='afterInteractive'>
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-KYGBCC5DTC');
+            `}
+          </Script>
+          <Script id='clarity' strategy='afterInteractive'>
+            {`
+              (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+              })(window, document, 'clarity', 'script', 'w5w4s29qzh');
+            `}
+          </Script>
+          <VisitorTracker />
+          <Navbar />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Footer />
+          <CookieBanner />
+        </PostHogProvider>
       </body>
     </html>
   );
