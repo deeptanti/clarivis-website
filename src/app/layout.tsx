@@ -2,11 +2,9 @@ import type { Metadata } from "next";
 import Script from 'next/script';
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import CookieBanner from "@/components/CookieBanner";
 import VisitorTracker from "@/components/VisitorTracker";
 import { PostHogProvider } from "@/components/PostHogProvider";
+import SiteWrapper from "@/components/SiteWrapper";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -87,12 +85,9 @@ export default function RootLayout({
             `}
           </Script>
           <VisitorTracker />
-          <Navbar />
-          <main className="flex-grow">
+          <SiteWrapper>
             {children}
-          </main>
-          <Footer />
-          <CookieBanner />
+          </SiteWrapper>
         </PostHogProvider>
       </body>
     </html>
