@@ -64,7 +64,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-sans bg-white text-[#1A1A2E]">
         <PostHogProvider>
           <Script
-            src='https://www.googletagmanager.com/gtag/js?id=G-KYGBCC5DTC'
+            src='https://www.googletagmanager.com/gtag/js?id=G-T1127E5MED'
             strategy='afterInteractive'
           />
           <Script id='google-analytics' strategy='afterInteractive'>
@@ -72,7 +72,7 @@ export default function RootLayout({
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'G-KYGBCC5DTC');
+              gtag('config', 'G-T1127E5MED');
             `}
           </Script>
           <Script id='clarity' strategy='afterInteractive'>
