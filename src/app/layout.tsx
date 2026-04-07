@@ -63,6 +63,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans bg-white text-[#1A1A2E]">
         <PostHogProvider>
+          {/* Google Analytics 4 */}
           <Script
             src='https://www.googletagmanager.com/gtag/js?id=G-T1127E5MED'
             strategy='afterInteractive'
@@ -75,7 +76,9 @@ export default function RootLayout({
               gtag('config', 'G-T1127E5MED');
             `}
           </Script>
-          <Script id='clarity' strategy='afterInteractive'>
+
+          {/* Microsoft Clarity */}
+          <Script id='clarity-analytics' strategy='afterInteractive'>
             {`
               (function(c,l,a,r,i,t,y){
                 c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
