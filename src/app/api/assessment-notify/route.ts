@@ -45,36 +45,89 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true, assessmentId: assessment?.id })
     }
 
-    const { data: assessment } = await supabaseAdmin
-      .from('assessments')
-      .upsert([{
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        company: data.company,
-        industry: data.industry,
-        team_size: data.teamSize,
-        time_selected: data.timeSelected,
-        main_challenge: data.mainChallenge,
-        tools: Array.isArray(data.tools) ? data.tools.join(', ') : data.tools,
-        ai_experience: data.aiExperience,
-        success_definition: data.successDefinition,
-        source: 'assessment',
-        completed: true
-      }], { onConflict: 'email' })
-      .select()
-      .single()
-
-    await supabaseAdmin.from('leads').upsert([{
-      assessment_id: assessment?.id,
+    const assessmentData = {
       name: data.name,
       email: data.email,
       phone: data.phone,
-      company: data.company,
-      industry: data.industry,
+      company: data.company || null,
+      industry: data.industry || null,
+      team_size: data.teamSize || null,
+      time_selected: parseInt(data.timeSelected) || null,
+      main_challenge: data.mainChallenge || null,
+      tools: Array.isArray(data.tools) ? data.tools.join(', ') : (data.tools || null),
+      ai_experience: data.aiExperience || null,
+      success_definition: data.successDefinition || null,
       source: 'assessment',
-      stage: 'New'
-    }], { onConflict: 'email' })
+      completed: true
+    }
+
+    let assessmentId = null
+
+    try {
+      const { data: existing } = await supabaseAdmin
+        .from('assessments')
+        .select('id')
+        .eq('email', data.email)
+        .single()
+
+      if (existing) {
+        await supabaseAdmin
+          .from('assessments')
+          .update(assessmentData)
+          .eq('id', existing.id)
+        assessmentId = existing.id
+      } else {
+        const { data: newAssessment } = await supabaseAdmin
+          .from('assessments')
+          .insert([assessmentData])
+          .select()
+          .single()
+        assessmentId = newAssessment?.id
+      }
+    } catch (err) {
+      const { data: newAssessment } = await supabaseAdmin
+        .from('assessments')
+        .insert([assessmentData])
+        .select()
+        .single()
+      assessmentId = newAssessment?.id
+    }
+
+    try {
+      const { data: existingLead } = await supabaseAdmin
+        .from('leads')
+        .select('id')
+        .eq('email', data.email)
+        .single()
+
+      if (existingLead) {
+        await supabaseAdmin
+          .from('leads')
+          .update({
+            name: data.name,
+            phone: data.phone || null,
+            company: data.company || null,
+            industry: data.industry || null,
+            assessment_id: assessmentId
+          })
+          .eq('id', existingLead.id)
+      } else {
+        await supabaseAdmin
+          .from('leads')
+          .insert([{
+            assessment_id: assessmentId,
+            name: data.name,
+            email: data.email,
+            phone: data.phone || null,
+            company: data.company || null,
+            industry: data.industry || null,
+            source: 'assessment',
+            stage: 'New'
+          }])
+      }
+    } catch (err) {
+      console.error('Lead creation error:', err)
+    }
 
     if (process.env.RESEND_API_KEY) {
       await resend.emails.send({
