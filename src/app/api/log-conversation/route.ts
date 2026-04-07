@@ -1,57 +1,46 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { google } from 'googleapis'
-
-async function getSheets() {
-  const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    },
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-  })
-  return google.sheets({ version: 'v4', auth })
-}
+import { supabaseAdmin } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
   try {
-    const { userProfile, conversationHistory, model, systemPromptVersion, timeSelected, completedAt } = await request.json()
+    const { userProfile, conversationHistory, model, systemPromptVersion, timeSelected, completedAt, assessmentId } = await request.json()
 
     const transcript = conversationHistory
-      .map((m: {role: string, content: string}) =>
-        `[${m.role.toUpperCase()}]: ${m.content}`
-      ).join('\n\n')
+      .map((m: {role: string, content: string}) => `[${m.role.toUpperCase()}]: ${m.content}`)
+      .join('\n\n')
 
-    const row = [
-      completedAt || new Date().toISOString(),
-      userProfile.name || '',
-      userProfile.email || '',
-      userProfile.phone || '',
-      userProfile.company || '',
-      userProfile.industry || '',
-      userProfile.teamSize || '',
-      `${timeSelected} minutes`,
-      Math.floor(conversationHistory.length / 2).toString(),
-      model || 'claude-sonnet-4-20250514',
-      systemPromptVersion || '1.0',
-      userProfile.mainChallenge || '',
-      transcript
-    ]
+    const { data: activePrompt } = await supabaseAdmin
+      .from('prompt_versions')
+      .select('id, version_number')
+      .eq('is_active', true)
+      .single()
 
-    console.log('Logging conversation for:', userProfile.name, userProfile.email)
+    const { data: activeModel } = await supabaseAdmin
+      .from('models')
+      .select('id')
+      .eq('is_active', true)
+      .single()
 
-    if (process.env.GOOGLE_SHEETS_ID && process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL && process.env.GOOGLE_PRIVATE_KEY) {
-      const sheets = await getSheets()
-      await sheets.spreadsheets.values.append({
-        spreadsheetId: process.env.GOOGLE_SHEETS_ID,
-        range: 'Sheet1!A:M',
-        valueInputOption: 'RAW',
-        requestBody: { values: [row] }
-      })
-      console.log('Successfully logged to Google Sheets')
-    } else {
-      console.log('Google Sheets not configured. Row data:', JSON.stringify(row))
+    await supabaseAdmin.from('conversations').insert([{
+      assessment_id: assessmentId || null,
+      model_id: activeModel?.id || null,
+      prompt_version_id: activePrompt?.id || null,
+      total_turns: Math.floor(conversationHistory.length / 2),
+      completed: true,
+      completed_at: completedAt || new Date().toISOString(),
+      transcript,
+      raw_messages: conversationHistory
+    }])
+
+    if (activePrompt?.id) {
+      await supabaseAdmin.from('prompt_performance').insert([{
+        prompt_version_id: activePrompt.id,
+        total_turns: Math.floor(conversationHistory.length / 2),
+        completed: true
+      }])
     }
 
+    console.log('Conversation logged to Supabase for:', userProfile.name)
     return NextResponse.json({ success: true })
 
   } catch (error) {

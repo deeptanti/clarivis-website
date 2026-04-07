@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import { supabaseAdmin } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
   try {
@@ -80,6 +81,26 @@ export async function POST(request: NextRequest) {
     <p style="color:#374151;font-size:11px;margin:16px 0 0 0;">You received this because you completed the Clarivis Assessment.</p>
   </div>
 </div></body></html>`
+
+    if (userProfile.email) {
+      await supabaseAdmin.from('assessments').update({
+        completed: true,
+        company: userProfile.company,
+        industry: userProfile.industry,
+        team_size: userProfile.teamSize,
+        main_challenge: userProfile.mainChallenge
+      }).eq('email', userProfile.email)
+
+      await supabaseAdmin.from('leads').upsert([{
+        name: userProfile.name,
+        email: userProfile.email,
+        phone: userProfile.phone,
+        company: userProfile.company,
+        industry: userProfile.industry,
+        source: 'assessment',
+        stage: 'New'
+      }], { onConflict: 'email' })
+    }
 
     if (process.env.RESEND_API_KEY) {
       const resend = new Resend(process.env.RESEND_API_KEY)
