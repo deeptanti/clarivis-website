@@ -21,6 +21,17 @@ const AI_OPTS = ["No, completely new","Yes, with mixed results","Yes, successful
 const QUESTIONS: Record<string,string> = { industry:"What industry are you in?", company:"What is your company called?", teamSize:"How many people work in your business?", mainChallenge:"What is your biggest operational challenge right now?", tools:"Which tools does your team currently use?", aiExperience:"Have you tried AI or automation before?", successDefinition:"What would success look like in 90 days?" };
 
 /* ─── Helpers ── */
+function trackPostHog(event: string, properties?: Record<string, any>) {
+  if (typeof window !== 'undefined' && (window as any).posthog) {
+    (window as any).posthog.capture(event, properties)
+  }
+}
+
+function identifyPostHog(email: string, properties: Record<string, any>) {
+  if (typeof window !== 'undefined' && (window as any).posthog) {
+    (window as any).posthog.identify(email, properties)
+  }
+}
 function getMaxTurns(t: TimeOption) { return t===5?8:t===10?14:25; }
 function getTotalSteps(t: TimeOption) { return t===5?5:t===10?7:8; }
 function getStepType(step:number, time:TimeOption) {
@@ -196,7 +207,7 @@ function Phase4({timeSelected,formData,onChange,onComplete,onBack,onScreenChange
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[step]);
 
-  const goNext = ()=>{ if(stepType==="confirm"){trackEvent("p4_complete",{phase:4,screenDetail:"Phase 4: Confirm — Start AI Chat",timeSelected,industry:formData.industry,company:formData.company});onComplete();return;} if(!valid)return; setDir(1);setStep(s=>s+1); };
+  const goNext = ()=>{ if(stepType==="confirm"){trackEvent("p4_complete",{phase:4,screenDetail:"Phase 4: Confirm — Start AI Chat",timeSelected,industry:formData.industry,company:formData.company});onComplete();return;} if(!valid)return; trackPostHog('assessment_step_completed', {step: step,totalSteps: total,industry: formData.industry || null});setDir(1);setStep(s=>s+1); };
   const goBack = ()=>{ if(step<=1){onBack();return;} setDir(-1);setStep(s=>s-1); };
   return (
     <motion.div variants={phaseV} initial="hidden" animate="show" exit="exit" className="flex flex-col min-h-[calc(100vh-73px)]">
@@ -265,7 +276,7 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
     setIsTyping(false);
   };
 
-  useEffect(()=>{ if(messages.length===0&&!greetingFired.current){greetingFired.current=true;callAPI([]);} },[]);
+  useEffect(()=>{ if(messages.length===0&&!greetingFired.current){greetingFired.current=true;trackPostHog('chat_started', {industry: formData.industry,timeSelected: timeSelected,company: formData.company});callAPI([]);} },[]);
 
   const handleSend = async()=>{
     if(!input.trim()||disabled) return;
@@ -273,6 +284,7 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
     const next = [...messages,msg];
     const turnNum = turnsUsed+1;
     trackEvent("p5_turn_sent",{phase:5,screenDetail:`Phase 5: AI Chat — Turn ${turnNum}`,chatTurns:turnNum,timeSelected});
+    trackPostHog('chat_turn', {turnNumber: turnNum,maxTurns: maxTurns,industry: formData.industry});
     setMessages(next); setInput(""); await callAPI(next);
   };
 
@@ -355,6 +367,8 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
 function Phase6({formData,messages,timeSelected,setOpportunities,onComplete,logData}:{formData:FormData;messages:Message[];timeSelected:TimeOption;setOpportunities:(o:Opp[])=>void;onComplete:()=>void;logData:{model:string;systemPromptVersion:string}}) {
   const steps = ["Analysing your conversation","Identifying your top opportunities","Calculating indicative ROI","Preparing your PDF report"];
   useEffect(()=>{
+    identifyPostHog(formData.email, {name: formData.name,email: formData.email,phone: formData.phone,company: formData.company,industry: formData.industry,teamSize: formData.teamSize,mainChallenge: formData.mainChallenge,completedAssessment: true,assessmentCompletedAt: new Date().toISOString()});
+    trackPostHog('assessment_completed', {industry: formData.industry,timeSelected: timeSelected,company: formData.company,totalTurns: Math.floor(messages.length / 2)});
     const t = setTimeout(async()=>{
       try {
         const [pdfRes] = await Promise.all([
@@ -431,7 +445,7 @@ function Phase7({formData,opportunities}:{formData:FormData;opportunities:Opp[]}
           <p className="text-[#4B5563] text-[13px] italic">This is a summary. Your full detailed PDF report including ROI projections has been sent to your email.</p>
         </motion.div>
         <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:1.1}} className="flex flex-col sm:flex-row gap-3 mt-8 justify-center">
-          <Link href="/book" className="flex-1 sm:flex-none sm:min-w-[220px] text-center bg-[#0F6E56] text-white font-semibold py-4 rounded-lg text-[15px] hover:bg-[#0c5945] transition-all px-6">Book Your AI Opportunity Session</Link>
+          <Link href="/book" onClick={() => trackPostHog('book_session_clicked', {source: 'assessment_summary',industry: formData.industry})} className="flex-1 sm:flex-none sm:min-w-[220px] text-center bg-[#0F6E56] text-white font-semibold py-4 rounded-lg text-[15px] hover:bg-[#0c5945] transition-all px-6">Book Your AI Opportunity Session</Link>
           <Link href="/" className="flex-1 sm:flex-none sm:min-w-[160px] text-center border border-[#1f2937] text-[#9CA3AF] font-medium py-4 rounded-lg text-[15px] hover:border-[#374151] hover:text-white transition-all px-6">Return to Home</Link>
         </motion.div>
         <motion.p initial={{opacity:0}} animate={{opacity:1}} transition={{delay:1.3}} className="text-center text-[#4B5563] text-[13px] mt-6">
@@ -490,9 +504,9 @@ export default function AssessmentClient() {
     <div className="fixed inset-0 z-[60] bg-[#0a0f1a] overflow-y-auto flex flex-col">
       <TopBar/>
       <AnimatePresence mode="wait">
-        {phase===1&&<Phase1 key="p1" onStart={()=>{trackEvent("p1_start_clicked",{phase:1,screenDetail:"Phase 1: Welcome"});setPhase(2);}}/>}
-        {phase===2&&<Phase2 key="p2" timeSelected={timeSelected} onSelect={handleTimeSelect} onContinue={()=>{trackEvent("p2_time_selected",{phase:2,screenDetail:"Phase 2: Time Selection",timeValue:timeSelected});setPhase(3);}}/>}
-        {phase===3&&<Phase3 key="p3" formData={formData} onChange={(k,v)=>updateForm(k,v as string)} onContinue={()=>{trackEvent("p3_contact_submitted",{phase:3,screenDetail:"Phase 3: Contact Details",name:formData.name,email:formData.email,phone:formData.phone,timeSelected});fireEarlyCapture();setPhase(4);}} onBack={()=>setPhase(2)}/>}
+        {phase===1&&<Phase1 key="p1" onStart={()=>{trackPostHog('assessment_started', { source: 'entry_screen' });trackEvent("p1_start_clicked",{phase:1,screenDetail:"Phase 1: Welcome"});setPhase(2);}}/>}
+        {phase===2&&<Phase2 key="p2" timeSelected={timeSelected} onSelect={handleTimeSelect} onContinue={()=>{trackEvent("p2_time_selected",{phase:2,screenDetail:"Phase 2: Time Selection",timeValue:timeSelected});trackPostHog('time_selected', { minutes: timeSelected });setPhase(3);}}/>}
+        {phase===3&&<Phase3 key="p3" formData={formData} onChange={(k,v)=>updateForm(k,v as string)} onContinue={()=>{trackEvent("p3_contact_submitted",{phase:3,screenDetail:"Phase 3: Contact Details",name:formData.name,email:formData.email,phone:formData.phone,timeSelected});identifyPostHog(formData.email, {name: formData.name,email: formData.email,phone: formData.phone,timeSelected: timeSelected,source: 'clarivis_assessment',firstSeen: new Date().toISOString()});trackPostHog('contact_captured', {timeSelected: timeSelected,source: 'assessment'});fireEarlyCapture();setPhase(4);}} onBack={()=>setPhase(2)}/>}
         {phase===4&&<Phase4 key="p4" timeSelected={timeSelected} formData={formData} onChange={updateForm} onComplete={()=>setPhase(5)} onBack={()=>setPhase(3)} onScreenChange={(label)=>{currentScreenRef.current=label;}}/>}
         {phase===5&&<Phase5 key="p5" formData={formData} timeSelected={timeSelected} maxTurns={maxTurns} messages={messages} setMessages={setMessages} onComplete={()=>{trackEvent("p5_chat_ended",{phase:5,screenDetail:"Phase 5: AI Chat — Max Turns",chatTurns:Math.floor(messages.length/2),timeSelected});setPhase(6);}} onLogData={(d)=>setLogData(d)}/>}
         {phase===6&&<Phase6 key="p6" formData={formData} messages={messages} timeSelected={timeSelected} setOpportunities={setOpportunities} onComplete={()=>setPhase(7)} logData={logData}/>}
