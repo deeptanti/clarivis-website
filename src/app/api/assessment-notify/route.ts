@@ -173,7 +173,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json({ success: true, assessmentId: assessment?.id })
+    return NextResponse.json({ success: true, assessmentId })
 
   } catch (error) {
     console.error('Assessment notify error:', error)
