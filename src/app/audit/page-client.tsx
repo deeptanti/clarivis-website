@@ -138,7 +138,7 @@ const faqs = [
   },
   {
     q: "Is the founding client price really ₹10,000?",
-    a: "Yes. The full audit involves significant time from our team across four to five weeks. Standard pricing reflects that. The founding client rate exists because we are building our case study library and we are willing to invest our time at a lower rate in exchange for documented results and honest feedback. Once five founding spots are filled, pricing returns to ₹30,000.",
+    a: "Yes. The full audit involves significant time from our team across four to five weeks. Standard pricing reflects that. The founding client rate exists because we are building our case study library and we are willing to invest our time at a lower rate in exchange for documented results and honest feedback. Once five founding spots are filled, pricing returns to ₹50,000.",
   },
 ];
 
@@ -229,7 +229,7 @@ export default function AuditPage() {
                 <div className="mt-6">
                   <p className="text-[#6B7280] text-[12px] mb-1">Starts from</p>
                   <div className="flex items-baseline gap-3">
-                    <span className="text-[#6B7280] text-[24px] line-through">₹30,000</span>
+                    <span className="text-[#6B7280] text-[24px] line-through">₹50,000</span>
                   </div>
                   <div className="text-[#0F6E56] text-[48px] font-extrabold leading-none tracking-tight mt-1">
                     ₹10,000
@@ -481,7 +481,7 @@ export default function AuditPage() {
           {/* Three columns */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             {[
-              { icon: Tag, title: "₹10,000 founding investment", desc: "The Clarivis Audit starts from ₹30,000. Founding clients access the full experience at ₹10,000 — our investment in building our case study library." },
+              { icon: Tag, title: "₹10,000 founding investment", desc: "The Clarivis Audit starts from ₹50,000. Founding clients access the full experience at ₹10,000 — our investment in building our case study library." },
               { icon: Star, title: "Priority attention", desc: "Founding clients receive more of our time, more sessions, and more detailed documentation than any future client." },
               { icon: Award, title: "Case study feature", desc: "Your results will be documented and published as a Clarivis case study. Your business gets visibility. We get proof." },
             ].map((col, idx) => {
