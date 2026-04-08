@@ -114,8 +114,16 @@ const healthcareProducts = [
   }
 ];
 
+const agribusinessProducts = [
+  { icon: PhoneCall, category: "LEAD MANAGEMENT", name: "AI Lead Qualifier and Follow-up Agent", desc: "Instantly qualify inbound investor and buyer leads with AI. Automated follow-up within 60 seconds via voice and WhatsApp. Never miss a lead regardless of time or volume.", features: ["Inbound lead called within 60 seconds", "Qualification scoring and CRM sync", "Automated follow-up sequences via WhatsApp"] },
+  { icon: Users, category: "HR AND OPERATIONS", name: "Field Staff HR and Attendance System", desc: "Automated attendance tracking, payroll management, and performance visibility for distributed field teams across multiple farm sites.", features: ["GPS-based attendance for field staff", "Automated payroll calculation and records", "Performance tracking and reporting"] },
+  { icon: BarChart2, category: "INTELLIGENCE", name: "Investor and Pipeline Dashboard", desc: "Live management intelligence across investor pipeline, plot availability, payment collections, and revenue forecasting. Real-time visibility for founders and ops teams.", features: ["Live investor pipeline and stage tracking", "Plot inventory and availability management", "Collections and revenue forecasting"] },
+  { icon: Bell, category: "COLLECTIONS", name: "Collections and Payment Agent", desc: "Automated installment and payment reminders delivered via WhatsApp and voice. Reduces collection delays and eliminates manual follow-up.", features: ["Automated reminder sequences", "Payment status tracking and escalation", "WhatsApp and voice delivery"] },
+  { icon: FileText, category: "COMPLIANCE", name: "Compliance and Document Automation", desc: "Auto-generation of investor agreements, land records, and regulatory compliance documents. Reduces legal admin time by over 80%.", features: ["Investor agreement auto-generation", "Land record and title document management", "Regulatory compliance document creation"] }
+];
+
 export default function ProductsPageContent() {
-  const [activeTab, setActiveTab] = useState<"real-estate" | "healthcare">("real-estate");
+  const [activeTab, setActiveTab] = useState<"real-estate" | "healthcare" | "agribusiness">("real-estate");
 
   return (
     <main className="w-full">
@@ -171,6 +179,16 @@ export default function ProductsPageContent() {
               >
                 Healthcare
               </button>
+              <button
+                onClick={() => setActiveTab("agribusiness")}
+                className={`px-8 py-3 rounded-full text-[15px] font-semibold transition-all duration-300 ${
+                  activeTab === "agribusiness"
+                    ? "bg-[#0F6E56] text-white shadow-lg"
+                    : "text-[#9CA3AF] hover:text-white hover:bg-[#1f2937]"
+                }`}
+              >
+                Agribusiness
+              </button>
             </div>
           </div>
 
@@ -184,7 +202,7 @@ export default function ProductsPageContent() {
                 transition={{ duration: 0.3 }}
                 className="grid grid-cols-1 lg:grid-cols-2 gap-6"
               >
-                {(activeTab === "real-estate" ? realEstateProducts : healthcareProducts).map((product, idx) => {
+                {(activeTab === "real-estate" ? realEstateProducts : activeTab === "healthcare" ? healthcareProducts : agribusinessProducts).map((product, idx) => {
                   const Icon = product.icon;
                   return (
                     <motion.div
