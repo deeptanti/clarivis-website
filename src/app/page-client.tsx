@@ -16,7 +16,7 @@ export default function Home() {
   const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(null);
-  const [activeProductTab, setActiveProductTab] = useState<"real-estate" | "healthcare">("real-estate");
+  const [activeProductTab, setActiveProductTab] = useState<"real-estate" | "healthcare" | "agribusiness">("real-estate");
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
@@ -771,6 +771,12 @@ export default function Home() {
               >
                 Healthcare
               </button>
+              <button
+                onClick={() => setActiveProductTab("agribusiness")}
+                className={`py-2 px-6 rounded-md text-sm font-medium transition-all duration-300 ${activeProductTab === "agribusiness" ? "bg-[#0F6E56] text-white shadow-md shadow-[#0F6E56]/20" : "text-[#9CA3AF] hover:text-white"}`}
+              >
+                Agribusiness
+              </button>
             </div>
           </motion.div>
 
@@ -809,7 +815,7 @@ export default function Home() {
                     );
                   })}
                 </motion.div>
-              ) : (
+              ) : activeProductTab === "healthcare" ? (
                 <motion.div
                   key="healthcare-grid"
                   initial="hidden"
@@ -823,6 +829,39 @@ export default function Home() {
                     { icon: CreditCard, name: "Billing Automation", desc: "Revenue cycle errors eliminated with AI-powered billing workflows." },
                     { icon: LayoutDashboard, name: "Clinical Dashboard", desc: "Operations, staff performance, and patient metrics in one view." },
                     { icon: FileSearch, name: "Report Delivery Agent", desc: "Diagnostic reports delivered automatically to patients via WhatsApp." }
+                  ].map((prod, i) => {
+                    const Icon = prod.icon;
+                    return (
+                      <motion.div
+                        key={prod.name}
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-80px" }}
+                        transition={{ duration: 0.4, delay: i * 0.07, ease: "easeOut" }}
+                      >
+                        <div className="bg-[#111827] border border-[#1f2937] rounded-[12px] p-6 h-full transition-all duration-200 hover:-translate-y-1 hover:border-[#0F6E56] group cursor-default">
+                          <Icon className="w-8 h-8 text-[#0F6E56] mb-3 transition-colors duration-200" />
+                          <h3 className="text-white font-semibold text-[16px] mb-2">{prod.name}</h3>
+                          <p className="text-[#9CA3AF] text-[13px] leading-relaxed">{prod.desc}</p>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="agribusiness-grid"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6"
+                >
+                  {[
+                    { icon: PhoneCall, name: "AI Lead Qualifier", desc: "Investor leads qualified and followed up within 60 seconds." },
+                    { icon: Users, name: "Field Staff HR System", desc: "Attendance, payroll, and performance for distributed field teams." },
+                    { icon: BarChart2, name: "Investor Dashboard", desc: "Live pipeline, plot availability, and collections visibility." },
+                    { icon: Bell, name: "Collections Agent", desc: "Automated payment reminders via WhatsApp and voice." },
+                    { icon: FileText, name: "Document Automation", desc: "Investor agreements and compliance documents auto-generated." }
                   ].map((prod, i) => {
                     const Icon = prod.icon;
                     return (
