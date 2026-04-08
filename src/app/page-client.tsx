@@ -538,7 +538,7 @@ export default function Home() {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="text-white text-[32px] lg:text-[48px] font-bold mb-4"
             >
-              Built for two industries. Deployed in days.
+              Built for three industries. Deployed in days.
             </motion.h2>
 
             <motion.p
@@ -548,7 +548,7 @@ export default function Home() {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="text-[#9CA3AF] text-[18px] max-w-[560px] mx-auto mb-20"
             >
-              Deep vertical expertise in real estate and healthcare means we understand your problems before you describe them.
+              Deep vertical expertise in real estate, healthcare, and agribusiness means we understand your problems before you describe them.
             </motion.p>
           </div>
 
@@ -737,7 +737,7 @@ export default function Home() {
               transition={{ duration: 0.5, ease: "easeOut" }}
               className="text-white text-[32px] lg:text-[48px] font-bold mb-4"
             >
-              Ten AI products. Two industries. One firm.
+              Fifteen AI products. Three industries. One firm.
             </motion.h2>
 
             <motion.p

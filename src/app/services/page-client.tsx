@@ -23,10 +23,10 @@ export default function ServicesPage() {
               </span>
             </div>
             <h1 className="text-white text-[36px] lg:text-[52px] font-extrabold leading-[1.1] tracking-tight">
-              Two industries. One methodology. Guaranteed results.
+              Three industries. One methodology. Guaranteed results.
             </h1>
             <p className="text-[#9CA3AF] text-[18px] leading-[1.8] mt-4">
-              We do not offer generic AI consulting. We go deep into real estate and healthcare because deep expertise is how we deliver measurable ROI within 90 days.
+              We do not offer generic AI consulting. We go deep into real estate, healthcare, and agribusiness because deep expertise is how we deliver measurable ROI within 90 days.
             </p>
           </motion.div>
         </div>
