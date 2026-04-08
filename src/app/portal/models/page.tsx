@@ -11,6 +11,7 @@ export default function ModelsPage() {
   const [selectedModel, setSelectedModel] = useState<any>(null)
   const [activePrompt, setActivePrompt] = useState<any>(null)
   const [editingPrompt, setEditingPrompt] = useState<any>(null)
+  const [activeChannel, setActiveChannel] = useState('assessment')
   const [showNewModel, setShowNewModel] = useState(false)
   const [showNewPrompt, setShowNewPrompt] = useState(false)
   const [expandedPrompt, setExpandedPrompt] = useState<string | null>(null)
@@ -21,8 +22,8 @@ export default function ModelsPage() {
 
   async function fetchData() {
     const [modelsRes, promptsRes] = await Promise.all([
-      fetch('/api/portal/models'),
-      fetch('/api/portal/prompts')
+      fetch(`/api/portal/models?channel=${activeChannel}`),
+      fetch(`/api/portal/prompts?channel=${activeChannel}`)
     ])
     const modelsJson = await modelsRes.json()
     const promptsJson = await promptsRes.json()
@@ -32,13 +33,13 @@ export default function ModelsPage() {
     if (active) setActivePrompt(active)
   }
 
-  useEffect(() => { fetchData() }, [])
+  useEffect(() => { fetchData() }, [activeChannel])
 
   async function setActiveModel(id: string) {
     await fetch('/api/portal/models', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, is_active: true })
+      body: JSON.stringify({ id, is_active: true, channel: activeChannel })
     })
     fetchData()
   }
@@ -47,7 +48,7 @@ export default function ModelsPage() {
     await fetch('/api/portal/prompts', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, is_active: true })
+      body: JSON.stringify({ id, is_active: true, channel: activeChannel })
     })
     fetchData()
   }
@@ -56,7 +57,7 @@ export default function ModelsPage() {
     await fetch('/api/portal/models', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newModel)
+      body: JSON.stringify({ ...newModel, channel: activeChannel })
     })
     setShowNewModel(false)
     setNewModel({ name: '', provider: 'anthropic', model_string: '', max_tokens: 300, temperature: 0.7, notes: '' })
@@ -68,7 +69,7 @@ export default function ModelsPage() {
     await fetch('/api/portal/prompts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newPrompt)
+      body: JSON.stringify({ ...newPrompt, channel: activeChannel })
     })
     setShowNewPrompt(false)
     setNewPrompt({ name: '', system_prompt: '', is_active: false, notes: '' })
@@ -95,7 +96,13 @@ export default function ModelsPage() {
     <div className="p-8 max-w-7xl mx-auto">
       <div className="mb-8">
         <h1 className="text-white text-3xl font-bold">Model Management</h1>
-        <p className="text-gray-400 text-sm mt-1">Control which AI model and prompt the Clarivis Assessment uses. Changes take effect immediately.</p>
+        <p className="text-gray-400 text-sm mt-1">Control which AI model and prompt the active channel uses. Changes take effect automatically.</p>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex border-b border-[#1f2937] mb-8 gap-2">
+        <button onClick={() => setActiveChannel('assessment')} className={`pb-3 px-4 text-sm font-medium border-b-2 transition-colors ${activeChannel === 'assessment' ? 'border-[#0F6E56] text-[#0F6E56]' : 'border-transparent text-gray-400 hover:text-gray-200'}`}>Assessment</button>
+        <button onClick={() => setActiveChannel('whatsapp_agent')} className={`pb-3 px-4 text-sm font-medium border-b-2 transition-colors ${activeChannel === 'whatsapp_agent' ? 'border-[#0F6E56] text-[#0F6E56]' : 'border-transparent text-gray-400 hover:text-gray-200'}`}>WhatsApp Agent</button>
       </div>
 
       {/* Active Configuration Banner */}
