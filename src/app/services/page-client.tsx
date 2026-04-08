@@ -152,7 +152,7 @@ export default function ServicesPage() {
             </motion.h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full max-w-[1100px] mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full max-w-[1100px] mx-auto">
             {/* Real Estate Card */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -208,6 +208,49 @@ export default function ServicesPage() {
                 className="mt-8 block w-full text-center bg-[#0F6E56] text-white font-medium py-3.5 rounded-lg hover:bg-[#0c5945] transition-colors"
               >
                 Explore Healthcare Services
+              </Link>
+            </motion.div>
+
+            {/* Agribusiness Card */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+              className="bg-gradient-to-br from-[#0f1f14] to-[#0d1117] border border-[#0F6E56]/30 rounded-[20px] p-8 lg:p-[48px] min-h-[320px] flex flex-col justify-between hover:border-[#0F6E56]/80 hover:shadow-[0_0_30px_rgba(15,110,86,0.15)] transition-all duration-300 group"
+            >
+              <div>
+                <div className="inline-block mb-6 px-4 py-1.5 rounded-full bg-[#0F6E56]/20">
+                  <span className="text-[#0F6E56] text-[12px] font-bold tracking-widest uppercase">
+                    AGRIBUSINESS
+                  </span>
+                </div>
+                <h3 className="text-white text-[24px] lg:text-[28px] font-bold leading-tight mb-4 group-hover:text-white transition-colors">
+                  For agro-realty firms, input suppliers, and commodity traders
+                </h3>
+                <p className="text-[#9CA3AF] text-[15px] leading-[1.8]">
+                  From investor lead chaos to automated qualification pipelines. From WhatsApp field management to structured HR and operations. We deploy AI systems that give agribusinesses complete operational visibility and revenue control.
+                </p>
+                <div className="mt-6 flex flex-col gap-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#0F6E56] mt-2 shrink-0" />
+                    <span className="text-[#9CA3AF] text-[14px]">Investor leads qualified and followed up within 60 seconds</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#0F6E56] mt-2 shrink-0" />
+                    <span className="text-[#9CA3AF] text-[14px]">Field staff HR and attendance fully automated</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#0F6E56] mt-2 shrink-0" />
+                    <span className="text-[#9CA3AF] text-[14px]">Investor pipeline and collections visible in real time</span>
+                  </div>
+                </div>
+              </div>
+              <Link
+                href="/services/agribusiness"
+                className="mt-8 block w-full text-center bg-[#0F6E56] text-white font-medium py-3.5 rounded-lg hover:bg-[#0c5945] transition-colors"
+              >
+                Explore Agribusiness Solutions
               </Link>
             </motion.div>
           </div>
