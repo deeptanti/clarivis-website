@@ -553,7 +553,7 @@ export default function Home() {
           </div>
 
           {/* Cards Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
             {/* Card 1: Real Estate */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -652,6 +652,57 @@ export default function Home() {
                   className="block w-full text-center px-6 py-3.5 rounded-md border border-[#0F6E56] text-[#0F6E56] font-medium transition-all duration-300 hover:bg-[#0F6E56] hover:text-white"
                 >
                   Explore Healthcare Solutions
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Card 3: Agribusiness */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+              className="group flex flex-col justify-between min-h-[480px] h-full rounded-[20px] p-8 lg:p-[48px] border border-[#0F6E56]/30 bg-gradient-to-b from-[#0f1f14] to-[#0d1117] transition-all duration-300 hover:border-[#0F6E56] hover:shadow-[0_0_30px_rgba(15,110,86,0.15)]"
+            >
+              <div>
+                <div className="inline-block mb-4 px-3 py-1 rounded-full border border-[#0F6E56]/30 bg-[#0F6E56]/15">
+                  <span className="text-[#0F6E56] text-xs font-semibold uppercase tracking-widest">
+                    AGRIBUSINESS
+                  </span>
+                </div>
+                
+                <h3 className="text-white font-bold text-[28px] mt-4 mb-4 leading-tight">
+                  For agro-realty, input suppliers, and commodity traders
+                </h3>
+                
+                <p className="text-[#9CA3AF] text-[15px] leading-[1.8]">
+                  From investor lead chaos to automated pipelines. From WhatsApp HR management to structured field operations. We understand agribusiness because we have mapped operations across agro-realty firms, input suppliers, and traders.
+                </p>
+
+                <div className="h-px w-full bg-[#0F6E56]/20 my-8" />
+
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-[#0F6E56] shrink-0 mt-0.5" />
+                    <span className="text-[#9CA3AF] text-[14px]">Investor leads qualified within 60 seconds</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-[#0F6E56] shrink-0 mt-0.5" />
+                    <span className="text-[#9CA3AF] text-[14px]">Field staff HR and attendance automated</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-[#0F6E56] shrink-0 mt-0.5" />
+                    <span className="text-[#9CA3AF] text-[14px]">Pipeline and collections visible in real time</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-12 lg:mt-8">
+                <Link
+                  href="/services/agribusiness"
+                  className="block w-full text-center px-6 py-3.5 rounded-md border border-[#0F6E56] text-[#0F6E56] font-medium transition-all duration-300 hover:bg-[#0F6E56] hover:text-white"
+                >
+                  Explore Agribusiness Solutions
                 </Link>
               </div>
             </motion.div>
