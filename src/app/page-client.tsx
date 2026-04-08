@@ -350,7 +350,7 @@ export default function Home() {
           </div>
 
           {/* Flow Layout (Vertical Timeline) */}
-          <div className="relative max-w-[1000px] mx-auto mt-16 pt-8">
+          <div className="relative max-w-[1000px] mx-auto mt-16 pt-8 overflow-x-hidden">
             {/* Animated Central Vertical Line */}
             <motion.div
               initial={{ scaleY: 0 }}
@@ -376,7 +376,7 @@ export default function Home() {
                   opacity: prefersReducedMotion ? 1 : card1Opacity,
                   x: prefersReducedMotion ? 0 : card1X
                 }}
-                className="relative ml-[80px] lg:ml-0 lg:w-1/2 lg:pr-12 w-full"
+                className="relative ml-[80px] lg:ml-0 lg:w-1/2 lg:pr-12 w-[calc(100%-80px)]"
               >
                 <div className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-[36px] lg:max-w-[500px] lg:ml-auto relative lg:text-right text-left">
                   {/* Arrows */}
@@ -413,7 +413,7 @@ export default function Home() {
                   opacity: prefersReducedMotion ? 1 : card2Opacity,
                   x: prefersReducedMotion ? 0 : card2X
                 }}
-                className="relative ml-[80px] lg:ml-0 lg:w-1/2 lg:pl-12 w-full"
+                className="relative ml-[80px] lg:ml-0 lg:w-1/2 lg:pl-12 w-[calc(100%-80px)]"
               >
                 <div className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-[36px] lg:max-w-[500px] relative text-left">
                   <div className="absolute top-[36px] -left-[24px] text-[#0F6E56]">
@@ -442,7 +442,7 @@ export default function Home() {
                   opacity: prefersReducedMotion ? 1 : card3Opacity,
                   x: prefersReducedMotion ? 0 : card3X
                 }}
-                className="relative ml-[80px] lg:ml-0 lg:w-1/2 lg:pr-12 w-full"
+                className="relative ml-[80px] lg:ml-0 lg:w-1/2 lg:pr-12 w-[calc(100%-80px)]"
               >
                 <div className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-[36px] lg:max-w-[500px] lg:ml-auto relative lg:text-right text-left">
                   <div className="lg:hidden absolute top-[36px] -left-[24px] text-[#0F6E56]">
@@ -477,7 +477,7 @@ export default function Home() {
                   opacity: prefersReducedMotion ? 1 : card4Opacity,
                   x: prefersReducedMotion ? 0 : card4X
                 }}
-                className="relative ml-[80px] lg:ml-0 lg:w-1/2 lg:pl-12 w-full"
+                className="relative ml-[80px] lg:ml-0 lg:w-1/2 lg:pl-12 w-[calc(100%-80px)]"
               >
                 <div className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-[36px] lg:max-w-[440px] relative text-left">
                   <div className="absolute top-[36px] -left-[24px] text-[#0F6E56]">

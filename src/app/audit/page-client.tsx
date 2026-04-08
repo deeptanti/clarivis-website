@@ -310,7 +310,7 @@ export default function AuditPage() {
           </div>
 
           {/* Timeline */}
-          <div className="relative max-w-[1000px] mx-auto">
+          <div className="relative max-w-[1000px] mx-auto overflow-x-hidden">
             {/* Central vertical line */}
             <motion.div
               initial={{ scaleY: 0 }}
@@ -336,7 +336,7 @@ export default function AuditPage() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, margin: "-50px" }}
                     transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-                    className={`relative ml-[80px] lg:ml-0 w-full lg:w-1/2 ${isLeft ? "lg:pr-12" : "lg:pl-12"}`}
+                    className={`relative ml-[80px] lg:ml-0 w-[calc(100%-80px)] lg:w-1/2 ${isLeft ? "lg:pr-12" : "lg:pl-12"}`}
                   >
                     <div className={`bg-[#111827] border border-[#1f2937] rounded-[16px] p-[36px] lg:max-w-[500px] ${isLeft ? "lg:ml-auto lg:text-right" : ""} relative`}>
                       {/* Arrow */}
