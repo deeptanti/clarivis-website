@@ -226,10 +226,10 @@ export default function ServicesPage() {
                   </span>
                 </div>
                 <h3 className="text-white text-[24px] lg:text-[28px] font-bold leading-tight mb-4 group-hover:text-white transition-colors">
-                  For agro-realty firms, input suppliers, and commodity traders
+                  Agro-realty firms, input suppliers, and commodity traders
                 </h3>
                 <p className="text-[#9CA3AF] text-[15px] leading-[1.8]">
-                  From investor lead chaos to automated qualification pipelines. From WhatsApp field management to structured HR and operations. We deploy AI systems that give agribusinesses complete operational visibility and revenue control.
+                  AI systems for investor lead management, field staff HR, collections automation, pipeline visibility, and compliance documentation.
                 </p>
                 <div className="mt-6 flex flex-col gap-3">
                   <div className="flex items-start gap-3">
