@@ -7,7 +7,6 @@ export default function Footer() {
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
     { name: "Services", path: "/services" },
-    { name: "Agribusiness", path: "/services/agribusiness" },
     { name: "Audit", path: "/audit" },
     { name: "Products", path: "/products" },
     { name: "Assessment", path: "/assessment" },
