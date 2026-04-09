@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Mail, MapPin, Clock, Send } from "lucide-react";
+import { Mail, MapPin, Clock, Send, Phone } from "lucide-react";
 
 export default function ContactPage() {
   return (
@@ -126,8 +126,26 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-[#9CA3AF] text-sm mb-1">Email us</h3>
-                  <a href="mailto:hello@clarivisintelligence.com" className="text-white text-[16px] font-medium hover:text-[#0F6E56] transition-colors">
+                  <a href="mailto:hello@clarivisintelligence.com" className="text-white text-[16px] font-medium hover:text-[#0F6E56] transition-colors block">
                     hello@clarivisintelligence.com
+                  </a>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+                className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-7 flex items-start gap-5"
+              >
+                <div className="bg-[#0F6E56]/15 rounded-xl p-3 shrink-0">
+                  <Phone className="w-6 h-6 text-[#0F6E56]" />
+                </div>
+                <div>
+                  <h3 className="text-[#9CA3AF] text-sm mb-1">Call us</h3>
+                  <a href="tel:+918401814334" className="text-white text-[16px] font-medium hover:text-[#0F6E56] transition-colors block">
+                    +91 840 181 4334
                   </a>
                 </div>
               </motion.div>

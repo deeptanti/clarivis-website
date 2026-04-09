@@ -55,6 +55,12 @@ export default function Footer() {
             >
               hello@clarivisintelligence.com
             </a>
+            <a
+              href="tel:+918401814334"
+              className="text-gray-400 hover:text-[#0F6E56] transition-colors text-sm flex items-center"
+            >
+              +91 840 181 4334
+            </a>
             <div className="flex space-x-4 pt-2">
               <a
                 href="#"
