@@ -36,9 +36,20 @@ export async function POST(request: NextRequest) {
       .replace(/\{\{mainChallenge\}\}/g, userProfile.mainChallenge || '')
       .replace(/\{\{tools\}\}/g, Array.isArray(userProfile.tools) ? userProfile.tools.join(', ') : (userProfile.tools || 'not specified'))
       .replace(/\{\{aiExperience\}\}/g, userProfile.aiExperience || 'not specified')
+      .replace(/\{\{successDefinition\}\}/g, userProfile.successDefinition || 'not provided')
       .replace(/\{\{timeSelected\}\}/g, String(timeSelected))
       .replace(/\{\{maxTurns\}\}/g, String(maxTurns))
       + `\n\nCurrent exchange: ${turnCount + 1} of ${maxTurns}.${isLastTurn ? ' THIS IS THE FINAL EXCHANGE. Summarise the top 2-3 AI opportunities identified and tell them their report is being generated.' : ''}`
+
+    // For the opening message, give Claude a rich context signal rather than
+    // the generic "Please begin the assessment." fallback. This produces a
+    // personalised greeting that references the user's name and industry.
+    const messagesToSend = messages.length > 0
+      ? messages
+      : [{
+          role: 'user',
+          content: `Please begin the assessment for ${userProfile.name || 'this user'} who works in ${userProfile.industry || 'their industry'} at ${userProfile.company || 'their company'} with a team of ${userProfile.teamSize || 'unspecified size'}. Their main challenge: "${userProfile.mainChallenge || 'not yet provided'}". Greet them warmly by first name and ask your first discovery question.`
+        }]
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -51,7 +62,7 @@ export async function POST(request: NextRequest) {
         model: activeModel.model_string,
         max_tokens: activeModel.max_tokens,
         system: systemPrompt,
-        messages: messages.length > 0 ? messages : [{ role: 'user', content: 'Please begin the assessment.' }]
+        messages: messagesToSend
       })
     })
 
@@ -65,17 +76,21 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    await supabaseAdmin.from('prompt_performance').insert([{
-      prompt_version_id: activePrompt.id,
-      total_turns: turnCount + 1,
-      completed: isLastTurn
-    }])
+    // NOTE: We do NOT write to prompt_performance here.
+    // That write happens once, at the end, in log-conversation/route.ts.
+    // Writing here on every turn was producing inflated and duplicate records.
 
     return NextResponse.json({
       response: result.content[0].text,
       isLastTurn,
-      modelUsed: activeModel.name,
-      promptVersion: activePrompt.version_number
+      // Return log metadata so the client can pass it to log-conversation
+      logData: {
+        model: activeModel.name,
+        modelString: activeModel.model_string,
+        systemPromptVersion: String(activePrompt.version_number),
+        promptVersionId: activePrompt.id,
+        modelId: activeModel.id,
+      }
     })
 
   } catch (error) {

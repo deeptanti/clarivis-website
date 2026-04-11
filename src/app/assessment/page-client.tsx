@@ -12,6 +12,7 @@ type TimeOption = 5|10|20|null;
 type Message = { role: "user"|"assistant"; content: string };
 interface FormData { name:string; email:string; phone:string; industry:string; company:string; teamSize:string; mainChallenge:string; tools:string[]; aiExperience:string; successDefinition:string; }
 interface Opp { rank:number; title:string; problem:string; solution:string; indicativeROI:string; timeToROI:string; }
+interface SnapshotData { opportunities: Opp[]; readinessScore: number | null; executiveSummary: string | null; recommendedFirstStep: string | null; }
 const INIT: FormData = { name:"", email:"", phone:"", industry:"", company:"", teamSize:"", mainChallenge:"", tools:[], aiExperience:"", successDefinition:"" };
 
 /* ─── Constants ── */
@@ -20,16 +21,19 @@ const TOOLS_LIST = ["WhatsApp","Excel or Sheets","CRM Software","Accounting Soft
 const AI_OPTS = ["No, completely new","Yes, with mixed results","Yes, successfully"];
 const QUESTIONS: Record<string,string> = { industry:"What industry are you in?", company:"What is your company called?", teamSize:"How many people work in your business?", mainChallenge:"What is your biggest operational challenge right now?", tools:"Which tools does your team currently use?", aiExperience:"Have you tried AI or automation before?", successDefinition:"What would success look like in 90 days?" };
 
+// Minimum turns before "End Session Early" generates a meaningful report
+const MIN_TURNS_FOR_QUALITY = 3;
+
 /* ─── Helpers ── */
-function trackPostHog(event: string, properties?: Record<string, any>) {
-  if (typeof window !== 'undefined' && (window as any).posthog) {
-    (window as any).posthog.capture(event, properties)
+function trackPostHog(event: string, properties?: Record<string, unknown>) {
+  if (typeof window !== 'undefined' && (window as unknown as { posthog?: { capture: (e: string, p?: Record<string, unknown>) => void } }).posthog) {
+    (window as unknown as { posthog: { capture: (e: string, p?: Record<string, unknown>) => void } }).posthog.capture(event, properties)
   }
 }
 
-function identifyPostHog(email: string, properties: Record<string, any>) {
-  if (typeof window !== 'undefined' && (window as any).posthog) {
-    (window as any).posthog.identify(email, properties)
+function identifyPostHog(email: string, properties: Record<string, unknown>) {
+  if (typeof window !== 'undefined' && (window as unknown as { posthog?: { identify: (e: string, p: Record<string, unknown>) => void } }).posthog) {
+    (window as unknown as { posthog: { identify: (e: string, p: Record<string, unknown>) => void } }).posthog.identify(email, properties)
   }
 }
 function getMaxTurns(t: TimeOption) { return t===5?8:t===10?14:25; }
@@ -51,7 +55,14 @@ function isStepValid(step:number,time:TimeOption,f:FormData) {
     default: return true;
   }
 }
-function isContactValid(f:FormData) { return f.name.trim().length>0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email) && f.phone.trim().length>0; }
+function isContactValid(f:FormData) {
+  const phoneDigits = f.phone.replace(/\D/g, '');
+  return (
+    f.name.trim().length>0 &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email) &&
+    phoneDigits.length >= 7  // minimum 7 digits — covers international formats
+  );
+}
 function getDefaultOpps(industry:string):Opp[] {
   return industry==="Real Estate" ? [
     {rank:1,title:"AI Lead Qualifier",problem:"Slow lead response losing site visits",solution:"Automated response within 60 seconds",indicativeROI:"Up to 40% more site visits booked",timeToROI:"4-6 weeks"},
@@ -70,59 +81,62 @@ const stepV = { enter:(d:number)=>({x:d>0?80:-80,opacity:0}), center:{x:0,opacit
 
 /* ─── Shared UI ── */
 const iCls = "w-full bg-[#111827] border border-[#1f2937] rounded-xl px-5 py-4 text-white text-[18px] placeholder-[#4B5563] focus:outline-none focus:border-[#0F6E56] focus:ring-1 focus:ring-[#0F6E56] transition-all";
-const pCls = (a:boolean) => `cursor-pointer px-5 py-3 rounded-xl border text-[15px] font-medium transition-all ${a?"border-[#0F6E56] bg-[#0F6E56]/10 text-white":"border-[#1f2937] bg-[#111827] text-[#9CA3AF] hover:border-[#0F6E56]/40"}`;
+const pCls = (a:boolean) => `cursor-pointer px-5 py-3 rounded-xl border text-[15px] font-medium transition-all ${a?"border-[#0F6E56] bg-[#0F6E56]/10 text-[#0F6E56]":"border-[#1f2937] bg-[#111827] text-[#9CA3AF] hover:border-[#374151]"}`;
 
+/* ─── TopBar ── */
 function TopBar() {
   return (
-    <div className="sticky top-0 z-10 bg-[#0a0f1a] border-b border-[#1f2937] px-6 lg:px-8 py-4 flex items-center justify-between shrink-0">
-      <Link href="/"><Image src="/images/logo.png" alt="Clarivis Intelligence" width={140} height={35} priority /></Link>
-      <div className="flex items-center gap-3">
-        <Link href="/book" className="hidden sm:inline-flex items-center px-4 py-2 rounded-md border border-[#0F6E56] text-[#0F6E56] text-sm font-medium hover:bg-[#0F6E56]/10 transition-all">Book a Call Instead</Link>
-        <Link href="/" className="w-9 h-9 rounded-full border border-[#374151] flex items-center justify-center text-[#9CA3AF] hover:text-white transition-all" aria-label="Exit"><X className="w-4 h-4" /></Link>
-      </div>
+    <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-[#1f2937] bg-[#0a0f1a]/80 backdrop-blur-md">
+      <Link href="/"><Image src="/images/logo.png" alt="Clarivis" width={100} height={26} /></Link>
+      <Link href="/" className="flex items-center gap-1.5 text-[#6B7280] text-[13px] hover:text-white transition-colors"><X className="w-4 h-4"/>Exit</Link>
     </div>
   );
 }
 
-function AnimatedCheck({ size=80 }:{size?:number}) {
+/* ─── Animated Check ── */
+function AnimatedCheck({size=60}:{size?:number}) {
   return (
-    <motion.div initial={{scale:0}} animate={{scale:1}} transition={{type:"spring",stiffness:200,damping:18,delay:0.2}}
-      className="rounded-full bg-[#0F6E56] flex items-center justify-center mx-auto shadow-[0_0_40px_rgba(15,110,86,0.4)]"
-      style={{width:size,height:size}}>
-      <motion.svg viewBox="0 0 24 24" fill="none" style={{width:size*0.5,height:size*0.5}}>
-        <motion.path d="M5 13l4 4L19 7" stroke="white" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round"
-          initial={{pathLength:0}} animate={{pathLength:1}} transition={{duration:0.7,delay:0.5,ease:"easeInOut"}} />
-      </motion.svg>
+    <motion.div initial={{scale:0,opacity:0}} animate={{scale:1,opacity:1}} transition={{type:"spring",stiffness:200,damping:15}} className="mx-auto rounded-full bg-[#0F6E56]/20 flex items-center justify-center" style={{width:size,height:size}}>
+      <motion.div initial={{scale:0}} animate={{scale:1}} transition={{delay:0.2,type:"spring",stiffness:300}}>
+        <Check className="text-[#0F6E56]" style={{width:size*0.45,height:size*0.45}}/>
+      </motion.div>
     </motion.div>
   );
 }
 
-/* ─── Phase 1 ── */
+/* ─── Phase 1: Welcome ── */
 function Phase1({onStart}:{onStart:()=>void}) {
   return (
     <motion.div variants={phaseV} initial="hidden" animate="show" exit="exit" className="flex flex-col items-center justify-center min-h-[calc(100vh-73px)] px-6 py-12">
-      <div className="w-full max-w-[800px]">
-        <div className="flex justify-center mb-6"><span className="px-4 py-1.5 rounded-full border border-[#0F6E56]/30 bg-[#0F6E56]/15 text-[#0F6E56] text-xs font-semibold uppercase tracking-widest">FREE — NO CREDIT CARD REQUIRED</span></div>
-        <h1 className="text-white text-[32px] lg:text-[52px] font-extrabold leading-tight text-center tracking-tight">Start the Clarivis Assessment</h1>
-        <p className="text-[#9CA3AF] text-[18px] text-center max-w-[560px] mx-auto mt-4 leading-[1.8]">Answer a few questions. Chat with our AI. Receive your personalised AI Opportunity Snapshot instantly.</p>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-12">
-          <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{delay:0.1}} onClick={onStart}
-            className="relative cursor-pointer rounded-[20px] p-8 lg:p-10 border border-white/10 bg-white/[0.03] backdrop-blur-[12px] hover:border-[#0F6E56]/50 hover:shadow-[0_0_30px_rgba(15,110,86,0.15)] transition-all duration-300 group">
-            <span className="absolute top-4 right-4 text-[#0F6E56] text-[11px] font-bold uppercase tracking-wider bg-[#0F6E56]/15 border border-[#0F6E56]/30 px-3 py-1 rounded-full">INSTANT REPORT</span>
-            <ClipboardList className="w-12 h-12 text-[#0F6E56] mb-5" />
-            <h2 className="text-white text-[24px] font-bold">Clarivis Assessment</h2>
-            <p className="text-[#9CA3AF] text-[15px] leading-[1.8] mt-3 mb-6">Answer questions, chat with our AI, and receive a personalised AI Opportunity Snapshot by email.</p>
-            <div className="flex flex-col gap-3 mb-8">{["Takes 5 to 20 minutes","AI chat personalised to your business","PDF report emailed instantly"].map((f,i)=>(
-              <div key={i} className="flex items-center gap-2.5"><Check className="w-4 h-4 text-[#0F6E56] shrink-0"/><span className="text-[#9CA3AF] text-[14px]">{f}</span></div>
-            ))}</div>
-            <button onClick={onStart} className="w-full bg-[#0F6E56] text-white font-semibold py-3.5 rounded-lg text-[16px] hover:bg-[#0c5945] transition-all">Start the Assessment</button>
+      <div className="w-full max-w-[640px] text-center">
+        <motion.div initial={{scale:0.8,opacity:0}} animate={{scale:1,opacity:1}} transition={{duration:0.5}} className="w-20 h-20 rounded-2xl bg-[#0F6E56]/20 flex items-center justify-center mx-auto mb-8">
+          <ClipboardList className="w-10 h-10 text-[#0F6E56]"/>
+        </motion.div>
+        <h1 className="text-white text-[36px] lg:text-[44px] font-bold leading-tight mb-4">Your AI Opportunity Assessment</h1>
+        <p className="text-[#9CA3AF] text-[18px] leading-relaxed mb-10">Answer a few questions and have a conversation with our AI. You will receive a personalised AI Opportunity Snapshot identifying your top opportunities with indicative ROI.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10 text-left">
+          {[["Completely free","No credit card, no commitment"],["Personalised to you","Based on your specific situation"],["Instant report","Delivered to your email on completion"],["Confidential","Your information is never shared"]].map(([t,d])=>(
+            <div key={t} className="flex items-start gap-3 bg-[#111827] border border-[#1f2937] rounded-xl p-4">
+              <Check className="w-4 h-4 text-[#0F6E56] mt-0.5 shrink-0"/>
+              <div><p className="text-white text-[14px] font-semibold">{t}</p><p className="text-[#6B7280] text-[13px]">{d}</p></div>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <button onClick={onStart} className="w-full sm:w-auto sm:min-w-[220px] bg-[#0F6E56] text-white font-bold py-4 px-8 rounded-xl text-[17px] hover:bg-[#0c5945] transition-all flex items-center justify-center gap-2">Start Assessment <ArrowRight className="w-5 h-5"/></button>
+        </div>
+        <p className="text-[#4B5563] text-[13px] mt-6">Takes 5–20 minutes depending on the time you choose</p>
+        <div className="mt-10 pt-8 border-t border-[#1f2937] grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <motion.div whileHover={{y:-2}} className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-6 text-left">
+            <ClipboardList className="w-8 h-8 text-[#0F6E56] mb-3"/>
+            <h3 className="text-white font-bold text-[16px] mb-1">Clarivis Assessment</h3>
+            <p className="text-[#6B7280] text-[14px]">Self-serve AI chat. Complete now and receive your report instantly.</p>
+            <span className="inline-block mt-3 text-[#0F6E56] text-[13px] font-semibold">You are here →</span>
           </motion.div>
-          <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{delay:0.2}}
-            className="relative rounded-[20px] p-8 lg:p-10 border border-white/10 bg-white/[0.03] backdrop-blur-[12px] hover:border-[#0F6E56]/30 transition-all duration-300">
-            <span className="absolute top-4 right-4 text-[#6B7280] text-[11px] font-bold uppercase tracking-wider bg-white/5 border border-white/10 px-3 py-1 rounded-full">LIVE SESSION</span>
-            <Calendar className="w-12 h-12 text-[#0F6E56] mb-5" />
-            <h2 className="text-white text-[24px] font-bold">AI Opportunity Session</h2>
-            <p className="text-[#9CA3AF] text-[15px] leading-[1.8] mt-3 mb-6">A focused 45-minute conversation with our founder. Walk away with a clear AI roadmap.</p>
+          <motion.div whileHover={{y:-2}} className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-6 text-left opacity-70">
+            <Calendar className="w-8 h-8 text-[#0F6E56] mb-3"/>
+            <h3 className="text-white font-bold text-[16px] mb-1">AI Opportunity Session</h3>
+            <p className="text-[#6B7280] text-[14px]">45 minutes with our founder. Personalised verbal analysis. Walk away with a clear AI roadmap.</p>
             <div className="flex flex-col gap-3 mb-8">{["45 minutes with our founder","Personalised verbal analysis","Follow-up report within 24 hours"].map((f,i)=>(
               <div key={i} className="flex items-center gap-2.5"><Check className="w-4 h-4 text-[#0F6E56] shrink-0"/><span className="text-[#9CA3AF] text-[14px]">{f}</span></div>
             ))}</div>
@@ -137,7 +151,12 @@ function Phase1({onStart}:{onStart:()=>void}) {
 
 /* ─── Phase 2 ── */
 function Phase2({timeSelected,onSelect,onContinue}:{timeSelected:TimeOption;onSelect:(t:TimeOption)=>void;onContinue:()=>void}) {
-  const opts = [{val:5 as const,num:"5",label:"Quick Snapshot",desc:"Key opportunities identified fast. 6 to 8 chat exchanges.",rec:false},{val:10 as const,num:"10",label:"Full Assessment",desc:"Complete picture with ROI context. 12 to 14 chat exchanges.",rec:true},{val:20 as const,num:"20",label:"Deep Dive",desc:"Thorough analysis of your full operation. 22 to 25 chat exchanges.",rec:false}];
+  // Exchange counts reflect the actual maxTurns values (8, 14, 25)
+  const opts = [
+    {val:5 as const,num:"5",label:"Quick Snapshot",desc:"Key opportunities identified fast. Up to 8 exchanges.",rec:false},
+    {val:10 as const,num:"10",label:"Full Assessment",desc:"Complete picture with ROI context. Up to 14 exchanges.",rec:true},
+    {val:20 as const,num:"20",label:"Deep Dive",desc:"Thorough analysis of your full operation. Up to 25 exchanges.",rec:false}
+  ];
   return (
     <motion.div variants={phaseV} initial="hidden" animate="show" exit="exit" className="flex flex-col items-center justify-center min-h-[calc(100vh-73px)] px-6 py-12">
       <div className="w-full max-w-[680px] text-center">
@@ -166,6 +185,8 @@ function Phase2({timeSelected,onSelect,onContinue}:{timeSelected:TimeOption;onSe
 /* ─── Phase 3 ── */
 function Phase3({formData,onChange,onContinue,onBack}:{formData:FormData;onChange:(k:keyof FormData,v:string)=>void;onContinue:()=>void;onBack:()=>void}) {
   const valid = isContactValid(formData);
+  const phoneDigits = formData.phone.replace(/\D/g, '');
+  const phoneInvalid = formData.phone.trim().length > 0 && phoneDigits.length < 7;
   return (
     <motion.div variants={phaseV} initial="hidden" animate="show" exit="exit" className="flex flex-col items-center justify-center min-h-[calc(100vh-73px)] px-6 py-12">
       <div className="w-full max-w-[560px] text-center">
@@ -176,8 +197,11 @@ function Phase3({formData,onChange,onContinue,onBack}:{formData:FormData;onChang
           <input type="text" value={formData.name} onChange={e=>onChange("name",e.target.value)} placeholder="Your full name" autoFocus className={iCls} />
           <input type="email" value={formData.email} onChange={e=>onChange("email",e.target.value)} placeholder="your@email.com" className={iCls} />
           <div>
-            <input type="tel" value={formData.phone} onChange={e=>onChange("phone",e.target.value)} placeholder="+91 98765 43210" className={iCls} />
-            <p className="text-[#4B5563] text-[13px] mt-1.5 pl-1">(We may call to discuss your results)</p>
+            <input type="tel" value={formData.phone} onChange={e=>onChange("phone",e.target.value)} placeholder="+91 98765 43210" className={`${iCls} ${phoneInvalid?"border-red-500/50":""}`} />
+            {phoneInvalid
+              ? <p className="text-red-400 text-[13px] mt-1.5 pl-1">Please enter a valid phone number</p>
+              : <p className="text-[#4B5563] text-[13px] mt-1.5 pl-1">(We may call to discuss your results)</p>
+            }
           </div>
         </div>
         <button onClick={onContinue} disabled={!valid} className={`w-full py-4 rounded-xl font-bold text-[17px] transition-all ${valid?"bg-[#0F6E56] text-white hover:bg-[#0c5945]":"bg-[#0F6E56]/30 text-white/30 cursor-not-allowed"}`}>Continue to Assessment</button>
@@ -196,12 +220,11 @@ function Phase4({timeSelected,formData,onChange,onComplete,onBack,onScreenChange
   const valid = isStepValid(step,timeSelected,formData);
   const progress = Math.round((step/total)*100);
 
-  /* ── Track every step entry (including first) ── */
   useEffect(()=>{
     const sType = getStepType(step,timeSelected);
     const label = sType==="confirm"
-      ? "Phase 4: Confirm — Ready to Chat"
-      : `Phase 4: Step ${step} — ${QUESTIONS[sType]||sType}`;
+      ?"Phase 4: Confirm — Ready to Chat"
+      :`Phase 4: Step ${step} — ${QUESTIONS[sType]||sType}`;
     onScreenChange(label);
     trackEvent("p4_step_entered",{phase:4,screenDetail:label,stepNumber:step,stepType:sType,timeSelected});
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -223,28 +246,35 @@ function Phase4({timeSelected,formData,onChange,onComplete,onBack,onScreenChange
             <motion.div key={step} custom={dir} variants={stepV} initial="enter" animate="center" exit="exit" className="pt-6">
               {stepType!=="confirm"&&<h2 className="text-white text-[28px] lg:text-[36px] font-bold text-center mb-8">{QUESTIONS[stepType]}</h2>}
               {stepType==="industry"&&<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{[{v:"Real Estate",I:Building2},{v:"Healthcare",I:Activity}].map(({v,I:Icon})=>(
-                <div key={v} onClick={()=>onChange("industry",v)} className={`cursor-pointer rounded-[16px] p-10 border flex flex-col items-center gap-3 min-h-[160px] justify-center transition-all ${formData.industry===v?"border-[#0F6E56]":"border-[#1f2937] bg-[#111827] hover:border-[#0F6E56]/40"}`} style={{background:formData.industry===v?"rgba(15,110,86,0.08)":""}}>
-                  <Icon className="w-10 h-10 text-[#0F6E56]"/><span className="text-white text-[20px] font-bold">{v}</span>
+                <div key={v} onClick={()=>onChange("industry",v)} className={`cursor-pointer rounded-[16px] p-10 border flex flex-col items-center gap-3 min-h-[160px] justify-center transition-all ${formData.industry===v?"border-[#0F6E56]":"border-[#1f2937] bg-[#111827] hover:border-[#0F6E56]/40"}`} style={{background:formData.industry===v?"rgba(15,110,86,0.1)":""}}>
+                  <Icon className={`w-10 h-10 ${formData.industry===v?"text-[#0F6E56]":"text-[#6B7280]"}`}/>
+                  <span className={`text-[18px] font-semibold ${formData.industry===v?"text-white":"text-[#9CA3AF]"}`}>{v}</span>
                 </div>
               ))}</div>}
-              {stepType==="company"&&<input type="text" value={formData.company} onChange={e=>onChange("company",e.target.value)} placeholder="Your company name" autoFocus className={iCls} style={{fontSize:"22px"}}/>}
-              {stepType==="teamSize"&&<div className="flex flex-wrap gap-3 justify-center">{TEAM_SIZES.map(s=><button key={s} onClick={()=>onChange("teamSize",s)} className={pCls(formData.teamSize===s)} style={{padding:"14px 28px",fontSize:"16px"}}>{s}</button>)}</div>}
-              {stepType==="mainChallenge"&&<div><textarea value={formData.mainChallenge} onChange={e=>onChange("mainChallenge",e.target.value)} placeholder="Describe the problem that costs you the most time or money each week." autoFocus rows={5} className={`${iCls} resize-none leading-relaxed`}/><p className="text-[#4B5563] text-[13px] mt-2 text-right">{formData.mainChallenge.length} chars {formData.mainChallenge.length<20&&"(min 20)"}</p></div>}
-              {stepType==="tools"&&<div><div className="flex flex-wrap gap-3 justify-center mb-4">{TOOLS_LIST.map(t=><button key={t} onClick={()=>{const c=formData.tools??[];onChange("tools",c.includes(t)?c.filter(x=>x!==t):[...c,t]);}} className={pCls((formData.tools??[]).includes(t))}>{t}</button>)}</div></div>}
-              {stepType==="aiExperience"&&<div className="grid grid-cols-1 gap-4">{AI_OPTS.map(o=><div key={o} onClick={()=>onChange("aiExperience",o)} className={`cursor-pointer rounded-[16px] p-6 border flex items-center gap-4 transition-all ${formData.aiExperience===o?"border-[#0F6E56]":"border-[#1f2937] bg-[#111827] hover:border-[#0F6E56]/40"}`} style={{background:formData.aiExperience===o?"rgba(15,110,86,0.08)":""}}><div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${formData.aiExperience===o?"border-[#0F6E56] bg-[#0F6E56]":"border-[#374151]"}`}>{formData.aiExperience===o&&<Check className="w-3 h-3 text-white"/>}</div><span className="text-white text-[17px] font-medium">{o}</span></div>)}</div>}
-              {stepType==="successDefinition"&&<textarea value={formData.successDefinition} onChange={e=>onChange("successDefinition",e.target.value)} placeholder="Describe the outcome that would make this worthwhile." autoFocus rows={5} className={`${iCls} resize-none leading-relaxed`}/>}
-              {stepType==="confirm"&&<div className="text-center py-8">
-                <div className="w-20 h-20 rounded-full border-2 border-[#0F6E56] flex items-center justify-center mx-auto mb-8" style={{background:"rgba(15,110,86,0.1)"}}><Zap className="w-9 h-9 text-[#0F6E56]"/></div>
-                <h2 className="text-white text-[28px] font-bold">You are ready.</h2>
-                <p className="text-[#9CA3AF] text-[16px] mt-3 max-w-[400px] mx-auto">Click below to start your personalised AI chat. Our AI has been briefed on your business.</p>
-                <button onClick={onComplete} className="mt-10 w-full max-w-[400px] mx-auto flex items-center justify-center gap-3 bg-[#0F6E56] text-white font-bold py-4 rounded-xl text-[18px] hover:bg-[#0c5945] transition-all">Start My AI Chat</button>
+              {stepType==="company"&&<input type="text" value={formData.company} onChange={e=>onChange("company",e.target.value)} placeholder="e.g. Horizon Developers" autoFocus className={iCls+" text-center text-[24px]"} onKeyDown={e=>e.key==="Enter"&&valid&&goNext()}/>}
+              {stepType==="teamSize"&&<div className="grid grid-cols-2 gap-4">{TEAM_SIZES.map(s=><div key={s} onClick={()=>onChange("teamSize",s)} className={pCls(formData.teamSize===s)+" text-center py-5 text-[18px]"}>{s}</div>)}</div>}
+              {stepType==="mainChallenge"&&<div><textarea value={formData.mainChallenge} onChange={e=>onChange("mainChallenge",e.target.value)} placeholder="Describe your biggest operational challenge in detail..." rows={5} autoFocus className={iCls+" resize-none text-[16px]"}/><p className="text-[#4B5563] text-[13px] mt-2 text-right">{formData.mainChallenge.length}/20 minimum</p></div>}
+              {stepType==="tools"&&<div className="flex flex-wrap gap-3 justify-center">{TOOLS_LIST.map(t=>{const sel=(formData.tools as string[]).includes(t);return<div key={t} onClick={()=>{const cur=formData.tools as string[];onChange("tools",sel?cur.filter(x=>x!==t):[...cur,t]);}} className={pCls(sel)+" px-6 py-3.5"}>{ sel&&<Check className="w-4 h-4 inline mr-1.5"/>}{t}</div>;})}</div>}
+              {stepType==="aiExperience"&&<div className="flex flex-col gap-4">{AI_OPTS.map(o=><div key={o} onClick={()=>onChange("aiExperience",o)} className={pCls(formData.aiExperience===o)+" text-center py-5 text-[17px]"}>{o}</div>)}</div>}
+              {stepType==="successDefinition"&&<div><textarea value={formData.successDefinition} onChange={e=>onChange("successDefinition",e.target.value)} placeholder="e.g. Our leads are followed up within 5 minutes and we have full pipeline visibility..." rows={4} autoFocus className={iCls+" resize-none text-[16px]"}/></div>}
+              {stepType==="confirm"&&<div className="text-center">
+                <AnimatedCheck size={72}/>
+                <h2 className="text-white text-[28px] font-bold mt-6 mb-4">You are all set.</h2>
+                <p className="text-[#9CA3AF] text-[16px] mb-6">Our AI is ready to begin. It will ask you focused questions, then generate your personalised AI Opportunity Snapshot.</p>
+                <div className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-6 text-left mb-8 space-y-3">
+                  {formData.company&&<div className="flex justify-between"><span className="text-[#6B7280] text-[14px]">Company</span><span className="text-white text-[14px] font-medium">{formData.company}</span></div>}
+                  {formData.industry&&<div className="flex justify-between"><span className="text-[#6B7280] text-[14px]">Industry</span><span className="text-white text-[14px] font-medium">{formData.industry}</span></div>}
+                  {formData.teamSize&&<div className="flex justify-between"><span className="text-[#6B7280] text-[14px]">Team size</span><span className="text-white text-[14px] font-medium">{formData.teamSize}</span></div>}
+                  <div className="flex justify-between"><span className="text-[#6B7280] text-[14px]">Session</span><span className="text-[#0F6E56] text-[14px] font-semibold">{timeSelected} minutes</span></div>
+                </div>
               </div>}
+              {stepType!=="confirm"&&<div className="flex flex-col items-center gap-4 mt-8">
+                <button onClick={goNext} disabled={!valid} className={`w-full max-w-[360px] py-4 rounded-xl font-semibold text-[16px] transition-all flex items-center justify-center gap-2 ${valid?"bg-[#0F6E56] text-white hover:bg-[#0c5945]":"bg-[#0F6E56]/30 text-white/30 cursor-not-allowed"}`}>Continue <ArrowRight className="w-4 h-4"/></button>
+                <button onClick={goBack} className="flex items-center gap-1.5 text-[#4B5563] text-[14px] hover:text-[#6B7280] transition-colors"><ArrowLeft className="w-3.5 h-3.5"/>Back</button>
+              </div>}
+              {stepType==="confirm"&&<button onClick={goNext} className="w-full bg-[#0F6E56] text-white font-bold py-4 rounded-xl text-[17px] hover:bg-[#0c5945] transition-all flex items-center justify-center gap-2">Start AI Assessment <ArrowRight className="w-5 h-5"/></button>}
             </motion.div>
           </AnimatePresence>
-          {stepType!=="confirm"&&<div className="flex justify-between items-center mt-10">
-            <button onClick={goBack} className="flex items-center gap-2 text-[#9CA3AF] hover:text-white text-[15px] transition-colors"><ArrowLeft className="w-4 h-4"/>Back</button>
-            <button onClick={goNext} disabled={!valid} className={`flex items-center gap-2 px-8 py-3 rounded-lg font-semibold text-[15px] transition-all ${valid?"bg-[#0F6E56] text-white hover:bg-[#0c5945]":"bg-[#0F6E56]/30 text-white/30 cursor-not-allowed"}`}>Continue <ArrowRight className="w-4 h-4"/></button>
-          </div>}
         </div>
       </div>
     </motion.div>
@@ -252,7 +282,7 @@ function Phase4({timeSelected,formData,onChange,onComplete,onBack,onScreenChange
 }
 
 /* ─── Phase 5: Chat ── */
-function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,onLogData}:{formData:FormData;timeSelected:TimeOption;maxTurns:number;messages:Message[];setMessages:React.Dispatch<React.SetStateAction<Message[]>>;onComplete:()=>void;onLogData:(d:{model:string;systemPromptVersion:string})=>void}) {
+function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,onLogData}:{formData:FormData;timeSelected:TimeOption;maxTurns:number;messages:Message[];setMessages:React.Dispatch<React.SetStateAction<Message[]>>;onComplete:()=>void;onLogData:(d:Record<string,string>)=>void}) {
   const [input,setInput] = useState("");
   const [isTyping,setIsTyping] = useState(false);
   const [showModal,setShowModal] = useState(false);
@@ -261,6 +291,7 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
   const turnsUsed = messages.filter(m=>m.role==="user").length;
   const turnsRemaining = maxTurns - turnsUsed;
   const disabled = turnsRemaining<=0||isTyping;
+  const tooFewTurns = turnsUsed < MIN_TURNS_FOR_QUALITY;
 
   useEffect(()=>{ endRef.current?.scrollIntoView({behavior:"smooth"}); },[messages,isTyping]);
 
@@ -290,7 +321,7 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
 
   return (
     <motion.div variants={phaseV} initial="hidden" animate="show" exit="exit" className="flex h-[calc(100vh-73px)] overflow-hidden">
-      {/* Left Panel */}
+      {/* Left Panel — desktop only */}
       <div className="hidden lg:flex flex-col w-[300px] shrink-0 bg-[#111827] border-r border-[#1f2937] p-6 overflow-y-auto">
         <Image src="/images/logo.png" alt="Clarivis" width={110} height={28} className="mb-7"/>
         <p className="text-[#0F6E56] text-[11px] font-bold uppercase tracking-wider mb-3">Your Profile</p>
@@ -312,36 +343,35 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
 
       {/* Right Panel */}
       <div className="flex-1 flex flex-col bg-[#0a0f1a] min-w-0">
+        {/* Mobile progress bar */}
+        <div className="lg:hidden px-4 py-2 border-b border-[#1f2937] flex items-center justify-between">
+          <span className="text-[#6B7280] text-[12px]">{turnsUsed}/{maxTurns} exchanges</span>
+          <div className="flex-1 mx-4 h-1 bg-[#1f2937] rounded-full overflow-hidden">
+            <div className="h-full bg-[#0F6E56] rounded-full transition-all" style={{width:`${(turnsUsed/maxTurns)*100}%`}}/>
+          </div>
+          <span className="text-[#6B7280] text-[12px]">{timeSelected}min</span>
+        </div>
+
         <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-4">
           {messages.map((m,i)=>(
-            <div key={i} className={`flex gap-3 ${m.role==="user"?"justify-end":"justify-start"}`}>
-              {m.role==="assistant"&&<div className="w-7 h-7 rounded-full bg-[#0F6E56] flex items-center justify-center shrink-0 mt-1 text-white text-[10px] font-bold">CI</div>}
-              <div className={`max-w-[75%] px-4 py-3 rounded-[16px] text-white text-[15px] leading-[1.7] ${m.role==="user"?"rounded-tr-[4px] border border-[#0F6E56]/30":"rounded-tl-[4px] bg-[#111827]"}`}
-                style={m.role==="user"?{background:"rgba(15,110,86,0.2)"}:{}}>
-                {m.content}
+            <div key={i} className={`flex gap-3 ${m.role==="user"?"justify-end":""}`}>
+              {m.role==="assistant"&&<div className="w-8 h-8 rounded-full bg-[#0F6E56]/20 flex items-center justify-center shrink-0 mt-1"><Zap className="w-4 h-4 text-[#0F6E56]"/></div>}
+              <div className={`max-w-[75%] rounded-2xl px-4 py-3 text-[15px] leading-relaxed ${m.role==="assistant"?"bg-[#111827] text-[#CBD5E1]":"bg-[#0F6E56] text-white"}`}>
+                {m.content.split('\n').map((line,j)=><span key={j}>{line}{j<m.content.split('\n').length-1&&<br/>}</span>)}
               </div>
             </div>
           ))}
-          {isTyping&&<div className="flex gap-3 justify-start">
-            <div className="w-7 h-7 rounded-full bg-[#0F6E56] flex items-center justify-center shrink-0 text-white text-[10px] font-bold">CI</div>
-            <div className="bg-[#111827] px-4 py-4 rounded-[16px] rounded-tl-[4px] flex gap-1.5 items-center">
-              {[0,1,2].map(i=><motion.div key={i} className="w-2 h-2 rounded-full bg-[#0F6E56]" animate={{y:[0,-6,0]}} transition={{duration:0.6,repeat:Infinity,delay:i*0.2}}/>)}
-            </div>
-          </div>}
+          {isTyping&&<div className="flex gap-3"><div className="w-8 h-8 rounded-full bg-[#0F6E56]/20 flex items-center justify-center shrink-0"><Zap className="w-4 h-4 text-[#0F6E56]"/></div><div className="bg-[#111827] rounded-2xl px-4 py-3"><div className="flex gap-1.5">{[0,1,2].map(i=><motion.div key={i} className="w-2 h-2 rounded-full bg-[#6B7280]" animate={{y:[0,-4,0]}} transition={{duration:0.6,delay:i*0.15,repeat:Infinity}}/>)}</div></div></div>}
           <div ref={endRef}/>
         </div>
-
-        {/* Input area */}
-        <div className="border-t border-[#1f2937] p-4 shrink-0">
-          <div className="flex gap-3 items-center">
-            <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();handleSend();}}}
-              placeholder={disabled?"Session complete — generating your report...":"Type your message..."}
-              disabled={disabled} className="flex-1 bg-[#111827] border border-[#1f2937] rounded-xl px-4 py-3.5 text-white text-[16px] placeholder-[#4B5563] focus:outline-none focus:border-[#0F6E56] transition-all disabled:opacity-40"/>
+        <div className="p-4 border-t border-[#1f2937] bg-[#0a0f1a]">
+          <div className="flex gap-3 items-end max-w-[800px] mx-auto">
+            <textarea value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();handleSend();}}} rows={1} placeholder={turnsRemaining<=0?"Session complete — generating your report...":"Type your message..."} disabled={disabled} className="flex-1 bg-[#111827] border border-[#1f2937] rounded-xl px-4 py-3.5 text-white text-[16px] placeholder-[#4B5563] focus:outline-none focus:border-[#0F6E56] transition-all disabled:opacity-40 resize-none" style={{maxHeight:"120px"}}/>
             <button onClick={handleSend} disabled={disabled||!input.trim()} className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shrink-0 ${!disabled&&input.trim()?"bg-[#0F6E56] hover:bg-[#0c5945]":"bg-[#1f2937] opacity-40"}`}>
               <Send className="w-4 h-4 text-white"/>
             </button>
           </div>
-          <div className="flex justify-between items-center mt-2">
+          <div className="flex justify-between items-center mt-2 max-w-[800px] mx-auto">
             <p className="text-[#4B5563] text-[12px]">{turnsUsed} of {maxTurns} exchanges used</p>
             {!disabled&&<button onClick={()=>setShowModal(true)} className="text-[#4B5563] text-[12px] hover:text-[#6B7280] transition-colors">End Session Early</button>}
           </div>
@@ -350,8 +380,12 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
 
       {/* End session modal */}
       {showModal&&<div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4">
-        <motion.div initial={{scale:0.9,opacity:0}} animate={{scale:1,opacity:1}} className="bg-[#111827] border border-[#1f2937] rounded-[20px] p-8 max-w-[400px] w-full text-center">
+        <motion.div initial={{scale:0.9,opacity:0}} animate={{scale:1,opacity:1}} className="bg-[#111827] border border-[#1f2937] rounded-[20px] p-8 max-w-[420px] w-full text-center">
           <h3 className="text-white text-[20px] font-bold mb-3">End your session now?</h3>
+          {tooFewTurns
+            ? <p className="text-amber-400 text-[14px] mb-2">You have only had {turnsUsed} exchange{turnsUsed!==1?"s":""}. A few more will give you a much more personalised report.</p>
+            : null
+          }
           <p className="text-[#9CA3AF] text-[15px] mb-8">Your report will be generated from the conversation so far.</p>
           <div className="flex flex-col gap-3">
             <button onClick={()=>{trackEvent("p5_chat_ended",{phase:5,screenDetail:"Phase 5: AI Chat — Ended Early",chatTurns:turnsUsed,timeSelected});setShowModal(false);onComplete();}} className="w-full bg-[#0F6E56] text-white font-semibold py-3 rounded-lg hover:bg-[#0c5945] transition-all">Generate My Report</button>
@@ -364,24 +398,57 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
 }
 
 /* ─── Phase 6: Loading ── */
-function Phase6({formData,messages,timeSelected,setOpportunities,onComplete,logData}:{formData:FormData;messages:Message[];timeSelected:TimeOption;setOpportunities:(o:Opp[])=>void;onComplete:()=>void;logData:{model:string;systemPromptVersion:string}}) {
-  const steps = ["Analysing your conversation","Identifying your top opportunities","Calculating indicative ROI","Preparing your PDF report"];
+function Phase6({formData,messages,timeSelected,setSnapshotData,onComplete,logData,assessmentId}:{formData:FormData;messages:Message[];timeSelected:TimeOption;setSnapshotData:(d:SnapshotData)=>void;onComplete:()=>void;logData:Record<string,string>;assessmentId:string|null}) {
+  const steps = ["Analysing your conversation","Identifying your top opportunities","Calculating indicative ROI","Preparing your personalised report"];
+  const hasCompleted = useRef(false);
+
   useEffect(()=>{
+    if(hasCompleted.current) return;
     identifyPostHog(formData.email, {name: formData.name,email: formData.email,phone: formData.phone,company: formData.company,industry: formData.industry,teamSize: formData.teamSize,mainChallenge: formData.mainChallenge,completedAssessment: true,assessmentCompletedAt: new Date().toISOString()});
     trackPostHog('assessment_completed', {industry: formData.industry,timeSelected: timeSelected,company: formData.company,totalTurns: Math.floor(messages.length / 2)});
-    const t = setTimeout(async()=>{
-      try {
-        const [pdfRes] = await Promise.all([
-          fetch("/api/generate-pdf",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userProfile:formData,conversationHistory:messages,timeSelected})}),
-          fetch("/api/log-conversation",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userProfile:formData,conversationHistory:messages,model:logData.model,systemPromptVersion:logData.systemPromptVersion,timeSelected,completedAt:new Date().toISOString()})}).catch(()=>{})
-        ]);
-        const data = await pdfRes.json();
-        if(data.opportunities) setOpportunities(data.opportunities);
-      } catch {}
+
+    // ── RACE CONDITION FIX ──────────────────────────────────────────────────
+    // We no longer use a fixed setTimeout to advance to Phase 7.
+    // We wait for both API calls to resolve, then advance. The minimum 4-second
+    // display is enforced by Promise.all-ing with a 4s delay promise.
+    const minDisplayTime = new Promise(res => setTimeout(res, 4000));
+
+    const apiCalls = Promise.all([
+      fetch("/api/generate-pdf",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userProfile:formData,conversationHistory:messages,timeSelected,assessmentId})})
+        .then(r=>r.json()),
+      fetch("/api/log-conversation",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+        userProfile:formData,
+        conversationHistory:messages,
+        model:logData.model,
+        systemPromptVersion:logData.systemPromptVersion,
+        timeSelected,
+        completedAt:new Date().toISOString(),
+        assessmentId,
+        promptVersionId: logData.promptVersionId || null,
+        modelId: logData.modelId || null,
+      })}).catch(()=>null),
+    ]);
+
+    Promise.all([apiCalls, minDisplayTime]).then(([[pdfData]])=>{
+      if(hasCompleted.current) return;
+      hasCompleted.current = true;
+      if(pdfData?.opportunities) {
+        setSnapshotData({
+          opportunities: pdfData.opportunities,
+          readinessScore: pdfData.readinessScore ?? null,
+          executiveSummary: pdfData.executiveSummary ?? null,
+          recommendedFirstStep: pdfData.recommendedFirstStep ?? null,
+        });
+      }
       onComplete();
-    },4000);
-    return ()=>clearTimeout(t);
+    }).catch(()=>{
+      if(hasCompleted.current) return;
+      hasCompleted.current = true;
+      onComplete();
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
+
   return (
     <motion.div variants={phaseV} initial="hidden" animate="show" exit="exit" className="flex flex-col items-center justify-center min-h-[calc(100vh-73px)] px-6 text-center">
       <motion.div animate={{scale:[1,1.12,1],opacity:[0.7,1,0.7]}} transition={{duration:1.5,repeat:Infinity,ease:"easeInOut"}}
@@ -404,8 +471,8 @@ function Phase6({formData,messages,timeSelected,setOpportunities,onComplete,logD
 }
 
 /* ─── Phase 7: Summary ── */
-function Phase7({formData,opportunities}:{formData:FormData;opportunities:Opp[]}) {
-  const opps = opportunities.length>0?opportunities:getDefaultOpps(formData.industry||"Real Estate");
+function Phase7({formData,snapshotData}:{formData:FormData;snapshotData:SnapshotData}) {
+  const opps = snapshotData.opportunities.length>0 ? snapshotData.opportunities : getDefaultOpps(formData.industry||"Real Estate");
   const firstName = formData.name.split(" ")[0]||"Your";
   const today = new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
   return (
@@ -413,38 +480,73 @@ function Phase7({formData,opportunities}:{formData:FormData;opportunities:Opp[]}
       <div className="w-full max-w-[700px]">
         <div className="text-center mb-8">
           <AnimatedCheck size={80}/>
-          <motion.h2 initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:0.5}} className="text-white text-[28px] lg:text-[32px] font-bold mt-6">Your report is ready.</motion.h2>
-          <motion.p initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:0.6}} className="text-[#9CA3AF] text-[16px] mt-2">Your AI Opportunity Snapshot PDF has been sent to <strong className="text-white">{formData.email}</strong>. Check your inbox.</motion.p>
-          <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:0.65}} className="mt-4 rounded-xl border border-[#0F6E56]/30 p-4 flex items-center gap-3 justify-center" style={{background:"rgba(15,110,86,0.08)"}}>
-            <Mail className="w-5 h-5 text-[#0F6E56] shrink-0"/><span className="text-[#9CA3AF] text-[14px]">Sent to <strong className="text-white">{formData.email}</strong></span>
-          </motion.div>
+          <motion.h2 initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:0.5}} className="text-white text-[28px] lg:text-[32px] font-bold mt-6">Your report is ready, {firstName}.</motion.h2>
+          <motion.p initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:0.6}} className="text-[#9CA3AF] text-[16px] mt-2">Your AI Opportunity Snapshot has been sent to <strong className="text-white">{formData.email}</strong>.</motion.p>
         </div>
-        <motion.div initial={{opacity:0,y:24}} animate={{opacity:1,y:0}} transition={{delay:0.7}} className="bg-[#111827] border border-[#1f2937] rounded-[20px] p-8 lg:p-10">
-          <div className="flex items-center justify-between mb-4">
-            {formData.company&&<span className="text-[#0F6E56] text-[12px] font-bold uppercase tracking-[0.15em]">{formData.company}</span>}
-            {formData.industry&&<span className="bg-[#0F6E56]/15 border border-[#0F6E56]/30 text-[#0F6E56] text-[11px] font-semibold px-3 py-1 rounded-full uppercase">{formData.industry}</span>}
-          </div>
-          <h3 className="text-white text-[20px] lg:text-[22px] font-bold">{firstName}&apos;s AI Opportunity Snapshot</h3>
-          <p className="text-[#6B7280] text-[13px] mt-1">Generated {today}</p>
-          <div className="h-px w-full my-6" style={{background:"rgba(15,110,86,0.3)"}}/>
-          <div className="flex flex-col gap-6">
-            {opps.map((o,i)=>(
-              <motion.div key={i} initial={{opacity:0,x:-20}} animate={{opacity:1,x:0}} transition={{delay:0.8+i*0.15}} className="flex gap-4 items-start">
-                <div className="w-9 h-9 rounded-full bg-[#0F6E56] flex items-center justify-center shrink-0 text-white text-[12px] font-bold mt-0.5">0{o.rank}</div>
-                <div className="flex-1">
-                  <div className="flex flex-wrap items-center gap-3 mb-1">
-                    <span className="text-white text-[16px] font-bold">{o.title}</span>
-                    <span className="text-[#0F6E56] text-[11px] font-semibold bg-[#0F6E56]/10 border border-[#0F6E56]/30 px-2.5 py-0.5 rounded-full">{o.indicativeROI}</span>
+
+        {/* Readiness Score — shown when Claude generated it */}
+        {snapshotData.readinessScore !== null && (
+          <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:0.65}} className="bg-[#111827] border border-[#1f2937] rounded-2xl p-6 mb-6 flex items-center gap-6">
+            <div className="shrink-0 w-20 h-20 rounded-full border-2 border-[#0F6E56] bg-[#0F6E56]/10 flex flex-col items-center justify-center">
+              <span className="text-[#0F6E56] text-[26px] font-extrabold leading-none">{snapshotData.readinessScore}</span>
+              <span className="text-[#6B7280] text-[10px] mt-0.5">/ 100</span>
+            </div>
+            <div>
+              <p className="text-[#0F6E56] text-[11px] font-bold uppercase tracking-wider mb-1">AI Readiness Score</p>
+              <p className="text-white text-[16px] font-semibold">
+                {snapshotData.readinessScore >= 70 ? "Strong foundation for AI adoption" : snapshotData.readinessScore >= 50 ? "Ready to start with targeted AI" : "High opportunity — clear starting points identified"}
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Executive Summary */}
+        {snapshotData.executiveSummary && (
+          <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:0.7}} className="bg-[#111827] border border-[#1f2937] rounded-2xl p-6 mb-6">
+            <p className="text-[#0F6E56] text-[11px] font-bold uppercase tracking-wider mb-3">Executive Summary</p>
+            <p className="text-[#CBD5E1] text-[15px] leading-relaxed">{snapshotData.executiveSummary}</p>
+          </motion.div>
+        )}
+
+        {/* Opportunities */}
+        <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:0.75}}>
+          <p className="text-[#0F6E56] text-[11px] font-bold uppercase tracking-wider mb-4">Your Top AI Opportunities</p>
+          <div className="flex flex-col gap-4 mb-6">
+            {opps.slice(0,3).map((o,i)=>(
+              <motion.div key={o.rank} initial={{opacity:0,x:-20}} animate={{opacity:1,x:0}} transition={{delay:0.8+i*0.1}} className="bg-[#111827] border border-[#1f2937] rounded-2xl p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-7 h-7 rounded-full bg-[#0F6E56] flex items-center justify-center shrink-0">
+                    <span className="text-white text-[11px] font-bold">0{o.rank}</span>
                   </div>
-                  <p className="text-[#9CA3AF] text-[14px] leading-[1.6]">{o.solution}</p>
+                  <h3 className="text-white font-bold text-[17px]">{o.title}</h3>
+                </div>
+                <p className="text-[#6B7280] text-[13px] mb-1"><span className="text-[#9CA3AF] font-medium">Problem: </span>{o.problem}</p>
+                <p className="text-[#6B7280] text-[13px] mb-3"><span className="text-[#9CA3AF] font-medium">Solution: </span>{o.solution}</p>
+                <div className="flex flex-wrap gap-2">
+                  <span className="bg-[#0F6E56]/10 border border-[#0F6E56]/25 text-[#0F6E56] text-[12px] font-medium px-3 py-1 rounded-full">📈 {o.indicativeROI}</span>
+                  <span className="bg-[#1f2937] text-[#6B7280] text-[12px] px-3 py-1 rounded-full">⏱ {o.timeToROI}</span>
                 </div>
               </motion.div>
             ))}
           </div>
-          <div className="h-px w-full my-6" style={{background:"rgba(15,110,86,0.3)"}}/>
-          <p className="text-[#4B5563] text-[13px] italic">This is a summary. Your full detailed PDF report including ROI projections has been sent to your email.</p>
         </motion.div>
-        <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:1.1}} className="flex flex-col sm:flex-row gap-3 mt-8 justify-center">
+
+        {/* Recommended First Step */}
+        {snapshotData.recommendedFirstStep && (
+          <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:1.05}} className="bg-[#071a14] border border-[#0F6E56]/30 rounded-2xl p-6 mb-6">
+            <p className="text-[#0F6E56] text-[11px] font-bold uppercase tracking-wider mb-2">Recommended First Step</p>
+            <p className="text-[#CBD5E1] text-[15px] leading-relaxed">{snapshotData.recommendedFirstStep}</p>
+          </motion.div>
+        )}
+
+        {/* Report sent confirmation */}
+        <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:1.1}} className="bg-[#111827] border border-[#1f2937] rounded-xl p-4 flex items-center gap-3 mb-6">
+          <Mail className="w-5 h-5 text-[#0F6E56] shrink-0"/>
+          <p className="text-[#9CA3AF] text-[14px]">Your full detailed PDF report has been sent to <strong className="text-white">{formData.email}</strong>.</p>
+        </motion.div>
+
+        {/* CTA */}
+        <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:1.15}} className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link href="/book" onClick={() => trackPostHog('book_session_clicked', {source: 'assessment_summary',industry: formData.industry})} className="flex-1 sm:flex-none sm:min-w-[220px] text-center bg-[#0F6E56] text-white font-semibold py-4 rounded-lg text-[15px] hover:bg-[#0c5945] transition-all px-6">Book Your AI Opportunity Session</Link>
           <Link href="/" className="flex-1 sm:flex-none sm:min-w-[160px] text-center border border-[#1f2937] text-[#9CA3AF] font-medium py-4 rounded-lg text-[15px] hover:border-[#374151] hover:text-white transition-all px-6">Return to Home</Link>
         </motion.div>
@@ -463,13 +565,13 @@ export default function AssessmentClient() {
   const [maxTurns,setMaxTurns] = useState(14);
   const [formData,setFormData] = useState<FormData>(INIT);
   const [messages,setMessages] = useState<Message[]>([]);
-  const [opportunities,setOpportunities] = useState<Opp[]>([]);
-  const [logData,setLogData] = useState({model:"claude-sonnet-4-20250514",systemPromptVersion:"1.0"});
+  const [snapshotData,setSnapshotData] = useState<SnapshotData>({opportunities:[],readinessScore:null,executiveSummary:null,recommendedFirstStep:null});
+  // assessmentId is returned by assessment-notify on early capture and threaded through to generate-pdf and log-conversation
+  const [assessmentId,setAssessmentId] = useState<string|null>(null);
+  const [logData,setLogData] = useState<Record<string,string>>({model:"claude-sonnet-4-20250514",systemPromptVersion:"1.0"});
 
-  /* ── Tracking ── */
   const currentScreenRef = useRef("Phase 1: Welcome");
 
-  // Track phase transitions (Phase 4 tracks itself via onScreenChange)
   const PHASE_LABELS: Partial<Record<Phase,string>> = {
     1:"Phase 1: Welcome",
     2:"Phase 2: Time Selection",
@@ -487,15 +589,19 @@ export default function AssessmentClient() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[phase]);
 
-  // Dropoff tracking — fires on tab close / navigate away / phone screen off
   useEffect(()=>{
     return setupDropoffTracking(()=>currentScreenRef.current);
   },[]);
 
   const updateForm = (key:keyof FormData,val:string|string[])=>setFormData(d=>({...d,[key]:val}));
 
-  const fireEarlyCapture = ()=>{
-    fetch("/api/assessment-notify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:formData.name,email:formData.email,phone:formData.phone,timeSelected})}).catch(()=>{});
+  const fireEarlyCapture = async()=>{
+    try {
+      const res = await fetch("/api/assessment-notify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:formData.name,email:formData.email,phone:formData.phone,timeSelected})});
+      const data = await res.json();
+      // Thread the assessmentId through so generate-pdf and log-conversation can link records
+      if(data.assessmentId) setAssessmentId(data.assessmentId);
+    } catch {}
   };
 
   const handleTimeSelect = (t:TimeOption)=>{setTimeSelected(t);setMaxTurns(getMaxTurns(t));};
@@ -509,8 +615,8 @@ export default function AssessmentClient() {
         {phase===3&&<Phase3 key="p3" formData={formData} onChange={(k,v)=>updateForm(k,v as string)} onContinue={()=>{trackEvent("p3_contact_submitted",{phase:3,screenDetail:"Phase 3: Contact Details",name:formData.name,email:formData.email,phone:formData.phone,timeSelected});identifyPostHog(formData.email, {name: formData.name,email: formData.email,phone: formData.phone,timeSelected: timeSelected,source: 'clarivis_assessment',firstSeen: new Date().toISOString()});trackPostHog('contact_captured', {timeSelected: timeSelected,source: 'assessment'});fireEarlyCapture();setPhase(4);}} onBack={()=>setPhase(2)}/>}
         {phase===4&&<Phase4 key="p4" timeSelected={timeSelected} formData={formData} onChange={updateForm} onComplete={()=>setPhase(5)} onBack={()=>setPhase(3)} onScreenChange={(label)=>{currentScreenRef.current=label;}}/>}
         {phase===5&&<Phase5 key="p5" formData={formData} timeSelected={timeSelected} maxTurns={maxTurns} messages={messages} setMessages={setMessages} onComplete={()=>{trackEvent("p5_chat_ended",{phase:5,screenDetail:"Phase 5: AI Chat — Max Turns",chatTurns:Math.floor(messages.length/2),timeSelected});setPhase(6);}} onLogData={(d)=>setLogData(d)}/>}
-        {phase===6&&<Phase6 key="p6" formData={formData} messages={messages} timeSelected={timeSelected} setOpportunities={setOpportunities} onComplete={()=>setPhase(7)} logData={logData}/>}
-        {phase===7&&<Phase7 key="p7" formData={formData} opportunities={opportunities}/>}
+        {phase===6&&<Phase6 key="p6" formData={formData} messages={messages} timeSelected={timeSelected} setSnapshotData={setSnapshotData} onComplete={()=>setPhase(7)} logData={logData} assessmentId={assessmentId}/>}
+        {phase===7&&<Phase7 key="p7" formData={formData} snapshotData={snapshotData}/>}
       </AnimatePresence>
     </div>
   );
