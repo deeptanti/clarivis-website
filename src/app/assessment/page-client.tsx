@@ -4,7 +4,7 @@ import { trackEvent, setupDropoffTracking } from "@/lib/tracker";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ClipboardList, Calendar, Check, X, ArrowLeft, ArrowRight, Send, FileText, Zap, Building2, Activity, Mail } from "lucide-react";
+import { ClipboardList, Calendar, Check, X, ArrowLeft, ArrowRight, Send, FileText, Zap, Building2, Activity, Mail, Wheat } from "lucide-react";
 
 /* ─── Types ── */
 type Phase = 1|2|3|4|5|6|7;
@@ -251,7 +251,7 @@ function Phase4({timeSelected,formData,onChange,onComplete,onBack,onScreenChange
           <AnimatePresence mode="wait" custom={dir}>
             <motion.div key={step} custom={dir} variants={stepV} initial="enter" animate="center" exit="exit" className="pt-6">
               {stepType!=="confirm"&&<h2 className="text-white text-[28px] lg:text-[36px] font-bold text-center mb-8">{QUESTIONS[stepType]}</h2>}
-              {stepType==="industry"&&<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{[{v:"Real Estate",I:Building2},{v:"Healthcare",I:Activity}].map(({v,I:Icon})=>(
+              {stepType==="industry"&&<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{[{v:"Real Estate",I:Building2},{v:"Healthcare",I:Activity},{v:"Agribusiness",I:Wheat},{v:"Other",I:Building2}].map(({v,I:Icon})=>(
                 <div key={v} onClick={()=>onChange("industry",v)} className={`cursor-pointer rounded-[16px] p-10 border flex flex-col items-center gap-3 min-h-[160px] justify-center transition-all ${formData.industry===v?"border-[#0F6E56]":"border-[#1f2937] bg-[#111827] hover:border-[#0F6E56]/40"}`} style={{background:formData.industry===v?"rgba(15,110,86,0.1)":""}}>
                   <Icon className={`w-10 h-10 ${formData.industry===v?"text-[#0F6E56]":"text-[#6B7280]"}`}/>
                   <span className={`text-[18px] font-semibold ${formData.industry===v?"text-white":"text-[#9CA3AF]"}`}>{v}</span>
