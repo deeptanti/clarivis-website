@@ -14,8 +14,8 @@ export async function POST(request: NextRequest) {
     }
 
     const [{ data: activeModel }, { data: activePrompt }] = await Promise.all([
-      supabaseAdmin.from('models').select('*').eq('is_active', true).single(),
-      supabaseAdmin.from('prompt_versions').select('*').eq('is_active', true).single()
+      supabaseAdmin.from('models').select('*').eq('is_active', true).eq('context', 'assessment').single(),
+      supabaseAdmin.from('prompt_versions').select('*').eq('is_active', true).eq('channel', 'assessment').single()
     ])
 
     if (!activeModel || !activePrompt) {
