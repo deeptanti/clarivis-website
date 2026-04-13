@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 
       if (process.env.RESEND_API_KEY) {
         await resend.emails.send({
-          from: 'Clarivis Intelligence <onboarding@resend.dev>',
+          from: 'Clarivis Intelligence <hello@clarivisintelligence.com>',
           to: 'hello@clarivisintelligence.com',
           subject: `Assessment Started — ${data.name}`,
           html: `<div style="font-family:sans-serif;padding:24px;">
@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
 
     if (process.env.RESEND_API_KEY) {
       await resend.emails.send({
-        from: 'Clarivis Intelligence <onboarding@resend.dev>',
+        from: 'Clarivis Intelligence <hello@clarivisintelligence.com>',
         to: 'hello@clarivisintelligence.com',
         subject: `Assessment Complete — ${data.name} — ${data.company} — ${data.industry}`,
         html: `<div style="font-family:sans-serif;padding:24px;">
@@ -149,7 +149,7 @@ export async function POST(request: NextRequest) {
       })
 
       await resend.emails.send({
-        from: 'Deep Tanti — Clarivis Intelligence <onboarding@resend.dev>',
+        from: 'Deep Tanti — Clarivis Intelligence <hello@clarivisintelligence.com>',
         to: data.email,
         subject: `Your AI Opportunity Snapshot — ${data.company || data.name}`,
         html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;">

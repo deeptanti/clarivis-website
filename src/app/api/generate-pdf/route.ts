@@ -143,8 +143,8 @@ export async function POST(request: NextRequest) {
       // EMAIL_FROM should be set in env once domain is verified in Resend.
       // Format: "Deep Tanti — Clarivis Intelligence <hello@clarivisintelligence.com>"
       // Until then the onboarding@resend.dev sender is used as a fallback.
-      const fromProspect = process.env.EMAIL_FROM || 'Deep Tanti — Clarivis Intelligence <onboarding@resend.dev>'
-      const fromInternal = process.env.EMAIL_FROM_INTERNAL || 'Clarivis Assessment <onboarding@resend.dev>'
+      const fromProspect = process.env.EMAIL_FROM || 'Deep Tanti — Clarivis Intelligence <hello@clarivisintelligence.com>'
+      const fromInternal = process.env.EMAIL_FROM_INTERNAL || 'Clarivis Assessment <hello@clarivisintelligence.com>'
 
       await Promise.all([
         resend.emails.send({
