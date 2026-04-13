@@ -1,131 +1,299 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { supabaseAdmin } from '@/lib/supabase'
-import { Document, Page, View, Text, StyleSheet, renderToBuffer } from '@react-pdf/renderer'
+import { Document, Page, View, Text, StyleSheet, renderToBuffer, Image } from '@react-pdf/renderer'
 import React from 'react'
 
-const e = React.createElement;
-
 const styles = StyleSheet.create({
-  page: { padding: 40, backgroundColor: '#ffffff', fontFamily: 'Helvetica' },
-  headerBar: { backgroundColor: '#1A1A2E', padding: 24, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  headerLeft: { flexDirection: 'column' },
-  headerTitle: { color: '#0F6E56', fontSize: 18, fontWeight: 'bold' },
-  headerSubtitle: { color: '#9CA3AF', fontSize: 9, marginTop: 6 },
-  headerRight: { flexDirection: 'column', alignItems: 'flex-end' },
-  headerRightTitle: { color: '#ffffff', fontSize: 11, fontWeight: 'bold' },
-  headerRightDate: { color: '#9CA3AF', fontSize: 9, marginTop: 4 },
+  navy: { backgroundColor: '#0A0F1A' },
+  surface: { backgroundColor: '#111827' },
+  border: { borderColor: '#1F2937' },
+  textTeal: { color: '#0F6E56' },
+  bgTeal: { backgroundColor: '#0F6E56' },
+  bgTealLight: { backgroundColor: '#D1FAE5' },
+  bgTealDim: { backgroundColor: '#052E16' },
+  textWhite: { color: '#FFFFFF' },
+  textGrey1: { color: '#9CA3AF' },
+  textGrey2: { color: '#6B7280' },
+  textGrey3: { color: '#4B5563' },
+  textGrey4: { color: '#1F2937' },
+  textLight: { color: '#CBD5E1' },
   
-  clientBlock: { backgroundColor: '#F3F4F6', padding: 16, marginTop: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  clientLeft: { flexDirection: 'column' },
-  clientName: { color: '#1A1A2E', fontSize: 12, fontWeight: 'bold' },
-  clientDetails: { color: '#6B7280', fontSize: 10, marginTop: 6 },
-  clientRight: { alignItems: 'flex-end' },
-  clientScoreLabel: { color: '#0F6E56', fontSize: 9, textTransform: 'uppercase' },
-  clientScoreRow: { flexDirection: 'row', alignItems: 'baseline', marginTop: 4 },
-  clientScoreNum: { color: '#0F6E56', fontSize: 32, fontWeight: 'bold' },
-  clientScoreMax: { color: '#6B7280', fontSize: 12 },
-
-  sectionLabel: { color: '#0F6E56', fontSize: 8, fontWeight: 'bold', textTransform: 'uppercase', marginTop: 20, borderBottomWidth: 1, borderBottomColor: '#0F6E56', paddingBottom: 4 },
-  execSummaryText: { color: '#374151', fontSize: 10, lineHeight: 1.6, marginTop: 8 },
-
-  oppCard: { backgroundColor: '#ffffff', borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 6, padding: 14, marginBottom: 10, marginTop: 8 },
-  oppTitleRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-  oppRankCircle: { backgroundColor: '#0F6E56', width: 16, height: 16, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginRight: 8 },
-  oppRankText: { color: '#ffffff', fontSize: 9, fontWeight: 'bold' },
-  oppTitle: { color: '#1A1A2E', fontSize: 13, fontWeight: 'bold' },
-  oppDetailRow: { flexDirection: 'row', marginTop: 4 },
-  oppDetailLabel: { color: '#0F6E56', fontSize: 9, fontWeight: 'bold', marginRight: 4 },
-  oppDetailText: { color: '#6B7280', fontSize: 9 },
-  oppPillsRow: { flexDirection: 'row', marginTop: 12 },
-  oppRnPill: { backgroundColor: '#F0FDF9', paddingVertical: 4, paddingHorizontal: 8, borderRadius: 4, marginRight: 8 },
-  oppRnText: { color: '#0F6E56', fontSize: 9 },
-  oppTimePill: { backgroundColor: '#F3F4F6', paddingVertical: 4, paddingHorizontal: 8, borderRadius: 4 },
-  oppTimeText: { color: '#6B7280', fontSize: 9 },
-
-  recStepLeftBorder: { borderLeftWidth: 3, borderLeftColor: '#0F6E56', paddingLeft: 12, marginTop: 12 },
-  recStepText: { color: '#374151', fontSize: 10, lineHeight: 1.6 },
-
-  footerBar: { backgroundColor: '#1A1A2E', padding: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 40 },
-  footerText: { color: '#9CA3AF', fontSize: 9 },
-  footerCenter: { color: '#9CA3AF', fontSize: 8 }
+  // Custom composites
+  page: { backgroundColor: '#0A0F1A', fontFamily: 'Helvetica' },
+  pageInner: { padding: 40 },
+  topBar: { width: '100%', height: 4, backgroundColor: '#0F6E56' },
+  bottomBar: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 4, backgroundColor: '#0F6E56', width: '100%' },
+  pageFooter: { position: 'absolute', bottom: 0, left: 0, right: 0, borderTopWidth: 1, borderTopColor: '#1F2937', paddingHorizontal: 40, paddingVertical: 12, flexDirection: 'row', justifyContent: 'space-between' },
+  
+  sectionHeader: { color: '#0F6E56', fontSize: 8, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 2 },
+  sectionLine: { height: 1, backgroundColor: '#0F6E56', marginTop: 5, marginBottom: 16 }
 });
 
+const PageFooter = () => (
+  <View style={styles.pageFooter}>
+    <Text style={{ color: '#4B5563', fontSize: 8 }}>hello@clarivisintelligence.com</Text>
+    <Text style={{ color: '#4B5563', fontSize: 8 }}>© 2026 Clarivis Intelligence</Text>
+    <Text style={{ color: '#4B5563', fontSize: 8 }}>clarivisintelligence.com</Text>
+  </View>
+);
+
 const SnapshotDocument = ({ data }: { data: any }) => {
-  const { userProfile, opportunities, readinessScore, executiveSummary, recommendedFirstStep, dateStr } = data;
+  const { userProfile, opportunities, snapshotContent, conversationHistory } = data;
+  const dateStr = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  // Handle fallbacks
+  const readinessScore = snapshotContent?.readinessScore ?? null;
+  const executiveSummary = snapshotContent?.executiveSummary ?? null;
   
-  return e(Document, null,
-    e(Page, { size: "A4", style: styles.page },
-      e(View, { style: styles.headerBar },
-        e(View, { style: styles.headerLeft },
-          e(Text, { style: styles.headerTitle }, "CLARIVIS INTELLIGENCE"),
-          e(Text, { style: styles.headerSubtitle }, "Clarity in every decision. Intelligence in every system.")
-        ),
-        e(View, { style: styles.headerRight },
-          e(Text, { style: styles.headerRightTitle }, "AI OPPORTUNITY SNAPSHOT"),
-          e(Text, { style: styles.headerRightDate }, dateStr)
-        )
-      ),
-      e(View, { style: styles.clientBlock },
-        e(View, { style: styles.clientLeft },
-          e(Text, { style: styles.clientName }, `${userProfile.name} • ${userProfile.company || 'Your Business'}`),
-          e(Text, { style: styles.clientDetails }, `${userProfile.industry} ${userProfile.teamSize ? `• Team: ${userProfile.teamSize}` : ''}`)
-        ),
-        readinessScore ? e(View, { style: styles.clientRight },
-          e(Text, { style: styles.clientScoreLabel }, "AI READINESS SCORE"),
-          e(View, { style: styles.clientScoreRow },
-            e(Text, { style: styles.clientScoreNum }, String(readinessScore)),
-            e(Text, { style: styles.clientScoreMax }, "/100")
-          )
-        ) : null
-      ),
-      executiveSummary ? e(View, null,
-        e(Text, { style: styles.sectionLabel }, "EXECUTIVE SUMMARY"),
-        e(Text, { style: styles.execSummaryText }, executiveSummary)
-      ) : null,
-      e(View, null,
-        e(Text, { style: styles.sectionLabel }, "YOUR TOP AI OPPORTUNITIES"),
-        e(View, { style: { marginTop: 8 } },
-          opportunities.slice(0, 3).map((opp: any, idx: number) =>
-            e(View, { key: idx, style: styles.oppCard },
-              e(View, { style: styles.oppTitleRow },
-                e(View, { style: styles.oppRankCircle },
-                  e(Text, { style: styles.oppRankText }, String(opp.rank))
-                ),
-                e(Text, { style: styles.oppTitle }, opp.title)
-              ),
-              e(View, { style: styles.oppDetailRow },
-                e(Text, { style: styles.oppDetailLabel }, "Problem:"),
-                e(Text, { style: styles.oppDetailText }, opp.problem)
-              ),
-              e(View, { style: styles.oppDetailRow },
-                e(Text, { style: styles.oppDetailLabel }, "Solution:"),
-                e(Text, { style: styles.oppDetailText }, opp.solution)
-              ),
-              e(View, { style: styles.oppPillsRow },
-                e(View, { style: styles.oppRnPill },
-                  e(Text, { style: styles.oppRnText }, opp.indicativeROI)
-                ),
-                e(View, { style: styles.oppTimePill },
-                  e(Text, { style: styles.oppTimeText }, opp.timeToROI)
-                )
-              )
-            )
-          )
-        )
-      ),
-      recommendedFirstStep ? e(View, null,
-        e(Text, { style: styles.sectionLabel }, "RECOMMENDED FIRST STEP"),
-        e(View, { style: styles.recStepLeftBorder },
-          e(Text, { style: styles.recStepText }, recommendedFirstStep)
-        )
-      ) : null,
-      e(View, { style: styles.footerBar },
-        e(Text, { style: styles.footerText }, "hello@clarivisintelligence.com"),
-        e(Text, { style: styles.footerCenter }, "© 2026 Clarivis Intelligence"),
-        e(Text, { style: styles.footerText }, "clarivisintelligence.com/book")
-      )
-    )
+  const getReadinessLabel = (score: number) => {
+    if (score >= 70) return "Strong Foundation for AI";
+    if (score >= 50) return "Ready for Targeted AI";
+    return "High Opportunity Identified";
+  };
+
+  const getReadinessDesc = (score: number) => {
+    if (score >= 70) return "Your team displays high operational maturity. AI implementation will likely be rapid with minimal friction.";
+    if (score >= 50) return "You have solid fundamentals. We recommend starting with a targeted workflow before scaling AI widely.";
+    return "Significant inefficiencies identified. Implementing core AI systems will yield dramatic and immediate ROI.";
+  };
+
+  // Filter conversation to last 6 user messages
+  const userSignals: string[] = [];
+  if (Array.isArray(conversationHistory)) {
+    const userMsgs = conversationHistory.filter((m: any) => m.role === 'user').slice(-6);
+    userMsgs.forEach((m: any) => userSignals.push(m.content));
+  }
+
+  // Determine top opportunities to show
+  const opps = opportunities || [];
+
+  return (
+    <Document>
+      {/* PAGE 1 — COVER */}
+      <Page size="A4" style={styles.page}>
+        <View style={styles.topBar} />
+        <View style={{ padding: 50 }}>
+          <Image src="https://clarivisintelligence.com/images/logo.png" style={{ width: 160, height: 40, objectFit: 'contain', marginBottom: 8 }} />
+          <Text style={{ color: '#9CA3AF', fontSize: 9 }}>clarivisintelligence.com</Text>
+          
+          <View style={{ marginTop: 120 }}>
+            <Text style={{ color: '#0F6E56', fontSize: 10, fontWeight: 'bold', letterSpacing: 3, textTransform: 'uppercase' }}>AI OPPORTUNITY SNAPSHOT</Text>
+            <View style={{ height: 2, backgroundColor: '#0F6E56', width: 48, marginTop: 16, marginBottom: 24 }} />
+            <Text style={{ color: '#FFFFFF', fontSize: 38, fontWeight: 'bold' }}>{userProfile?.name || 'Client'}</Text>
+            <Text style={{ color: '#9CA3AF', fontSize: 20, marginTop: 6 }}>{userProfile?.company || 'Your Company'}</Text>
+            
+            <View style={{ flexDirection: 'row', marginTop: 20 }}>
+              <View style={{ backgroundColor: '#111827', borderWidth: 1, borderColor: '#1F2937', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5, marginRight: 8 }}>
+                <Text style={{ color: '#9CA3AF', fontSize: 9 }}>{userProfile?.industry || 'Unknown Industry'}</Text>
+              </View>
+              {userProfile?.teamSize && (
+                <View style={{ backgroundColor: '#111827', borderWidth: 1, borderColor: '#1F2937', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5 }}>
+                  <Text style={{ color: '#9CA3AF', fontSize: 9 }}>Team: {userProfile.teamSize}</Text>
+                </View>
+              )}
+            </View>
+          </View>
+        </View>
+
+        <View style={{ position: 'absolute', bottom: 40, right: 50 }}>
+          <Text style={{ color: '#4B5563', fontSize: 8 }}>Prepared by Clarivis Intelligence</Text>
+          <Text style={{ color: '#4B5563', fontSize: 8, marginTop: 2 }}>{dateStr}</Text>
+        </View>
+        <View style={styles.bottomBar} />
+      </Page>
+
+      {/* PAGE 2 — WHAT WE FOUND */}
+      <Page size="A4" style={[styles.page, styles.pageInner]}>
+        {readinessScore !== null ? (
+          <View style={{ backgroundColor: '#111827', borderWidth: 1, borderColor: '#1F2937', borderRadius: 10, padding: 24, marginBottom: 24, flexDirection: 'row' }}>
+            <View style={{ width: '40%' }}>
+              <Text style={{ color: '#0F6E56', fontSize: 8, fontWeight: 'bold', letterSpacing: 1.5 }}>AI READINESS SCORE</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'baseline', marginTop: 8 }}>
+                <Text style={{ color: '#0F6E56', fontSize: 52, fontWeight: 'bold', lineHeight: 1 }}>{readinessScore}</Text>
+                <Text style={{ color: '#6B7280', fontSize: 16 }}>/100</Text>
+              </View>
+              <View style={{ width: 140, height: 8, backgroundColor: '#1F2937', borderRadius: 4, marginTop: 12 }}>
+                <View style={{ height: 8, backgroundColor: '#0F6E56', borderRadius: 4, width: `${Math.min(readinessScore, 100)}%` }} />
+              </View>
+            </View>
+            <View style={{ width: '60%', paddingLeft: 24, borderLeftWidth: 1, borderLeftColor: '#1F2937' }}>
+              <Text style={{ color: '#FFFFFF', fontSize: 14, fontWeight: 'bold' }}>{getReadinessLabel(readinessScore)}</Text>
+              <Text style={{ color: '#9CA3AF', fontSize: 10, lineHeight: 1.6, marginTop: 8 }}>{getReadinessDesc(readinessScore)}</Text>
+            </View>
+          </View>
+        ) : null}
+
+        {executiveSummary ? (
+          <View>
+            <Text style={styles.sectionHeader}>EXECUTIVE SUMMARY</Text>
+            <View style={styles.sectionLine} />
+            <Text style={{ color: '#CBD5E1', fontSize: 11, lineHeight: 1.8 }}>{executiveSummary}</Text>
+          </View>
+        ) : null}
+
+        {Array.isArray(conversationHistory) && conversationHistory.length > 4 && userSignals.length > 0 ? (
+          <View style={{ marginTop: 20 }}>
+            <Text style={styles.sectionHeader}>KEY SIGNALS FROM YOUR ASSESSMENT</Text>
+            <View style={styles.sectionLine} />
+            {userSignals.slice(0, 3).map((sig, idx) => (
+              <View key={idx} style={{ flexDirection: 'row', marginBottom: 8, alignItems: 'flex-start' }}>
+                <View style={{ width: 5, height: 5, borderRadius: 3, backgroundColor: '#0F6E56', marginTop: 5, marginRight: 8 }} />
+                <Text style={{ color: '#CBD5E1', fontSize: 10, lineHeight: 1.5, flex: 1 }}>
+                  {sig.length > 120 ? sig.substring(0, 117) + '...' : sig}
+                </Text>
+              </View>
+            ))}
+          </View>
+        ) : null}
+
+        <PageFooter />
+      </Page>
+
+      {/* PAGE 3 — YOUR TOP AI OPPORTUNITIES */}
+      <Page size="A4" style={[styles.page, styles.pageInner]}>
+        <Text style={styles.sectionHeader}>YOUR TOP AI OPPORTUNITIES</Text>
+        <View style={styles.sectionLine} />
+        <Text style={{ color: '#6B7280', fontSize: 10, fontStyle: 'italic', marginBottom: 20 }}>Based on your assessment, these are the three highest-impact AI opportunities identified for {userProfile?.company || 'your business'}.</Text>
+        
+        {opps.slice(0, 3).map((opp: any, idx: number) => (
+          <View key={idx} style={{ backgroundColor: '#111827', borderWidth: 1, borderColor: '#1F2937', borderRadius: 10, padding: 20, marginBottom: 14 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
+              <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: '#0F6E56', justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ color: '#FFFFFF', fontSize: 10, fontWeight: 'bold' }}>0{opp.rank}</Text>
+              </View>
+              <Text style={{ color: '#FFFFFF', fontSize: 14, fontWeight: 'bold', marginLeft: 10, flex: 1 }}>{opp.title}</Text>
+            </View>
+            
+            <View style={{ marginBottom: 8 }}>
+              <Text style={{ color: '#0F6E56', fontSize: 8, fontWeight: 'bold', letterSpacing: 1 }}>PROBLEM</Text>
+              <Text style={{ color: '#9CA3AF', fontSize: 10, lineHeight: 1.5, marginTop: 3 }}>{opp.problem}</Text>
+            </View>
+            
+            <View style={{ marginBottom: 12 }}>
+              <Text style={{ color: '#0F6E56', fontSize: 8, fontWeight: 'bold', letterSpacing: 1 }}>SOLUTION</Text>
+              <Text style={{ color: '#CBD5E1', fontSize: 10, lineHeight: 1.5, marginTop: 3 }}>{opp.solution}</Text>
+            </View>
+            
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ backgroundColor: '#052E16', borderWidth: 1, borderColor: '#0F6E56', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5, marginRight: 8 }}>
+                <Text style={{ color: '#0F6E56', fontSize: 9, fontWeight: 'bold' }}>📈 {opp.indicativeROI}</Text>
+              </View>
+              <View style={{ backgroundColor: '#1F2937', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5 }}>
+                <Text style={{ color: '#6B7280', fontSize: 9 }}>⏱ {opp.timeToROI}</Text>
+              </View>
+            </View>
+          </View>
+        ))}
+        
+        <PageFooter />
+      </Page>
+
+      {/* PAGE 4 — THE CONVERSATION */}
+      <Page size="A4" style={[styles.page, styles.pageInner]}>
+        <Text style={styles.sectionHeader}>HOW WE ARRIVED HERE</Text>
+        <View style={styles.sectionLine} />
+        <Text style={{ color: '#6B7280', fontSize: 10, lineHeight: 1.6, marginBottom: 20 }}>The following is drawn from your AI assessment with Clarivis Intelligence. Every recommendation in this report is grounded in what you told us.</Text>
+        
+        {Array.isArray(conversationHistory) && conversationHistory.slice(1, 13).map((m: any, idx: number) => {
+          if (m.role === 'assistant') {
+            return (
+              <View key={idx} style={{ marginBottom: 10 }}>
+                <Text style={{ color: '#0F6E56', fontSize: 7, fontWeight: 'bold', letterSpacing: 1.5, marginBottom: 3 }}>CLARIVIS INTELLIGENCE</Text>
+                <View style={{ backgroundColor: '#111827', borderRadius: 8, borderLeftWidth: 3, borderLeftColor: '#0F6E56', padding: 10 }}>
+                  <Text style={{ color: '#9CA3AF', fontSize: 10, lineHeight: 1.6 }}>{m.content.length > 200 ? m.content.substring(0, 197) + '...' : m.content}</Text>
+                </View>
+              </View>
+            );
+          } else {
+            const firstName = (userProfile?.name || 'Client').split(' ')[0].toUpperCase();
+            return (
+              <View key={idx} style={{ marginBottom: 10 }}>
+                <Text style={{ color: '#6B7280', fontSize: 7, fontWeight: 'bold', letterSpacing: 1.5, marginBottom: 3 }}>{firstName} (YOU)</Text>
+                <View style={{ backgroundColor: '#0D1F17', borderRadius: 8, borderLeftWidth: 3, borderLeftColor: '#1F4D3A', padding: 10 }}>
+                  <Text style={{ color: '#CBD5E1', fontSize: 10, lineHeight: 1.6 }}>{m.content.length > 200 ? m.content.substring(0, 197) + '...' : m.content}</Text>
+                </View>
+              </View>
+            );
+          }
+        })}
+        
+        <PageFooter />
+      </Page>
+
+      {/* PAGE 5 — YOUR NEXT STEP */}
+      <Page size="A4" style={[styles.page, styles.pageInner]}>
+        <View style={{ marginBottom: 28 }}>
+          <Text style={{ color: '#FFFFFF', fontSize: 22, fontWeight: 'bold', lineHeight: 1.3 }}>The snapshot reveals the opportunity.</Text>
+          <Text style={{ color: '#0F6E56', fontSize: 22, fontWeight: 'bold', lineHeight: 1.3 }}>The audit reveals the full picture.</Text>
+          <Text style={{ color: '#9CA3AF', fontSize: 11, lineHeight: 1.7, marginTop: 12 }}>This report was generated from a conversation. The Clarivis AI Operational Audit goes deeper — interviewing your team, mapping every process, and producing a complete implementation plan with documented ROI projections.</Text>
+        </View>
+
+        <View style={{ marginBottom: 24 }}>
+          <Text style={styles.sectionHeader}>WHAT THE AUDIT DELIVERS</Text>
+          <View style={styles.sectionLine} />
+          
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ width: '48%' }}>
+              {[
+                { title: "Updated AI Opportunity Snapshot", desc: "Refined with full process data and team interviews" },
+                { title: "Current State Process Map", desc: "Every workflow documented from source to outcome" },
+                { title: "AI Readiness Score", desc: "Benchmarked against your vertical and team size" }
+              ].map((item, idx) => (
+                <View key={idx} style={{ flexDirection: 'row', marginBottom: 10 }}>
+                  <View style={{ width: 18, height: 18, borderRadius: 9, backgroundColor: '#0F6E56', justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ color: '#FFFFFF', fontSize: 8, fontWeight: 'bold' }}>✓</Text>
+                  </View>
+                  <View style={{ paddingLeft: 8, flex: 1 }}>
+                    <Text style={{ color: '#FFFFFF', fontSize: 10, fontWeight: 'bold' }}>{item.title}</Text>
+                    <Text style={{ color: '#6B7280', fontSize: 9, lineHeight: 1.4 }}>{item.desc}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+            
+            <View style={{ width: '48%' }}>
+              {[
+                { title: "Automation Opportunity Matrix", desc: "All opportunities ranked by ROI, effort, and time to value" },
+                { title: "90-Day Implementation Roadmap", desc: "Week by week, owner by owner, milestone by milestone" },
+                { title: "Vendor and Tool Recommendations", desc: "Exact tools, exact integrations, exact costs" }
+              ].map((item, idx) => (
+                <View key={idx} style={{ flexDirection: 'row', marginBottom: 10 }}>
+                  <View style={{ width: 18, height: 18, borderRadius: 9, backgroundColor: '#0F6E56', justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ color: '#FFFFFF', fontSize: 8, fontWeight: 'bold' }}>✓</Text>
+                  </View>
+                  <View style={{ paddingLeft: 8, flex: 1 }}>
+                    <Text style={{ color: '#FFFFFF', fontSize: 10, fontWeight: 'bold' }}>{item.title}</Text>
+                    <Text style={{ color: '#6B7280', fontSize: 9, lineHeight: 1.4 }}>{item.desc}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </View>
+        </View>
+
+        <View style={{ backgroundColor: '#0F6E56', borderRadius: 10, padding: 24, marginTop: 20, flexDirection: 'row' }}>
+          <View style={{ width: '65%' }}>
+            <Text style={{ color: '#FFFFFF', fontSize: 15, fontWeight: 'bold' }}>The Clarivis AI Operational Audit</Text>
+            <Text style={{ color: '#D1FAE5', fontSize: 11, marginTop: 6 }}>4 weeks. 5 sessions. 6 deliverables.</Text>
+            <Text style={{ color: '#A7F3D0', fontSize: 10, marginTop: 8, lineHeight: 1.5, fontStyle: 'italic' }}>Most clients recover the full audit investment within the first 30 days of implementation.</Text>
+          </View>
+          <View style={{ width: '35%', alignItems: 'flex-end', justifyContent: 'center' }}>
+            <Text style={{ color: '#FFFFFF', fontSize: 12, fontWeight: 'bold', textAlign: 'right' }}>Book a Free Session</Text>
+            <View style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6, marginTop: 8 }}>
+              <Text style={{ color: '#FFFFFF', fontSize: 9, fontWeight: 'bold' }}>clarivisintelligence.com/book</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={{ backgroundColor: '#111827', borderWidth: 1, borderColor: '#1F2937', borderLeftWidth: 3, borderLeftColor: '#0F6E56', borderRadius: 8, padding: 16, marginTop: 24 }}>
+          <Text style={{ color: '#0F6E56', fontSize: 8, fontWeight: 'bold', letterSpacing: 1.5 }}>RECOMMENDED FIRST STEP</Text>
+          <Text style={{ color: '#CBD5E1', fontSize: 11, lineHeight: 1.6, marginTop: 6 }}>{snapshotContent?.recommendedFirstStep || "Book a free AI Opportunity Session to discuss your highest-priority opportunity in detail."}</Text>
+        </View>
+
+        <PageFooter />
+      </Page>
+    </Document>
   );
 };
 
@@ -182,7 +350,7 @@ export async function POST(request: NextRequest) {
     let pdfBuffer: Buffer | undefined
     try {
       pdfBuffer = await renderToBuffer(
-        <SnapshotDocument data={{ userProfile, opportunities, readinessScore, executiveSummary, recommendedFirstStep, dateStr }} />
+        <SnapshotDocument data={{ userProfile, opportunities, snapshotContent, conversationHistory }} />
       )
     } catch (e) {
       console.error('PDF generation failed:', e)
