@@ -108,52 +108,48 @@ const SnapshotDocument = ({ data }: { data: any }) => {
 
       {/* PAGE 2 — WHAT WE FOUND */}
       <Page size="A4" style={[styles.page, styles.pageInner]}>
-        {readinessScore !== null ? (
-          <View style={{ backgroundColor: '#111827', borderWidth: 1, borderColor: '#1F2937', borderRadius: 10, padding: 24, marginBottom: 24, flexDirection: 'row' }}>
-            <View style={{ width: '40%' }}>
-              <Text style={{ color: '#0F6E56', fontSize: 8, fontWeight: 'bold', letterSpacing: 1.5 }}>AI READINESS SCORE</Text>
-              <View style={{ flexDirection: 'row', alignItems: 'baseline', marginTop: 8 }}>
-                <Text style={{ color: '#0F6E56', fontSize: 52, fontWeight: 'bold', lineHeight: 1 }}>{readinessScore}</Text>
-                <Text style={{ color: '#6B7280', fontSize: 16 }}>/100</Text>
-              </View>
-              <View style={{ width: 140, height: 8, backgroundColor: '#1F2937', borderRadius: 4, marginTop: 12 }}>
-                <View style={{ height: 8, backgroundColor: '#0F6E56', borderRadius: 4, width: `${Math.min(readinessScore, 100)}%` }} />
-              </View>
+        <View style={{ backgroundColor: '#111827', borderWidth: 1, borderColor: '#1F2937', borderRadius: 10, padding: 24, marginBottom: 24, flexDirection: 'row' }}>
+          <View style={{ width: '40%' }}>
+            <Text style={{ color: '#0F6E56', fontSize: 8, fontWeight: 'bold', letterSpacing: 1.5 }}>AI READINESS SCORE</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'baseline', marginTop: 8 }}>
+              <Text style={{ color: '#0F6E56', fontSize: 52, fontWeight: 'bold', lineHeight: 1 }}>{readinessScore ?? 0}</Text>
+              <Text style={{ color: '#6B7280', fontSize: 16 }}>/100</Text>
             </View>
-            <View style={{ width: '60%', paddingLeft: 24, borderLeftWidth: 1, borderLeftColor: '#1F2937' }}>
-              <Text style={{ color: '#FFFFFF', fontSize: 14, fontWeight: 'bold' }}>{getReadinessLabel(readinessScore)}</Text>
-              <Text style={{ color: '#9CA3AF', fontSize: 10, lineHeight: 1.6, marginTop: 8 }}>{getReadinessDesc(readinessScore)}</Text>
-              <Text style={{ color: '#6B7280', fontSize: 10, lineHeight: 1.6, marginTop: 8 }}>
-                {readinessScore >= 70 ? "Your processes and team structure are well-suited for rapid AI deployment. The primary work is selecting the right interventions and sequencing them for maximum early impact." : 
-                 readinessScore >= 50 ? "You have the foundations in place. The key is identifying the two or three highest-leverage points where AI removes friction your team already feels every day." :
-                 "Lower readiness is not a barrier — it is an opportunity. Businesses at this stage often see the most dramatic transformation because the baseline is unoptimised."}
-              </Text>
+            <View style={{ width: 140, height: 8, backgroundColor: '#1F2937', borderRadius: 4, marginTop: 12 }}>
+              <View style={{ height: 8, backgroundColor: '#0F6E56', borderRadius: 4, width: `${Math.min(readinessScore ?? 0, 100)}%` }} />
             </View>
           </View>
-        ) : null}
+          <View style={{ width: '60%', paddingLeft: 24, borderLeftWidth: 1, borderLeftColor: '#1F2937' }}>
+            <Text style={{ color: '#FFFFFF', fontSize: 14, fontWeight: 'bold' }}>{readinessScore === null ? "High Opportunity Identified" : getReadinessLabel(readinessScore)}</Text>
+            <Text style={{ color: '#9CA3AF', fontSize: 10, lineHeight: 1.6, marginTop: 8 }}>{getReadinessDesc(readinessScore ?? 0)}</Text>
+            <Text style={{ color: '#6B7280', fontSize: 10, lineHeight: 1.6, marginTop: 8 }}>
+              {(readinessScore ?? 0) >= 70 ? "Your processes and team structure are well-suited for rapid AI deployment. The primary work is selecting the right interventions and sequencing them for maximum early impact." : 
+               (readinessScore ?? 0) >= 50 ? "You have the foundations in place. The key is identifying the two or three highest-leverage points where AI removes friction your team already feels every day." :
+               "Lower readiness is not a barrier — it is an opportunity. Businesses at this stage often see the most dramatic transformation because the baseline is unoptimised."}
+            </Text>
+          </View>
+        </View>
 
-        {executiveSummary ? (
-          <View>
-            <Text style={styles.sectionHeader}>EXECUTIVE SUMMARY</Text>
-            <View style={styles.sectionLine} />
-            <Text style={{ color: '#CBD5E1', fontSize: 11, lineHeight: 1.8 }}>{executiveSummary}</Text>
-            <View style={{ height: 1, backgroundColor: '#1F2937', marginTop: 16, marginBottom: 16, width: '100%' }} />
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ flex: 1, backgroundColor: '#111827', borderRadius: 8, padding: 12, marginHorizontal: 4 }}>
-                <Text style={{ color: '#0F6E56', fontSize: 18, fontWeight: 'bold' }}>{userProfile.teamSize || 'N/A'}</Text>
-                <Text style={{ color: '#6B7280', fontSize: 8 }}>TEAM SIZE</Text>
-              </View>
-              <View style={{ flex: 1, backgroundColor: '#111827', borderRadius: 8, padding: 12, marginHorizontal: 4 }}>
-                <Text style={{ color: '#0F6E56', fontSize: 18, fontWeight: 'bold' }}>{userProfile.industry || 'N/A'}</Text>
-                <Text style={{ color: '#6B7280', fontSize: 8 }}>VERTICAL</Text>
-              </View>
-              <View style={{ flex: 1, backgroundColor: '#111827', borderRadius: 8, padding: 12, marginHorizontal: 4 }}>
-                <Text style={{ color: '#0F6E56', fontSize: 18, fontWeight: 'bold' }}>{snapshotContent?.readinessScore ? `${snapshotContent.readinessScore}/100` : 'N/A'}</Text>
-                <Text style={{ color: '#6B7280', fontSize: 8 }}>READINESS</Text>
-              </View>
+        <View>
+          <Text style={styles.sectionHeader}>EXECUTIVE SUMMARY</Text>
+          <View style={styles.sectionLine} />
+          <Text style={{ color: '#CBD5E1', fontSize: 11, lineHeight: 1.8 }}>{executiveSummary || "Assessment complete. Your full executive summary will appear here based on your conversation responses."}</Text>
+          <View style={{ height: 1, backgroundColor: '#1F2937', marginTop: 16, marginBottom: 16, width: '100%' }} />
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ flex: 1, backgroundColor: '#111827', borderRadius: 8, padding: 12, marginHorizontal: 4 }}>
+              <Text style={{ color: '#0F6E56', fontSize: 18, fontWeight: 'bold' }}>{userProfile.teamSize || 'N/A'}</Text>
+              <Text style={{ color: '#6B7280', fontSize: 8 }}>TEAM SIZE</Text>
+            </View>
+            <View style={{ flex: 1, backgroundColor: '#111827', borderRadius: 8, padding: 12, marginHorizontal: 4 }}>
+              <Text style={{ color: '#0F6E56', fontSize: 18, fontWeight: 'bold' }}>{userProfile.industry || 'N/A'}</Text>
+              <Text style={{ color: '#6B7280', fontSize: 8 }}>VERTICAL</Text>
+            </View>
+            <View style={{ flex: 1, backgroundColor: '#111827', borderRadius: 8, padding: 12, marginHorizontal: 4 }}>
+              <Text style={{ color: '#0F6E56', fontSize: 18, fontWeight: 'bold' }}>{snapshotContent?.readinessScore ? `${snapshotContent.readinessScore}/100` : 'N/A'}</Text>
+              <Text style={{ color: '#6B7280', fontSize: 8 }}>READINESS</Text>
             </View>
           </View>
-        ) : null}
+        </View>
 
         {Array.isArray(conversationHistory) && conversationHistory.length > 4 && userSignals.length > 0 ? (
           <View style={{ marginTop: 20 }}>
@@ -218,28 +214,28 @@ const SnapshotDocument = ({ data }: { data: any }) => {
         <View style={styles.sectionLine} />
         <Text style={{ color: '#6B7280', fontSize: 10, lineHeight: 1.6, marginBottom: 20 }}>The following is drawn from your AI assessment with Clarivis Intelligence. Every recommendation in this report is grounded in what you told us.</Text>
         
-        {Array.isArray(conversationHistory) && conversationHistory.slice(1, 13).map((m: any, idx: number) => {
+        {Array.isArray(conversationHistory) && conversationHistory.filter((m: any, idx: number) => !(idx === 0 && m.role === 'assistant')).slice(0, 12).map((m: any, idx: number) => {
           const text = m.content.length > 200 ? m.content.substring(0, 197) + '...' : m.content;
           if (m.role === 'assistant') {
             return (
-              <View key={idx} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 12, paddingRight: 60 }}>
-                <View style={{ width: 20, height: 20, backgroundColor: '#0F6E56', borderRadius: 4, marginRight: 8, marginTop: 2, justifyContent: 'center', alignItems: 'center' }}>
-                  <Text style={{ color: '#FFFFFF', fontSize: 9, fontWeight: 'bold' }}>C</Text>
+              <View key={idx} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 14, paddingRight: 80 }}>
+                <View style={{ width: 22, height: 22, backgroundColor: '#0F6E56', borderRadius: 4, alignItems: 'center', justifyContent: 'center', marginRight: 8, marginTop: 2, flexShrink: 0 }}>
+                  <Text style={{ color: '#fff', fontSize: 9, fontFamily: 'Helvetica-Bold' }}>C</Text>
                 </View>
-                <View style={{ backgroundColor: '#111827', borderRadius: 8, borderBottomLeftRadius: 2, padding: 10, flex: 1 }}>
-                  <Text style={{ color: '#9CA3AF', fontSize: 10, lineHeight: 1.5 }}>{text}</Text>
+                <View style={{ flex: 1, backgroundColor: '#111827', borderRadius: 8, padding: 10 }}>
+                  <Text style={{ fontSize: 10, color: '#9CA3AF', lineHeight: 1.5 }}>{text}</Text>
                 </View>
               </View>
             );
           } else {
             const firstLetter = (userProfile?.name || 'Client').charAt(0).toUpperCase();
             return (
-              <View key={idx} style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'flex-end', marginBottom: 12, paddingLeft: 60 }}>
-                <View style={{ backgroundColor: '#0D1F17', borderWidth: 1, borderColor: '#1F4D3A', borderRadius: 8, borderBottomRightRadius: 2, padding: 10, flex: 1 }}>
-                  <Text style={{ color: '#CBD5E1', fontSize: 10, lineHeight: 1.5 }}>{text}</Text>
+              <View key={idx} style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'flex-end', marginBottom: 14, paddingLeft: 80 }}>
+                <View style={{ flex: 1, backgroundColor: '#0D1F17', borderRadius: 8, borderWidth: 1, borderColor: '#1F4D3A', padding: 10 }}>
+                  <Text style={{ fontSize: 10, color: '#CBD5E1', lineHeight: 1.5 }}>{text}</Text>
                 </View>
-                <View style={{ width: 20, height: 20, backgroundColor: '#1F2937', borderRadius: 4, marginLeft: 8, marginTop: 2, justifyContent: 'center', alignItems: 'center' }}>
-                  <Text style={{ color: '#FFFFFF', fontSize: 9, fontWeight: 'bold' }}>{firstLetter}</Text>
+                <View style={{ width: 22, height: 22, backgroundColor: '#1F2937', borderRadius: 4, alignItems: 'center', justifyContent: 'center', marginLeft: 8, marginTop: 2, flexShrink: 0 }}>
+                  <Text style={{ color: '#fff', fontSize: 9, fontFamily: 'Helvetica-Bold' }}>{firstLetter}</Text>
                 </View>
               </View>
             );
@@ -261,58 +257,63 @@ const SnapshotDocument = ({ data }: { data: any }) => {
           <Text style={styles.sectionHeader}>WHAT THE AUDIT DELIVERS</Text>
           <View style={styles.sectionLine} />
           
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View style={{ width: '48%' }}>
-              {[
+          <View style={{ width: '100%' }}>
+            {[0, 2, 4].map(i => {
+              const deliverables = [
                 { title: "Updated AI Opportunity Snapshot", desc: "Refined with full process data and team interviews" },
                 { title: "Current State Process Map", desc: "Every workflow documented from source to outcome" },
-                { title: "AI Readiness Score", desc: "Benchmarked against your vertical and team size" }
-              ].map((item, idx) => (
-                <View key={idx} style={{ flexDirection: 'row', marginBottom: 10 }}>
-                  <View style={{ width: 18, height: 18, borderRadius: 9, backgroundColor: '#0F6E56', justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ color: '#FFFFFF', fontSize: 8, fontWeight: 'bold' }}>✓</Text>
-                  </View>
-                  <View style={{ paddingLeft: 8, flex: 1 }}>
-                    <Text style={{ color: '#FFFFFF', fontSize: 10, fontWeight: 'bold' }}>{item.title}</Text>
-                    <Text style={{ color: '#6B7280', fontSize: 9, lineHeight: 1.4 }}>{item.desc}</Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-            
-            <View style={{ width: '48%' }}>
-              {[
+                { title: "AI Readiness Score", desc: "Benchmarked against your vertical and team size" },
                 { title: "Automation Opportunity Matrix", desc: "All opportunities ranked by ROI, effort, and time to value" },
                 { title: "90-Day Implementation Roadmap", desc: "Week by week, owner by owner, milestone by milestone" },
                 { title: "Vendor and Tool Recommendations", desc: "Exact tools, exact integrations, exact costs" }
-              ].map((item, idx) => (
-                <View key={idx} style={{ flexDirection: 'row', marginBottom: 10 }}>
-                  <View style={{ width: 18, height: 18, borderRadius: 9, backgroundColor: '#0F6E56', justifyContent: 'center', alignItems: 'center' }}>
+              ];
+              const DeliverableCard = ({ item }: { item: any }) => (
+                <View style={{ flex: 1, backgroundColor: '#111827', borderWidth: 1, borderColor: '#1F2937', borderRadius: 6, padding: 12, flexDirection: 'row', alignItems: 'flex-start' }}>
+                  <View style={{ width: 18, height: 18, borderRadius: 9, backgroundColor: '#0F6E56', justifyContent: 'center', alignItems: 'center', flexShrink: 0 }}>
                     <Text style={{ color: '#FFFFFF', fontSize: 8, fontWeight: 'bold' }}>✓</Text>
                   </View>
                   <View style={{ paddingLeft: 8, flex: 1 }}>
                     <Text style={{ color: '#FFFFFF', fontSize: 10, fontWeight: 'bold' }}>{item.title}</Text>
-                    <Text style={{ color: '#6B7280', fontSize: 9, lineHeight: 1.4 }}>{item.desc}</Text>
+                    <Text style={{ color: '#6B7280', fontSize: 9, lineHeight: 1.4, marginTop: 4 }}>{item.desc}</Text>
                   </View>
                 </View>
-              ))}
-            </View>
+              );
+              return (
+                <View key={i} style={{ flexDirection: 'row', gap: 10, marginBottom: 10 }}>
+                  <DeliverableCard item={deliverables[i]} />
+                  <DeliverableCard item={deliverables[i+1]} />
+                </View>
+              );
+            })}
           </View>
         </View>
 
         <View style={{ backgroundColor: '#0F6E56', borderRadius: 10, padding: 24, marginTop: 20, flexDirection: 'row' }}>
-          <View style={{ width: '65%' }}>
+          <View style={{ width: '65%', backgroundColor: 'transparent' }}>
             <Text style={{ color: '#FFFFFF', fontSize: 15, fontWeight: 'bold' }}>The Clarivis AI Operational Audit</Text>
             <Text style={{ color: '#D1FAE5', fontSize: 11, marginTop: 6 }}>4 weeks. 5 sessions. 6 deliverables.</Text>
             <Text style={{ color: '#A7F3D0', fontSize: 10, marginTop: 8, lineHeight: 1.5, fontStyle: 'italic' }}>Clients consistently identify operational savings and revenue opportunities that far exceed the audit investment — typically visible within 90 days of implementation.</Text>
           </View>
-          <View style={{ width: '35%', alignItems: 'flex-end', justifyContent: 'center' }}>
-            <Text style={{ color: '#FFFFFF', fontSize: 12, fontWeight: 'bold', textAlign: 'right' }}>Book a Free Session</Text>
-            <View style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6, marginTop: 8 }}>
-              <Link src="https://clarivisintelligence.com/book" style={{ textDecoration: 'none' }}>
-                <Text style={{ color: '#D1FAE5', fontSize: 9, fontFamily: 'Helvetica-Bold' }}>clarivisintelligence.com/book</Text>
-              </Link>
-            </View>
+          <View style={{ width: '35%', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'transparent' }}>
+            <Link src="https://clarivisintelligence.com/book" style={{ textDecoration: 'none' }}>
+              <View style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: 6,
+                paddingVertical: 10,
+                paddingHorizontal: 20,
+                alignSelf: 'flex-start',
+                marginTop: 12,
+              }}>
+                <Text style={{
+                  color: '#0F6E56',
+                  fontSize: 10,
+                  fontFamily: 'Helvetica-Bold',
+                  textDecoration: 'none',
+                }}>
+                  Book Your Free AI Opportunity Session →
+                </Text>
+              </View>
+            </Link>
           </View>
         </View>
 

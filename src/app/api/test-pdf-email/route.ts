@@ -30,7 +30,13 @@ export async function GET(request: NextRequest) {
       { role: "assistant", content: "That's very common — adoption fails when the system creates work instead of removing it. The solution has to meet the team where they already are. What would success look like for you in 90 days if we fixed this?" },
       { role: "user", content: "Every lead gets a call within a minute of coming in, automatically. And I can open something on my phone and see exactly where every deal stands without asking anyone." }
     ],
-    timeSelected: 10
+    timeSelected: 10,
+    snapshotContent: {
+      executiveSummary: "Test Company is losing an estimated 15 to 20 qualified leads per month due to slow follow-up response times and a fragmented lead management process split across WhatsApp, Excel, and three sales team members with no central ownership. With deal sizes ranging from ₹40 lakhs to ₹2 crore, each lost lead represents significant revenue. The business has the team and the volume to benefit immediately from AI-powered lead response and pipeline visibility.",
+      readinessScore: 72,
+      recommendedFirstStep: "Deploy an AI lead qualifier on your highest-volume inbound channel — likely 99acres or Instagram — to automatically respond and qualify within 60 seconds. Run it in parallel with your existing process for 30 days and measure the difference in site visit conversion rate.",
+      opportunities: null
+    }
   };
 
   try {
