@@ -77,8 +77,12 @@ const SnapshotDocument = ({ data }: { data: any }) => {
       <Page size="A4" style={styles.page}>
         <View style={styles.topBar} />
         <View style={{ padding: 50 }}>
-          <Image src="https://clarivisintelligence.com/images/logo.png" style={{ width: 200, height: 50, objectFit: 'contain' }} />
-          <Text style={{ color: '#9CA3AF', fontSize: 9 }}>clarivisintelligence.com</Text>
+          <View style={{ paddingLeft: 0, marginLeft: 0 }}>
+            <View style={{ marginBottom: 0, paddingLeft: 0, alignSelf: 'flex-start' }}>
+              <Image src="https://clarivisintelligence.com/images/logo.png" style={{ width: 220, height: 55, objectFit: 'contain' }} />
+              <Text style={{ color: '#9CA3AF', fontSize: 9, marginTop: 6 }}>clarivisintelligence.com</Text>
+            </View>
+          </View>
           
           <View style={{ marginTop: 120 }}>
             <Text style={{ color: '#0F6E56', fontSize: 10, fontWeight: 'bold', letterSpacing: 3, textTransform: 'uppercase' }}>AI OPPORTUNITY SNAPSHOT</Text>
