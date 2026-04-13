@@ -1,75 +1,133 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { supabaseAdmin } from '@/lib/supabase'
-import PDFDocument from 'pdfkit'
+import { Document, Page, View, Text, StyleSheet, renderToBuffer } from '@react-pdf/renderer'
+import React from 'react'
 
-function generateSnapshotPDF(data: any): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    try {
-      const doc = new PDFDocument({ margin: 50, size: 'A4' })
-      const buffers: Buffer[] = []
-      
-      doc.on('data', buffers.push.bind(buffers))
-      doc.on('end', () => resolve(Buffer.concat(buffers)))
-      
-      const renderBackground = () => {
-        doc.rect(0, 0, doc.page.width, doc.page.height).fill('#0a0f1a');
-      }
-      doc.on('pageAdded', renderBackground);
-      renderBackground();
+const e = React.createElement;
 
-      const { userProfile, opportunities, readinessScore, executiveSummary, recommendedFirstStep, dateStr } = data;
+const styles = StyleSheet.create({
+  page: { padding: 40, backgroundColor: '#ffffff', fontFamily: 'Helvetica' },
+  headerBar: { backgroundColor: '#1A1A2E', padding: 24, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  headerLeft: { flexDirection: 'column' },
+  headerTitle: { color: '#0F6E56', fontSize: 18, fontWeight: 'bold' },
+  headerSubtitle: { color: '#9CA3AF', fontSize: 9, marginTop: 6 },
+  headerRight: { flexDirection: 'column', alignItems: 'flex-end' },
+  headerRightTitle: { color: '#ffffff', fontSize: 11, fontWeight: 'bold' },
+  headerRightDate: { color: '#9CA3AF', fontSize: 9, marginTop: 4 },
+  
+  clientBlock: { backgroundColor: '#F3F4F6', padding: 16, marginTop: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  clientLeft: { flexDirection: 'column' },
+  clientName: { color: '#1A1A2E', fontSize: 12, fontWeight: 'bold' },
+  clientDetails: { color: '#6B7280', fontSize: 10, marginTop: 6 },
+  clientRight: { alignItems: 'flex-end' },
+  clientScoreLabel: { color: '#0F6E56', fontSize: 9, textTransform: 'uppercase' },
+  clientScoreRow: { flexDirection: 'row', alignItems: 'baseline', marginTop: 4 },
+  clientScoreNum: { color: '#0F6E56', fontSize: 32, fontWeight: 'bold' },
+  clientScoreMax: { color: '#6B7280', fontSize: 12 },
 
-      doc.fillColor('#0F6E56').fontSize(24).text('Clarivis Intelligence', { align: 'center' });
-      doc.fillColor('#ffffff').fontSize(20).text('AI Opportunity Snapshot', { align: 'center' });
-      doc.moveDown(0.5);
-      
-      doc.fontSize(14).text(`${userProfile.name} | ${userProfile.company || 'Your Business'} | ${userProfile.industry}`, { align: 'center' });
-      doc.fillColor('#9CA3AF').fontSize(12).text(dateStr, { align: 'center' });
-      doc.moveDown(2);
+  sectionLabel: { color: '#0F6E56', fontSize: 8, fontWeight: 'bold', textTransform: 'uppercase', marginTop: 20, borderBottomWidth: 1, borderBottomColor: '#0F6E56', paddingBottom: 4 },
+  execSummaryText: { color: '#374151', fontSize: 10, lineHeight: 1.6, marginTop: 8 },
 
-      if (executiveSummary) {
-        doc.fillColor('#0F6E56').fontSize(16).text('Executive Summary');
-        doc.moveDown(0.5);
-        doc.fillColor('#CBD5E1').fontSize(12).text(executiveSummary, { lineGap: 4 });
-        doc.moveDown(1.5);
-      }
+  oppCard: { backgroundColor: '#ffffff', borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 6, padding: 14, marginBottom: 10, marginTop: 8 },
+  oppTitleRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
+  oppRankCircle: { backgroundColor: '#0F6E56', width: 16, height: 16, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginRight: 8 },
+  oppRankText: { color: '#ffffff', fontSize: 9, fontWeight: 'bold' },
+  oppTitle: { color: '#1A1A2E', fontSize: 13, fontWeight: 'bold' },
+  oppDetailRow: { flexDirection: 'row', marginTop: 4 },
+  oppDetailLabel: { color: '#0F6E56', fontSize: 9, fontWeight: 'bold', marginRight: 4 },
+  oppDetailText: { color: '#6B7280', fontSize: 9 },
+  oppPillsRow: { flexDirection: 'row', marginTop: 12 },
+  oppRnPill: { backgroundColor: '#F0FDF9', paddingVertical: 4, paddingHorizontal: 8, borderRadius: 4, marginRight: 8 },
+  oppRnText: { color: '#0F6E56', fontSize: 9 },
+  oppTimePill: { backgroundColor: '#F3F4F6', paddingVertical: 4, paddingHorizontal: 8, borderRadius: 4 },
+  oppTimeText: { color: '#6B7280', fontSize: 9 },
 
-      if (readinessScore) {
-        doc.fillColor('#0F6E56').fontSize(16).text('AI Readiness Score: ' + readinessScore + ' / 100');
-        doc.moveDown(1.5);
-      }
+  recStepLeftBorder: { borderLeftWidth: 3, borderLeftColor: '#0F6E56', paddingLeft: 12, marginTop: 12 },
+  recStepText: { color: '#374151', fontSize: 10, lineHeight: 1.6 },
 
-      doc.fillColor('#0F6E56').fontSize(16).text('Top AI Opportunities');
-      doc.moveDown(0.5);
-      
-      opportunities.slice(0, 3).forEach((opp: any) => {
-        doc.fillColor('#ffffff').fontSize(14).text(`0${opp.rank}. ${opp.title}`);
-        doc.moveDown(0.2);
-        doc.fillColor('#9CA3AF').fontSize(11).text('Problem: ', { continued: true }).fillColor('#CBD5E1').text(opp.problem);
-        doc.moveDown(0.2);
-        doc.fillColor('#9CA3AF').fontSize(11).text('Solution: ', { continued: true }).fillColor('#CBD5E1').text(opp.solution);
-        doc.moveDown(0.2);
-        doc.fillColor('#0F6E56').fontSize(11).text(`ROI: ${opp.indicativeROI} | Time to ROI: ${opp.timeToROI}`);
-        doc.moveDown(1);
-      });
+  footerBar: { backgroundColor: '#1A1A2E', padding: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 40 },
+  footerText: { color: '#9CA3AF', fontSize: 9 },
+  footerCenter: { color: '#9CA3AF', fontSize: 8 }
+});
 
-      if (recommendedFirstStep) {
-        doc.fillColor('#0F6E56').fontSize(16).text('Recommended First Step');
-        doc.moveDown(0.5);
-        doc.fillColor('#CBD5E1').fontSize(12).text(recommendedFirstStep, { lineGap: 4 });
-        doc.moveDown(2);
-      }
-
-      doc.fillColor('#9CA3AF').fontSize(11).text('hello@clarivisintelligence.com', { align: 'center' });
-      doc.fillColor('#0F6E56').text('https://clarivisintelligence.com/book', { align: 'center', link: 'https://clarivisintelligence.com/book' });
-
-      doc.end()
-    } catch (err) {
-      reject(err)
-    }
-  })
-}
+const SnapshotDocument = ({ data }: { data: any }) => {
+  const { userProfile, opportunities, readinessScore, executiveSummary, recommendedFirstStep, dateStr } = data;
+  
+  return e(Document, null,
+    e(Page, { size: "A4", style: styles.page },
+      e(View, { style: styles.headerBar },
+        e(View, { style: styles.headerLeft },
+          e(Text, { style: styles.headerTitle }, "CLARIVIS INTELLIGENCE"),
+          e(Text, { style: styles.headerSubtitle }, "Clarity in every decision. Intelligence in every system.")
+        ),
+        e(View, { style: styles.headerRight },
+          e(Text, { style: styles.headerRightTitle }, "AI OPPORTUNITY SNAPSHOT"),
+          e(Text, { style: styles.headerRightDate }, dateStr)
+        )
+      ),
+      e(View, { style: styles.clientBlock },
+        e(View, { style: styles.clientLeft },
+          e(Text, { style: styles.clientName }, `${userProfile.name} • ${userProfile.company || 'Your Business'}`),
+          e(Text, { style: styles.clientDetails }, `${userProfile.industry} ${userProfile.teamSize ? `• Team: ${userProfile.teamSize}` : ''}`)
+        ),
+        readinessScore ? e(View, { style: styles.clientRight },
+          e(Text, { style: styles.clientScoreLabel }, "AI READINESS SCORE"),
+          e(View, { style: styles.clientScoreRow },
+            e(Text, { style: styles.clientScoreNum }, String(readinessScore)),
+            e(Text, { style: styles.clientScoreMax }, "/100")
+          )
+        ) : null
+      ),
+      executiveSummary ? e(View, null,
+        e(Text, { style: styles.sectionLabel }, "EXECUTIVE SUMMARY"),
+        e(Text, { style: styles.execSummaryText }, executiveSummary)
+      ) : null,
+      e(View, null,
+        e(Text, { style: styles.sectionLabel }, "YOUR TOP AI OPPORTUNITIES"),
+        e(View, { style: { marginTop: 8 } },
+          opportunities.slice(0, 3).map((opp: any, idx: number) =>
+            e(View, { key: idx, style: styles.oppCard },
+              e(View, { style: styles.oppTitleRow },
+                e(View, { style: styles.oppRankCircle },
+                  e(Text, { style: styles.oppRankText }, String(opp.rank))
+                ),
+                e(Text, { style: styles.oppTitle }, opp.title)
+              ),
+              e(View, { style: styles.oppDetailRow },
+                e(Text, { style: styles.oppDetailLabel }, "Problem:"),
+                e(Text, { style: styles.oppDetailText }, opp.problem)
+              ),
+              e(View, { style: styles.oppDetailRow },
+                e(Text, { style: styles.oppDetailLabel }, "Solution:"),
+                e(Text, { style: styles.oppDetailText }, opp.solution)
+              ),
+              e(View, { style: styles.oppPillsRow },
+                e(View, { style: styles.oppRnPill },
+                  e(Text, { style: styles.oppRnText }, opp.indicativeROI)
+                ),
+                e(View, { style: styles.oppTimePill },
+                  e(Text, { style: styles.oppTimeText }, opp.timeToROI)
+                )
+              )
+            )
+          )
+        )
+      ),
+      recommendedFirstStep ? e(View, null,
+        e(Text, { style: styles.sectionLabel }, "RECOMMENDED FIRST STEP"),
+        e(View, { style: styles.recStepLeftBorder },
+          e(Text, { style: styles.recStepText }, recommendedFirstStep)
+        )
+      ) : null,
+      e(View, { style: styles.footerBar },
+        e(Text, { style: styles.footerText }, "hello@clarivisintelligence.com"),
+        e(Text, { style: styles.footerCenter }, "© 2026 Clarivis Intelligence"),
+        e(Text, { style: styles.footerText }, "clarivisintelligence.com/book")
+      )
+    )
+  );
+};
 
 export async function POST(request: NextRequest) {
   try {
@@ -123,7 +181,7 @@ export async function POST(request: NextRequest) {
     // ── Generate PDF ────────────────────────────────────────────────────────
     let pdfBuffer: Buffer | undefined
     try {
-      pdfBuffer = await generateSnapshotPDF({ userProfile, opportunities, readinessScore, executiveSummary, recommendedFirstStep, dateStr })
+      pdfBuffer = await renderToBuffer(e(SnapshotDocument, { data: { userProfile, opportunities, readinessScore, executiveSummary, recommendedFirstStep, dateStr } }))
     } catch (e) {
       console.error('PDF generation failed:', e)
     }

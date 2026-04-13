@@ -9,11 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.4.1",
     "@supabase/supabase-js": "^2.101.1",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.7.0",
     "next": "16.2.2",
-    "pdfkit": "^0.18.0",
     "posthog-js": "^1.364.7",
     "react": "19.2.4",
     "react-calendly": "^4.4.0",
@@ -25,7 +25,6 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/pdfkit": "^0.17.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
