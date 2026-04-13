@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
           // Raised from 1000 — the full JSON schema with 3 opportunities can easily exceed 1000 tokens
-          max_tokens: 2000,
+          max_tokens: 3000,
           system: 'You are generating a structured AI Opportunity Snapshot from an assessment conversation. Return ONLY valid JSON with no preamble, no markdown fences, and no trailing text.',
           messages: [{
             role: 'user',
@@ -186,10 +186,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       opportunities: opportunities.slice(0, 3),
-      // Return all generated fields so Phase 7 can display them
-      readinessScore,
-      executiveSummary,
-      recommendedFirstStep,
+      readinessScore: snapshotContent?.readinessScore ?? null,
+      executiveSummary: snapshotContent?.executiveSummary ?? null,
+      recommendedFirstStep: snapshotContent?.recommendedFirstStep ?? null,
     })
 
   } catch (error) {
