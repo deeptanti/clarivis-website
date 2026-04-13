@@ -181,7 +181,9 @@ export async function POST(request: NextRequest) {
     // ── Generate PDF ────────────────────────────────────────────────────────
     let pdfBuffer: Buffer | undefined
     try {
-      pdfBuffer = await renderToBuffer(e(SnapshotDocument, { data: { userProfile, opportunities, readinessScore, executiveSummary, recommendedFirstStep, dateStr } }))
+      pdfBuffer = await renderToBuffer(
+        <SnapshotDocument data={{ userProfile, opportunities, readinessScore, executiveSummary, recommendedFirstStep, dateStr }} />
+      )
     } catch (e) {
       console.error('PDF generation failed:', e)
     }
