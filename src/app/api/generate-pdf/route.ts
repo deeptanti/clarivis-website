@@ -1,6 +1,75 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { supabaseAdmin } from '@/lib/supabase'
+import PDFDocument from 'pdfkit'
+
+function generateSnapshotPDF(data: any): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    try {
+      const doc = new PDFDocument({ margin: 50, size: 'A4' })
+      const buffers: Buffer[] = []
+      
+      doc.on('data', buffers.push.bind(buffers))
+      doc.on('end', () => resolve(Buffer.concat(buffers)))
+      
+      const renderBackground = () => {
+        doc.rect(0, 0, doc.page.width, doc.page.height).fill('#0a0f1a');
+      }
+      doc.on('pageAdded', renderBackground);
+      renderBackground();
+
+      const { userProfile, opportunities, readinessScore, executiveSummary, recommendedFirstStep, dateStr } = data;
+
+      doc.fillColor('#0F6E56').fontSize(24).text('Clarivis Intelligence', { align: 'center' });
+      doc.fillColor('#ffffff').fontSize(20).text('AI Opportunity Snapshot', { align: 'center' });
+      doc.moveDown(0.5);
+      
+      doc.fontSize(14).text(`${userProfile.name} | ${userProfile.company || 'Your Business'} | ${userProfile.industry}`, { align: 'center' });
+      doc.fillColor('#9CA3AF').fontSize(12).text(dateStr, { align: 'center' });
+      doc.moveDown(2);
+
+      if (executiveSummary) {
+        doc.fillColor('#0F6E56').fontSize(16).text('Executive Summary');
+        doc.moveDown(0.5);
+        doc.fillColor('#CBD5E1').fontSize(12).text(executiveSummary, { lineGap: 4 });
+        doc.moveDown(1.5);
+      }
+
+      if (readinessScore) {
+        doc.fillColor('#0F6E56').fontSize(16).text('AI Readiness Score: ' + readinessScore + ' / 100');
+        doc.moveDown(1.5);
+      }
+
+      doc.fillColor('#0F6E56').fontSize(16).text('Top AI Opportunities');
+      doc.moveDown(0.5);
+      
+      opportunities.slice(0, 3).forEach((opp: any) => {
+        doc.fillColor('#ffffff').fontSize(14).text(`0${opp.rank}. ${opp.title}`);
+        doc.moveDown(0.2);
+        doc.fillColor('#9CA3AF').fontSize(11).text('Problem: ', { continued: true }).fillColor('#CBD5E1').text(opp.problem);
+        doc.moveDown(0.2);
+        doc.fillColor('#9CA3AF').fontSize(11).text('Solution: ', { continued: true }).fillColor('#CBD5E1').text(opp.solution);
+        doc.moveDown(0.2);
+        doc.fillColor('#0F6E56').fontSize(11).text(`ROI: ${opp.indicativeROI} | Time to ROI: ${opp.timeToROI}`);
+        doc.moveDown(1);
+      });
+
+      if (recommendedFirstStep) {
+        doc.fillColor('#0F6E56').fontSize(16).text('Recommended First Step');
+        doc.moveDown(0.5);
+        doc.fillColor('#CBD5E1').fontSize(12).text(recommendedFirstStep, { lineGap: 4 });
+        doc.moveDown(2);
+      }
+
+      doc.fillColor('#9CA3AF').fontSize(11).text('hello@clarivisintelligence.com', { align: 'center' });
+      doc.fillColor('#0F6E56').text('https://clarivisintelligence.com/book', { align: 'center', link: 'https://clarivisintelligence.com/book' });
+
+      doc.end()
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -51,65 +120,30 @@ export async function POST(request: NextRequest) {
     const recommendedFirstStep = snapshotContent?.recommendedFirstStep ?? null
     const dateStr = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
 
+    // ── Generate PDF ────────────────────────────────────────────────────────
+    let pdfBuffer: Buffer | undefined
+    try {
+      pdfBuffer = await generateSnapshotPDF({ userProfile, opportunities, readinessScore, executiveSummary, recommendedFirstStep, dateStr })
+    } catch (e) {
+      console.error('PDF generation failed:', e)
+    }
+
     // ── Email HTML ────────────────────────────────────────────────────────────
-
-    const oppHTML = opportunities.slice(0, 3).map((o: { rank: number, title: string, problem: string, solution: string, indicativeROI: string, timeToROI: string }) => `
-      <div style="background:#111827;border:1px solid #1f2937;border-radius:12px;padding:24px;margin-bottom:16px;">
-        <div style="display:flex;align-items:center;margin-bottom:12px;">
-          <div style="background:#0F6E56;color:#fff;font-size:12px;font-weight:700;width:28px;height:28px;border-radius:50%;text-align:center;line-height:28px;margin-right:12px;">0${o.rank}</div>
-          <h4 style="color:#fff;font-size:18px;font-weight:700;margin:0;">${o.title}</h4>
-        </div>
-        <p style="color:#9CA3AF;font-size:14px;margin:0 0 6px 0;"><strong style="color:#CBD5E1;">Problem:</strong> ${o.problem}</p>
-        <p style="color:#9CA3AF;font-size:14px;margin:0 0 12px 0;"><strong style="color:#CBD5E1;">Solution:</strong> ${o.solution}</p>
-        <div style="background:rgba(15,110,86,0.1);border:1px solid rgba(15,110,86,0.25);border-radius:8px;padding:10px 14px;display:inline-block;">
-          <span style="color:#0F6E56;font-size:13px;font-weight:600;">📈 ${o.indicativeROI}</span>
-          <span style="color:#6B7280;font-size:12px;margin-left:12px;">⏱ ${o.timeToROI} to deploy</span>
-        </div>
-      </div>`).join('')
-
-    const readinessScoreHTML = readinessScore ? `
-      <div style="padding:24px 40px;background:#0d1117;border-bottom:1px solid #1f2937;text-align:center;">
-        <p style="color:#0F6E56;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin:0 0 12px 0;">AI READINESS SCORE</p>
-        <div style="display:inline-block;background:rgba(15,110,86,0.1);border:2px solid #0F6E56;border-radius:50%;width:80px;height:80px;line-height:80px;text-align:center;">
-          <span style="color:#0F6E56;font-size:28px;font-weight:800;">${readinessScore}</span>
-        </div>
-        <p style="color:#6B7280;font-size:13px;margin:12px 0 0 0;">out of 100</p>
-      </div>` : ''
-
-    const recommendedFirstStepHTML = recommendedFirstStep ? `
-      <div style="padding:24px 40px;background:#071a14;border-bottom:1px solid #1f2937;">
-        <p style="color:#0F6E56;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin:0 0 12px 0;">RECOMMENDED FIRST STEP</p>
-        <p style="color:#CBD5E1;font-size:15px;line-height:1.7;margin:0;">${recommendedFirstStep}</p>
-      </div>` : ''
-
-    const emailHTML = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+    const topOpp = opportunities[0]
+    const emailHTML = `<!DOCTYPE html><html><head><meta charset="utf-8"></head>
 <body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;">
-<div style="max-width:640px;margin:0 auto;background:#0a0f1a;">
-  <div style="background:#0a0f1a;padding:32px 40px;text-align:center;border-bottom:1px solid #1f2937;">
-    <h1 style="color:#0F6E56;font-size:22px;margin:0 0 4px 0;">Clarivis Intelligence</h1>
-    <p style="color:#9CA3AF;font-size:13px;margin:0;">Clarity in every decision. Intelligence in every system.</p>
-  </div>
-  <div style="background:#0d1117;padding:32px 40px;text-align:center;border-bottom:1px solid #1f2937;">
-    <p style="color:#0F6E56;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin:0 0 12px 0;">AI OPPORTUNITY SNAPSHOT</p>
-    <h2 style="color:#fff;font-size:28px;font-weight:800;margin:0 0 8px 0;">${userProfile.name}</h2>
-    <p style="color:#9CA3AF;font-size:15px;margin:0;">${userProfile.company || 'Your Business'} · ${userProfile.industry} · ${dateStr}</p>
-  </div>
-  <div style="padding:32px 40px;background:#0d1117;border-bottom:1px solid #1f2937;">
-    <h3 style="color:#0F6E56;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin:0 0 16px 0;">Executive Summary</h3>
-    <p style="color:#CBD5E1;font-size:16px;line-height:1.8;margin:0;">${executiveSummary || `Based on your ${timeSelected}-minute assessment, we have identified high-impact AI opportunities for ${userProfile.company || 'your business'}. Your challenge around "${(userProfile.mainChallenge || '').substring(0, 80)}" represents a significant opportunity for AI automation.`}</p>
-  </div>
-  ${readinessScoreHTML}
-  <div style="padding:32px 40px;background:#0a0f1a;">${oppHTML}</div>
-  ${recommendedFirstStepHTML}
-  <div style="padding:32px 40px;background:#071a14;text-align:center;">
-    <h3 style="color:#fff;font-size:20px;font-weight:700;margin:0 0 12px 0;">Ready to go deeper?</h3>
-    <p style="color:#9CA3AF;font-size:15px;line-height:1.7;margin:0 0 24px 0;">Book a free 45-minute AI Opportunity Session with our founder to discuss your situation and get a full implementation plan with ROI projections.</p>
-    <a href="https://clarivisintelligence.com/book" style="background:#0F6E56;color:#fff;padding:16px 32px;border-radius:8px;text-decoration:none;font-weight:700;font-size:16px;display:inline-block;">Book Your AI Opportunity Session →</a>
-  </div>
-  <div style="padding:24px 40px;background:#0a0f1a;text-align:center;border-top:1px solid #1f2937;">
-    <p style="color:#6B7280;font-size:13px;margin:0 0 8px 0;">Deep Tanti · Founder, Clarivis Intelligence</p>
-    <p style="color:#6B7280;font-size:12px;margin:0;">Rajkot, Gujarat, India · <a href="mailto:hello@clarivisintelligence.com" style="color:#0F6E56;">hello@clarivisintelligence.com</a></p>
-    <p style="color:#374151;font-size:11px;margin:16px 0 0 0;">You received this because you completed the Clarivis Assessment.</p>
+<div style="max-width:640px;margin:0 auto;background:#0a0f1a;padding:32px;text-align:center;">
+  <h1 style="color:#0F6E56;font-size:22px;margin:0 0 24px 0;">Clarivis Intelligence</h1>
+  <p style="color:#fff;font-size:16px;line-height:1.6;margin:0 0 24px 0;text-align:left;">Hi ${userProfile.name.split(' ')[0] || 'there'}, your AI Opportunity Snapshot is ready — please find it attached.</p>
+  ${topOpp ? `
+  <div style="background:#111827;border:1px solid #1f2937;border-radius:12px;padding:24px;text-align:left;margin-bottom:24px;">
+    <p style="color:#0F6E56;font-size:12px;font-weight:700;margin:0 0 8px 0;text-transform:uppercase;">Top Highlight</p>
+    <h3 style="color:#fff;font-size:18px;margin:0 0 8px 0;">${topOpp.title}</h3>
+    <p style="color:#CBD5E1;font-size:14px;margin:0;">${topOpp.indicativeROI}</p>
+  </div>` : ''}
+  <a href="https://clarivisintelligence.com/book" style="background:#0F6E56;color:#fff;padding:16px 32px;border-radius:8px;text-decoration:none;font-weight:700;font-size:16px;display:inline-block;margin-bottom:32px;">Book Your AI Opportunity Session →</a>
+  <div style="border-top:1px solid #1f2937;padding-top:24px;">
+    <p style="color:#6B7280;font-size:12px;margin:0;">hello@clarivisintelligence.com · <a href="#" style="color:#6B7280;">Unsubscribe</a></p>
   </div>
 </div>
 </body></html>`
@@ -151,7 +185,11 @@ export async function POST(request: NextRequest) {
           from: fromProspect,
           to: userProfile.email,
           subject: `Your AI Opportunity Snapshot — ${userProfile.company || userProfile.name}`,
-          html: emailHTML
+          html: emailHTML,
+          attachments: pdfBuffer ? [{
+            filename: `Clarivis-AI-Snapshot-${userProfile.company || userProfile.name}.pdf`,
+            content: pdfBuffer,
+          }] : undefined
         }),
         resend.emails.send({
           from: fromInternal,
