@@ -83,11 +83,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       response: result.content[0].text,
       isLastTurn,
-      // Return log metadata so the client can pass it to log-conversation
       logData: {
-        model: activeModel.name,
-        modelString: activeModel.model_string,
-        systemPromptVersion: String(activePrompt.version_number),
+        model: activeModel.model_string,
+        systemPromptVersion: activePrompt.version_number,
         promptVersionId: activePrompt.id,
         modelId: activeModel.id,
       }
