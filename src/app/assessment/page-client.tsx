@@ -63,15 +63,21 @@ function isContactValid(f:FormData) {
     phoneDigits.length >= 7  // minimum 7 digits — covers international formats
   );
 }
-function getDefaultOpps(industry:string):Opp[] {
-  return industry==="Real Estate" ? [
-    {rank:1,title:"AI Lead Qualifier",problem:"Slow lead response losing site visits",solution:"Automated response within 60 seconds",indicativeROI:"Up to 40% more site visits booked",timeToROI:"4-6 weeks"},
-    {rank:2,title:"Sales Pipeline Dashboard",problem:"No live pipeline visibility",solution:"Real-time management intelligence",indicativeROI:"Real-time management decisions",timeToROI:"4-6 weeks"},
-    {rank:3,title:"Collections Agent",problem:"Manual payment follow-up",solution:"Automated reminders via voice and WhatsApp",indicativeROI:"Up to 60% fewer overdue accounts",timeToROI:"3-4 weeks"},
-  ] : [
-    {rank:1,title:"Patient Appointment Agent",problem:"High no-show rate costing revenue",solution:"Automated reminders at 48h, 24h, 2h",indicativeROI:"Up to 40% reduction in no-shows",timeToROI:"3-4 weeks"},
-    {rank:2,title:"Billing Automation",problem:"Manual billing errors",solution:"Automated invoice generation and reconciliation",indicativeROI:"Revenue cycle errors reduced to zero",timeToROI:"4-6 weeks"},
-    {rank:3,title:"Clinical Dashboard",problem:"No operational visibility",solution:"Live dashboard across all departments",indicativeROI:"Management reporting fully automated",timeToROI:"4-6 weeks"},
+function getDefaultOpps(industry: string): Opp[] {
+  if (industry === 'Real Estate') return [
+    { rank:1, title:'AI Lead Qualifier', problem:'Slow lead response losing site visits', solution:'Automated response within 60 seconds', indicativeROI:'Up to 40% more site visits booked', timeToROI:'4-6 weeks' },
+    { rank:2, title:'Sales Pipeline Dashboard', problem:'No live pipeline visibility', solution:'Real-time management intelligence', indicativeROI:'Real-time management decisions', timeToROI:'4-6 weeks' },
+    { rank:3, title:'Collections Agent', problem:'Manual payment follow-up', solution:'Automated reminders via voice and WhatsApp', indicativeROI:'Up to 60% fewer overdue accounts', timeToROI:'3-4 weeks' },
+  ];
+  if (industry === 'Agribusiness') return [
+    { rank:1, title:'Farm Operations Dashboard', problem:'No visibility across land, labour, and crop cycles', solution:'Live dashboard consolidating all operational data', indicativeROI:'Management decisions based on real data', timeToROI:'4-6 weeks' },
+    { rank:2, title:'Labour Attendance Agent', problem:'Manual and self-reported attendance across large teams', solution:'Automated daily attendance tracking via WhatsApp', indicativeROI:'Up to 80% reduction in attendance disputes', timeToROI:'3-4 weeks' },
+    { rank:3, title:'Investor Pipeline Tracker', problem:'Investor pipeline managed on WhatsApp and spreadsheets', solution:'Structured CRM with automated follow-up reminders', indicativeROI:'Full pipeline visibility for leadership', timeToROI:'4-5 weeks' },
+  ];
+  return [
+    { rank:1, title:'Patient Appointment Agent', problem:'High no-show rate costing revenue', solution:'Automated reminders at 48h, 24h, 2h', indicativeROI:'Up to 40% reduction in no-shows', timeToROI:'3-4 weeks' },
+    { rank:2, title:'Billing Automation', problem:'Manual billing errors', solution:'Automated invoice generation and reconciliation', indicativeROI:'Revenue cycle errors reduced to zero', timeToROI:'4-6 weeks' },
+    { rank:3, title:'Clinical Dashboard', problem:'No operational visibility', solution:'Live dashboard across all departments', indicativeROI:'Management reporting fully automated', timeToROI:'4-6 weeks' },
   ];
 }
 

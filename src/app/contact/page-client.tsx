@@ -81,6 +81,7 @@ export default function ContactPage() {
                       <select className="w-full bg-[#0d1117] border border-[#1f2937] rounded-[10px] px-5 py-3.5 text-white text-[15px] focus:outline-none focus:border-[#0F6E56] focus:shadow-[0_0_10px_rgba(15,110,86,0.2)] transition-all appearance-none cursor-pointer">
                         <option>Real Estate</option>
                         <option>Healthcare</option>
+                        <option>Agribusiness</option>
                         <option>Other</option>
                       </select>
                       <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
