@@ -77,7 +77,7 @@ const SnapshotDocument = ({ data }: { data: any }) => {
       <Page size="A4" style={styles.page}>
         <View style={styles.topBar} />
         <View style={{ position: 'absolute', top: 36, left: 36 }}>
-          <Image src="https://clarivisintelligence.com/images/logo.png" style={{ width: 260, height: 65, objectFit: 'contain' }} />
+          <Image src="https://clarivisintelligence.com/images/logo.png" style={{ width: 280, height: 70 }} />
         </View>
         <View style={{ padding: 50 }}>
           <View style={{ height: 65 }} />
@@ -196,12 +196,12 @@ const SnapshotDocument = ({ data }: { data: any }) => {
               <Text style={{ color: '#CBD5E1', fontSize: 10, lineHeight: 1.5, marginTop: 3 }}>{opp.solution}</Text>
             </View>
 
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ backgroundColor: '#052E16', borderWidth: 1, borderColor: '#0F6E56', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5, marginRight: 8 }}>
-                <Text style={{ color: '#0F6E56', fontSize: 9, fontWeight: 'bold' }}>ROI: {opp.indicativeROI}</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
+              <View style={{ backgroundColor: '#052E16', borderWidth: 1, borderColor: '#0F6E56', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5, marginRight: 8, flexShrink: 1, maxWidth: '60%' }}>
+                <Text style={{ color: '#0F6E56', fontSize: 9, fontWeight: 'bold', flexWrap: 'wrap' }}>ROI: {opp.indicativeROI}</Text>
               </View>
-              <View style={{ backgroundColor: '#1F2937', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5 }}>
-                <Text style={{ color: '#6B7280', fontSize: 9 }}>Deploy: {opp.timeToROI}</Text>
+              <View style={{ backgroundColor: '#1F2937', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5, flexShrink: 1, maxWidth: '60%' }}>
+                <Text style={{ color: '#6B7280', fontSize: 9, flexWrap: 'wrap' }}>Deploy: {opp.timeToROI}</Text>
               </View>
             </View>
           </View>
