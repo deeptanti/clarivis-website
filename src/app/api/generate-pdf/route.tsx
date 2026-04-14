@@ -77,7 +77,7 @@ const SnapshotDocument = ({ data }: { data: any }) => {
       <Page size="A4" style={styles.page}>
         <View style={styles.topBar} />
         <View style={{ position: 'absolute', top: 36, left: 36 }}>
-          <Image src="https://clarivisintelligence.com/images/logo.png" style={{ width: 280, height: 70 }} />
+          <Image src="https://clarivisintelligence.com/images/logo.png" style={{ width: 280 }} />
         </View>
         <View style={{ padding: 50 }}>
           <View style={{ height: 65 }} />
@@ -172,36 +172,36 @@ const SnapshotDocument = ({ data }: { data: any }) => {
       </Page>
 
       {/* PAGE 3 — YOUR TOP AI OPPORTUNITIES */}
-      <Page size="A4" style={[styles.page, styles.pageInner]}>
+      <Page size="A4" style={[styles.page, { padding: 32 }]}>
         <Text style={styles.sectionHeader}>YOUR TOP AI OPPORTUNITIES</Text>
         <View style={styles.sectionLine} />
         <Text style={{ color: '#6B7280', fontSize: 10, fontStyle: 'italic', marginBottom: 20 }}>Based on your assessment, these are the three highest-impact AI opportunities identified for {userProfile?.company || 'your business'}.</Text>
 
         {opps.slice(0, 3).map((opp: any, idx: number) => (
-          <View key={idx} style={{ backgroundColor: '#111827', borderWidth: 1, borderColor: '#1F2937', borderRadius: 10, padding: 20, marginBottom: 14 }}>
+          <View key={idx} style={{ backgroundColor: '#111827', borderWidth: 1, borderColor: '#1F2937', borderRadius: 10, padding: 14, marginBottom: 10 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
               <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: '#0F6E56', justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ color: '#FFFFFF', fontSize: 10, fontWeight: 'bold' }}>0{opp.rank}</Text>
               </View>
-              <Text style={{ color: '#FFFFFF', fontSize: 14, fontWeight: 'bold', marginLeft: 10, flex: 1 }}>{opp.title}</Text>
+              <Text style={{ color: '#FFFFFF', fontSize: 13, fontWeight: 'bold', marginLeft: 10, flex: 1 }}>{opp.title}</Text>
             </View>
 
             <View style={{ marginBottom: 8 }}>
               <Text style={{ color: '#0F6E56', fontSize: 8, fontWeight: 'bold', letterSpacing: 1 }}>PROBLEM</Text>
-              <Text style={{ color: '#9CA3AF', fontSize: 10, lineHeight: 1.5, marginTop: 3 }}>{opp.problem}</Text>
+              <Text style={{ color: '#9CA3AF', fontSize: 9.5, lineHeight: 1.5, marginTop: 3 }}>{opp.problem}</Text>
             </View>
 
             <View style={{ marginBottom: 12 }}>
               <Text style={{ color: '#0F6E56', fontSize: 8, fontWeight: 'bold', letterSpacing: 1 }}>SOLUTION</Text>
-              <Text style={{ color: '#CBD5E1', fontSize: 10, lineHeight: 1.5, marginTop: 3 }}>{opp.solution}</Text>
+              <Text style={{ color: '#CBD5E1', fontSize: 9.5, lineHeight: 1.5, marginTop: 3 }}>{opp.solution}</Text>
             </View>
 
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
-              <View style={{ backgroundColor: '#052E16', borderWidth: 1, borderColor: '#0F6E56', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5, marginRight: 8, flexShrink: 1, maxWidth: '60%' }}>
-                <Text style={{ color: '#0F6E56', fontSize: 9, fontWeight: 'bold', flexWrap: 'wrap' }}>ROI: {opp.indicativeROI}</Text>
+              <View style={{ backgroundColor: '#052E16', borderWidth: 1, borderColor: '#0F6E56', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5, marginRight: 8, flexShrink: 1, maxWidth: '60%', alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ color: '#0F6E56', fontSize: 9, fontWeight: 'bold', flexWrap: 'wrap', textAlign: 'center' }}>ROI: {opp.indicativeROI}</Text>
               </View>
-              <View style={{ backgroundColor: '#1F2937', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5, flexShrink: 1, maxWidth: '60%' }}>
-                <Text style={{ color: '#6B7280', fontSize: 9, flexWrap: 'wrap' }}>Deploy: {opp.timeToROI}</Text>
+              <View style={{ backgroundColor: '#1F2937', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5, flexShrink: 1, maxWidth: '60%', alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ color: '#6B7280', fontSize: 9, flexWrap: 'wrap', textAlign: 'center' }}>Deploy: {opp.timeToROI}</Text>
               </View>
             </View>
           </View>
@@ -249,13 +249,13 @@ const SnapshotDocument = ({ data }: { data: any }) => {
 
       {/* PAGE 5 — YOUR NEXT STEP */}
       <Page size="A4" style={[styles.page, styles.pageInner]}>
-        <View style={{ marginBottom: 28 }}>
-          <Text style={{ color: '#FFFFFF', fontSize: 22, fontWeight: 'bold', lineHeight: 1.3 }}>The snapshot reveals the opportunity.</Text>
-          <Text style={{ color: '#0F6E56', fontSize: 22, fontWeight: 'bold', lineHeight: 1.3 }}>The audit reveals the full picture.</Text>
+        <View style={{ marginBottom: 16 }}>
+          <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 'bold', lineHeight: 1.3 }}>The snapshot reveals the opportunity.</Text>
+          <Text style={{ color: '#0F6E56', fontSize: 18, fontWeight: 'bold', lineHeight: 1.3 }}>The audit reveals the full picture.</Text>
           <Text style={{ color: '#9CA3AF', fontSize: 11, lineHeight: 1.7, marginTop: 12 }}>This report was generated from a conversation. The Clarivis AI Operational Audit goes deeper — interviewing your team, mapping every process, and producing a complete implementation plan with documented ROI projections.</Text>
         </View>
 
-        <View style={{ marginBottom: 24 }}>
+        <View style={{ marginBottom: 14 }}>
           <Text style={styles.sectionHeader}>WHAT THE AUDIT DELIVERS</Text>
           <View style={styles.sectionLine} />
 
@@ -270,7 +270,7 @@ const SnapshotDocument = ({ data }: { data: any }) => {
                 { title: "Vendor and Tool Recommendations", desc: "Exact tools, exact integrations, exact costs" }
               ];
               const DeliverableCard = ({ item }: { item: any }) => (
-                <View style={{ flex: 1, backgroundColor: '#111827', borderWidth: 1, borderColor: '#1F2937', borderRadius: 6, padding: 12, flexDirection: 'row', alignItems: 'flex-start' }}>
+                <View style={{ flex: 1, backgroundColor: '#111827', borderWidth: 1, borderColor: '#1F2937', borderRadius: 6, padding: 10, flexDirection: 'row', alignItems: 'flex-start' }}>
                   <View style={{ width: 18, height: 18, borderRadius: 9, backgroundColor: '#0F6E56', justifyContent: 'center', alignItems: 'center', flexShrink: 0 }}>
                     <Text style={{ color: '#FFFFFF', fontSize: 8, fontWeight: 'bold' }}>✓</Text>
                   </View>
@@ -281,7 +281,7 @@ const SnapshotDocument = ({ data }: { data: any }) => {
                 </View>
               );
               return (
-                <View key={i} style={{ flexDirection: 'row', gap: 10, marginBottom: 10 }}>
+                <View key={i} style={{ flexDirection: 'row', gap: 10, marginBottom: 8 }}>
                   <DeliverableCard item={deliverables[i]} />
                   <DeliverableCard item={deliverables[i + 1]} />
                 </View>
@@ -290,36 +290,45 @@ const SnapshotDocument = ({ data }: { data: any }) => {
           </View>
         </View>
 
-        <View style={{ backgroundColor: '#0F6E56', borderRadius: 10, padding: 24, marginTop: 20, flexDirection: 'row' }}>
+        <View style={{ backgroundColor: '#0F6E56', borderRadius: 10, padding: 18, marginTop: 14, flexDirection: 'row' }}>
           <View style={{ width: '65%', backgroundColor: 'transparent' }}>
             <Text style={{ color: '#FFFFFF', fontSize: 15, fontWeight: 'bold' }}>The Clarivis AI Operational Audit</Text>
             <Text style={{ color: '#D1FAE5', fontSize: 11, marginTop: 6 }}>4 weeks. 5 sessions. 6 deliverables.</Text>
             <Text style={{ color: '#A7F3D0', fontSize: 10, marginTop: 8, lineHeight: 1.5, fontStyle: 'italic' }}>Clients consistently identify operational savings and revenue opportunities that far exceed the audit investment — typically visible within 90 days of implementation.</Text>
           </View>
           <View style={{ width: '35%', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'transparent' }}>
-            <Link src="https://clarivisintelligence.com/book" style={{ textDecoration: 'none' }}>
+            <Link src="https://clarivisintelligence.com/book" style={{ textDecoration: 'none', marginTop: 16, alignSelf: 'flex-end' }}>
               <View style={{
-                backgroundColor: '#FFFFFF',
-                borderRadius: 6,
-                paddingVertical: 10,
-                paddingHorizontal: 20,
+                borderWidth: 1.5,
+                borderColor: '#FFFFFF',
+                borderRadius: 4,
+                paddingVertical: 8,
+                paddingHorizontal: 14,
                 alignSelf: 'flex-start',
-                marginTop: 12,
               }}>
                 <Text style={{
-                  color: '#0F6E56',
-                  fontSize: 10,
+                  color: '#FFFFFF',
+                  fontSize: 9,
                   fontFamily: 'Helvetica-Bold',
-                  textDecoration: 'none',
+                  letterSpacing: 1,
+                  textTransform: 'uppercase',
                 }}>
-                  Book Your Free AI Opportunity Session →
+                  Book a Free Session
+                </Text>
+                <Text style={{
+                  color: '#D1FAE5',
+                  fontSize: 8,
+                  marginTop: 3,
+                  letterSpacing: 0.5,
+                }}>
+                  clarivisintelligence.com/book
                 </Text>
               </View>
             </Link>
           </View>
         </View>
 
-        <View style={{ backgroundColor: '#111827', borderWidth: 1, borderColor: '#1F2937', borderLeftWidth: 3, borderLeftColor: '#0F6E56', borderRadius: 8, padding: 16, marginTop: 24 }}>
+        <View style={{ backgroundColor: '#111827', borderWidth: 1, borderColor: '#1F2937', borderLeftWidth: 3, borderLeftColor: '#0F6E56', borderRadius: 8, padding: 16, marginTop: 14 }}>
           <Text style={{ color: '#0F6E56', fontSize: 8, fontWeight: 'bold', letterSpacing: 1.5 }}>RECOMMENDED FIRST STEP</Text>
           <Text style={{ color: '#CBD5E1', fontSize: 11, lineHeight: 1.6, marginTop: 6 }}>{snapshotContent?.recommendedFirstStep || "Book a free AI Opportunity Session to discuss your highest-priority opportunity in detail."}</Text>
         </View>
