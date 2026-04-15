@@ -32,7 +32,7 @@ export default function AboutPage() {
                 We built Clarivis Intelligence to give growing businesses enterprise-grade AI without the enterprise price tag.
               </h1>
               <p className="text-[#9CA3AF] text-[18px] leading-[1.8] mt-6 lg:mt-8">
-                Most businesses know AI can help them. Few know exactly where to start, what it will cost, or what ROI to expect. We answer all three questions before we charge a single rupee.
+                Most businesses know AI can help them. Few know exactly where to start, what it will cost, or what return to expect. We answer all three questions before we charge a single cent.
               </p>
             </motion.div>
 
@@ -54,7 +54,7 @@ export default function AboutPage() {
                   <div className="h-px w-full bg-[#1f2937]" />
                   {/* Stat 2 */}
                   <div>
-                    <div className="text-[#0F6E56] text-[48px] font-extrabold leading-none tracking-tight">2</div>
+                    <div className="text-[#0F6E56] text-[48px] font-extrabold leading-none tracking-tight">3</div>
                     <div className="text-[#9CA3AF] text-[15px] mt-2">Industries. Infinite operational depth.</div>
                   </div>
                   <div className="h-px w-full bg-[#1f2937]" />
@@ -63,12 +63,7 @@ export default function AboutPage() {
                     <div className="text-[#0F6E56] text-[48px] font-extrabold leading-none tracking-tight">4-6</div>
                     <div className="text-[#9CA3AF] text-[15px] mt-2">Weeks from audit to deployed AI system</div>
                   </div>
-                  <div className="h-px w-full bg-[#1f2937]" />
-                  {/* Stat 4 */}
-                  <div>
-                    <div className="text-[#0F6E56] text-[48px] font-extrabold leading-none tracking-tight">150K+</div>
-                    <div className="text-[#9CA3AF] text-[15px] mt-2">Users served on AI systems built by our founder</div>
-                  </div>
+
                 </div>
               </div>
             </motion.div>
@@ -91,13 +86,104 @@ export default function AboutPage() {
               &ldquo;
             </div>
             <p className="text-white text-[22px] lg:text-[28px] font-semibold leading-[1.6] italic relative z-10">
-              Clarity in every decision. Intelligence in every system. We do not just consult. We build, deploy, and measure.
+              Clarity in every decision. Intelligence in every system.
             </p>
             <div className="w-16 h-[2px] bg-[#0F6E56] mx-auto mt-10 mb-5 opacity-80" />
             <div className="text-[#9CA3AF] text-sm tracking-wide">
               Clarivis Intelligence &mdash; Rajkot, India
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Capabilities Section */}
+      <section className="relative w-full py-[100px] bg-[#0a0f1a] overflow-hidden">
+        <div className="container relative z-10 mx-auto px-6 max-w-[1200px]">
+          <div className="flex flex-col items-center text-center mb-16">
+            <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-[#0F6E56]/30 bg-[#0F6E56]/15">
+              <span className="text-[#0F6E56] text-xs font-semibold uppercase tracking-widest">WHAT WE DO</span>
+            </div>
+            <h2 className="text-white text-[32px] lg:text-[44px] font-bold">
+              Six capabilities. One integrated practice.
+            </h2>
+            <p className="text-[#9CA3AF] text-[18px] mt-4 max-w-[600px]">
+              Every engagement draws on the full stack — from diagnosis to deployment to long-term optimisation.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: (
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21a48.309 48.309 0 01-8.135-.687c-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                  </svg>
+                ),
+                label: "We Diagnose",
+                desc: "Before we recommend anything, we map exactly where your business is losing time and money. Our audit process surfaces the real pain, not the assumed pain."
+              },
+              {
+                icon: (
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
+                  </svg>
+                ),
+                label: "We Strategise",
+                desc: "We translate audit findings into a prioritised 90-day roadmap — ranked by ROI, sequenced for your team's capacity, and grounded in what is actually buildable."
+              },
+              {
+                icon: (
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                  </svg>
+                ),
+                label: "We Build",
+                desc: "Our team designs and deploys AI systems purpose-built for your operation. Not off-the-shelf software. Not generic automation. Systems built around how your business actually works."
+              },
+              {
+                icon: (
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                  </svg>
+                ),
+                label: "We Deploy",
+                desc: "We handle implementation end to end — integration, testing, team onboarding, and go-live. Most clients have a live AI system in their business within four to six weeks."
+              },
+              {
+                icon: (
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                  </svg>
+                ),
+                label: "We Measure",
+                desc: "Every system we build is tracked against the ROI baseline established in the audit. You always know exactly what working with us is worth in concrete terms."
+              },
+              {
+                icon: (
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                  </svg>
+                ),
+                label: "We Optimise",
+                desc: "Post-deployment, we monitor performance, improve models, and identify the next highest-impact opportunity. Our retainer clients compound their AI advantage every quarter."
+              }
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: i * 0.08, ease: "easeOut" }}
+                className="flex flex-col items-center text-center p-8 bg-[#111827] border border-[#1f2937] rounded-[16px] hover:border-[#0F6E56]/40 transition-colors group"
+              >
+                <div className="text-[#0F6E56] mb-5 group-hover:scale-110 transition-transform duration-300">
+                  {item.icon}
+                </div>
+                <h3 className="text-[#0F6E56] text-[18px] font-bold mb-3">{item.label}</h3>
+                <p className="text-[#9CA3AF] text-[15px] leading-[1.7]">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -126,7 +212,7 @@ export default function AboutPage() {
                 Founder, Clarivis Intelligence 
               </div>
               <p className="text-[#9CA3AF] text-[16px] leading-[1.8] mt-6">
-                Before founding Clarivis Intelligence, I built AI and data systems that operated at scale. At Medmate in Australia, I joined as a backend engineer during Covid and architected core infrastructure through a complete company pivot, eventually leading ML development for fraud prevention and recommendations on a platform serving over 150,000 users. I then completed a Master of Science in Analytics at Harrisburg University in the United States, specialising in AI, and Cloud Engineering. I also co-founded Assiduous Technology, an AI consultancy serving the US market. Clarivis Intelligence brings that international experience to real estate and healthcare businesses in India.
+                Before founding Clarivis Intelligence, I built AI and data systems that operated at scale. At Medmate in Australia, I joined as a backend engineer during Covid and architected core infrastructure through a complete company pivot, eventually leading ML development for fraud prevention and recommendations on a platform serving over 150,000 users. I then completed a Master of Science in Analytics at Harrisburg University in the United States, specialising in AI, and Cloud Engineering. Clarivis Intelligence brings that international experience to real estate, healthcare, and agribusiness operators across India.
               </p>
               
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 mt-8">
