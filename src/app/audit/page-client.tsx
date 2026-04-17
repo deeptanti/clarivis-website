@@ -338,9 +338,9 @@ export default function AuditPage() {
                     transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
                     className={`relative ml-[80px] lg:ml-0 w-[calc(100%-80px)] lg:w-1/2 ${isLeft ? "lg:pr-12" : "lg:pl-12"}`}
                   >
-                    <div className={`bg-[#111827] border border-[#1f2937] rounded-[16px] p-[36px] lg:max-w-[500px] ${isLeft ? "lg:ml-auto lg:text-right" : ""} relative`}>
+                    <div className={`bg-[#111827] border border-[#1f2937] rounded-[16px] p-5 sm:p-[36px] lg:max-w-[500px] ${isLeft ? "lg:ml-auto lg:text-right" : ""} relative`}>
                       {/* Arrow */}
-                      <div className={`lg:hidden absolute top-[36px] -left-[24px] text-[#0F6E56]`}>
+                      <div className={`lg:hidden absolute top-[20px] sm:top-[36px] -left-[24px] text-[#0F6E56]`}>
                         <ChevronLeft className="w-8 h-8" />
                       </div>
                       {isLeft ? (

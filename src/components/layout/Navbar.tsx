@@ -79,7 +79,7 @@ export default function Navbar() {
             {isMobileMenuOpen ? (
               <X size={24} />
             ) : (
-              <Menu size={24} className={isScrolled ? "text-white" : "text-[#1A1A2E] sm:text-white drop-shadow-lg"} />
+              <Menu size={24} className="text-white" />
             )}
           </button>
         </div>

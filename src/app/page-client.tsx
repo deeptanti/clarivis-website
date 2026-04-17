@@ -266,7 +266,7 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.5, delay: 0, ease: "easeOut" }}
-              className="group bg-[#111827] border border-[#1f2937] rounded-[16px] p-10 pb-12 transition-all duration-300 hover:border-[#0F6E56] hover:shadow-[0_0_20px_rgba(15,110,86,0.15)] hover:bg-[#152033]"
+              className="group bg-[#111827] border border-[#1f2937] rounded-[16px] p-6 pb-8 sm:p-10 sm:pb-12 transition-all duration-300 hover:border-[#0F6E56] hover:shadow-[0_0_20px_rgba(15,110,86,0.15)] hover:bg-[#152033]"
             >
               <Filter className="w-12 h-12 text-[#0F6E56] mb-6" />
               <h3 className="text-white font-bold text-[22px] mb-4">Leads fall through the cracks</h3>
@@ -281,7 +281,7 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.5, delay: 0.12, ease: "easeOut" }}
-              className="group bg-[#111827] border border-[#1f2937] rounded-[16px] p-10 pb-12 transition-all duration-300 hover:border-[#0F6E56] hover:shadow-[0_0_20px_rgba(15,110,86,0.15)] hover:bg-[#152033]"
+              className="group bg-[#111827] border border-[#1f2937] rounded-[16px] p-6 pb-8 sm:p-10 sm:pb-12 transition-all duration-300 hover:border-[#0F6E56] hover:shadow-[0_0_20px_rgba(15,110,86,0.15)] hover:bg-[#152033]"
             >
               <TrendingDown className="w-12 h-12 text-[#0F6E56] mb-6" />
               <h3 className="text-white font-bold text-[22px] mb-4">No visibility into your own business</h3>
@@ -296,7 +296,7 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.5, delay: 0.24, ease: "easeOut" }}
-              className="group bg-[#111827] border border-[#1f2937] rounded-[16px] p-10 pb-12 transition-all duration-300 hover:border-[#0F6E56] hover:shadow-[0_0_20px_rgba(15,110,86,0.15)] hover:bg-[#152033]"
+              className="group bg-[#111827] border border-[#1f2937] rounded-[16px] p-6 pb-8 sm:p-10 sm:pb-12 transition-all duration-300 hover:border-[#0F6E56] hover:shadow-[0_0_20px_rgba(15,110,86,0.15)] hover:bg-[#152033]"
             >
               <Clock className="w-12 h-12 text-[#0F6E56] mb-6" />
               <h3 className="text-white font-bold text-[22px] mb-4">Your team is drowning in manual work</h3>
@@ -378,9 +378,9 @@ export default function Home() {
                 }}
                 className="relative ml-[80px] lg:ml-0 lg:w-1/2 lg:pr-12 w-[calc(100%-80px)]"
               >
-                <div className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-[36px] lg:max-w-[500px] lg:ml-auto relative lg:text-right text-left">
+                <div className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-5 sm:p-[36px] lg:max-w-[500px] lg:ml-auto relative lg:text-right text-left">
                   {/* Arrows */}
-                  <div className="lg:hidden absolute top-[36px] -left-[24px] text-[#0F6E56]">
+                  <div className="lg:hidden absolute top-[20px] sm:top-[36px] -left-[24px] text-[#0F6E56]">
                     <ChevronLeft className="w-8 h-8" />
                   </div>
                   <div className="hidden lg:block absolute top-[36px] -right-[24px] text-[#0F6E56]">
@@ -390,7 +390,7 @@ export default function Home() {
                   <div className="text-[#0F6E56] text-[12px] uppercase tracking-[0.2em] opacity-60 mb-2 font-bold">Stage 01</div>
                   <h3 className="text-white font-bold text-[22px] mb-3">Clarivis Assessment</h3>
                   <p className="text-[#CBD5E1] text-[15px] leading-[1.7]">
-                    A structured self-serve assessment that maps your AI opportunities. Complete it in 5 to 30 minutes and receive your personalised AI Opportunity Snapshot instantly.
+                    A structured self-serve assessment that maps your AI opportunities. Complete it in 5 to 20 minutes and receive your personalised AI Opportunity Snapshot instantly.
                   </p>
                 </div>
               </motion.div>
@@ -415,8 +415,8 @@ export default function Home() {
                 }}
                 className="relative ml-[80px] lg:ml-0 lg:w-1/2 lg:pl-12 w-[calc(100%-80px)]"
               >
-                <div className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-[36px] lg:max-w-[500px] relative text-left">
-                  <div className="absolute top-[36px] -left-[24px] text-[#0F6E56]">
+                <div className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-5 sm:p-[36px] lg:max-w-[500px] relative text-left">
+                  <div className="absolute top-[20px] sm:top-[36px] -left-[24px] text-[#0F6E56]">
                     <ChevronLeft className="w-8 h-8" />
                   </div>
                   <div className="text-[#0F6E56] text-[12px] uppercase tracking-[0.2em] opacity-60 mb-2 font-bold">Stage 02</div>
@@ -444,8 +444,8 @@ export default function Home() {
                 }}
                 className="relative ml-[80px] lg:ml-0 lg:w-1/2 lg:pr-12 w-[calc(100%-80px)]"
               >
-                <div className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-[36px] lg:max-w-[500px] lg:ml-auto relative lg:text-right text-left">
-                  <div className="lg:hidden absolute top-[36px] -left-[24px] text-[#0F6E56]">
+                <div className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-5 sm:p-[36px] lg:max-w-[500px] lg:ml-auto relative lg:text-right text-left">
+                  <div className="lg:hidden absolute top-[20px] sm:top-[36px] -left-[24px] text-[#0F6E56]">
                     <ChevronLeft className="w-8 h-8" />
                   </div>
                   <div className="hidden lg:block absolute top-[36px] -right-[24px] text-[#0F6E56]">
@@ -479,8 +479,8 @@ export default function Home() {
                 }}
                 className="relative ml-[80px] lg:ml-0 lg:w-1/2 lg:pl-12 w-[calc(100%-80px)]"
               >
-                <div className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-[36px] lg:max-w-[440px] relative text-left">
-                  <div className="absolute top-[36px] -left-[24px] text-[#0F6E56]">
+                <div className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-5 sm:p-[36px] lg:max-w-[440px] relative text-left">
+                  <div className="absolute top-[20px] sm:top-[36px] -left-[24px] text-[#0F6E56]">
                     <ChevronLeft className="w-8 h-8" />
                   </div>
                   <div className="text-[#0F6E56] text-[12px] uppercase tracking-[0.2em] opacity-60 mb-2 font-bold">Stage 04</div>
@@ -758,22 +758,22 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             className="flex justify-center mb-16"
           >
-            <div className="inline-flex rounded-lg p-1 bg-[#111827] border border-[#1f2937]">
+            <div className="flex flex-col xs:flex-row sm:inline-flex rounded-lg p-1 bg-[#111827] border border-[#1f2937] gap-1 sm:gap-0 w-full sm:w-auto">
               <button
                 onClick={() => setActiveProductTab("real-estate")}
-                className={`py-2 px-6 rounded-md text-sm font-medium transition-all duration-300 ${activeProductTab === "real-estate" ? "bg-[#0F6E56] text-white shadow-md shadow-[#0F6E56]/20" : "text-[#9CA3AF] hover:text-white"}`}
+                className={`py-2 px-4 sm:px-6 rounded-md text-sm font-medium transition-all duration-300 ${activeProductTab === "real-estate" ? "bg-[#0F6E56] text-white shadow-md shadow-[#0F6E56]/20" : "text-[#9CA3AF] hover:text-white"}`}
               >
                 Real Estate
               </button>
               <button
                 onClick={() => setActiveProductTab("healthcare")}
-                className={`py-2 px-6 rounded-md text-sm font-medium transition-all duration-300 ${activeProductTab === "healthcare" ? "bg-[#0F6E56] text-white shadow-md shadow-[#0F6E56]/20" : "text-[#9CA3AF] hover:text-white"}`}
+                className={`py-2 px-4 sm:px-6 rounded-md text-sm font-medium transition-all duration-300 ${activeProductTab === "healthcare" ? "bg-[#0F6E56] text-white shadow-md shadow-[#0F6E56]/20" : "text-[#9CA3AF] hover:text-white"}`}
               >
                 Healthcare
               </button>
               <button
                 onClick={() => setActiveProductTab("agribusiness")}
-                className={`py-2 px-6 rounded-md text-sm font-medium transition-all duration-300 ${activeProductTab === "agribusiness" ? "bg-[#0F6E56] text-white shadow-md shadow-[#0F6E56]/20" : "text-[#9CA3AF] hover:text-white"}`}
+                className={`py-2 px-4 sm:px-6 rounded-md text-sm font-medium transition-all duration-300 ${activeProductTab === "agribusiness" ? "bg-[#0F6E56] text-white shadow-md shadow-[#0F6E56]/20" : "text-[#9CA3AF] hover:text-white"}`}
               >
                 Agribusiness
               </button>

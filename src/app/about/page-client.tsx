@@ -90,7 +90,7 @@ export default function AboutPage() {
             </p>
             <div className="w-16 h-[2px] bg-[#0F6E56] mx-auto mt-10 mb-5 opacity-80" />
             <div className="text-[#9CA3AF] text-sm tracking-wide">
-              Clarivis Intelligence &mdash; India
+              Clarivis Intelligence, India
             </div>
           </motion.div>
         </div>
@@ -217,13 +217,13 @@ export default function AboutPage() {
               
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 mt-8">
                 <div className="inline-flex items-center justify-center px-4 py-2 rounded-full border border-[#0F6E56]/40 bg-[#111827]">
-                  <span className="text-white text-[13px] font-medium">B.Tech &mdash; RMIT University, Australia</span>
+                  <span className="text-white text-[13px] font-medium">B.Tech, RMIT University, Australia</span>
                 </div>
                 <div className="inline-flex items-center justify-center px-4 py-2 rounded-full border border-[#0F6E56]/40 bg-[#111827]">
-                  <span className="text-white text-[13px] font-medium">M.Sc Analytics &mdash; Harrisburg University, USA</span>
+                  <span className="text-white text-[13px] font-medium">M.Sc Analytics, Harrisburg University, USA</span>
                 </div>
                 <div className="inline-flex items-center justify-center px-4 py-2 rounded-full border border-[#0F6E56]/40 bg-[#111827]">
-                  <span className="text-white text-[13px] font-medium">Co-Founder &mdash; Assiduous Technology, USA</span>
+                  <span className="text-white text-[13px] font-medium">Co-Founder, Assiduous Technology, USA</span>
                 </div>
                 <div className="inline-flex items-center justify-center px-4 py-2 rounded-full border border-[#0F6E56]/40 bg-[#111827]">
                   <span className="text-white text-[13px] font-medium">Microsoft Certified: Azure Data Scientist Associate</span>

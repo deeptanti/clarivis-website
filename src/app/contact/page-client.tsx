@@ -127,7 +127,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-[#9CA3AF] text-sm mb-1">Email us</h3>
-                  <a href="mailto:hello@clarivisintelligence.com" className="text-white text-[16px] font-medium hover:text-[#0F6E56] transition-colors block">
+                  <a href="mailto:hello@clarivisintelligence.com" className="text-white text-[16px] font-medium hover:text-[#0F6E56] transition-colors block break-all">
                     hello@clarivisintelligence.com
                   </a>
                 </div>
