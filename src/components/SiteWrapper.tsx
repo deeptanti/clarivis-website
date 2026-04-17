@@ -8,15 +8,16 @@ import CookieBanner from "@/components/CookieBanner";
 export default function SiteWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isPortal = pathname?.startsWith('/portal')
+  const isFullScreen = isPortal || pathname === '/assessment'
 
   return (
     <>
-      {!isPortal && <Navbar />}
+      {!isFullScreen && <Navbar />}
       <main className="flex-grow">
         {children}
       </main>
-      {!isPortal && <Footer />}
-      {!isPortal && <CookieBanner />}
+      {!isFullScreen && <Footer />}
+      {!isFullScreen && <CookieBanner />}
     </>
   )
 }
