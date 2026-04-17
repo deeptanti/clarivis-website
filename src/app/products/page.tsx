@@ -1,8 +1,9 @@
 import ProductsPageContent from './page-client';
 
 export const metadata = {
-  title: 'AI Products Suite for Real Estate, Healthcare, and Agribusiness',
-  description: 'Purpose-built AI systems for real estate, healthcare, and agribusiness. From lead qualification to HR automation. Deployed in weeks, measured from day one.'
+  title: 'AI Products — Real Estate, Healthcare and Agribusiness Systems India',
+  description: 'Purpose-built AI systems for Indian businesses. Real estate lead qualification, broker portals, and collections agents. Healthcare appointment management and billing automation. Agribusiness workforce tracking and investor pipelines. Deployed in weeks, ROI measured from day one.',
+  alternates: { canonical: 'https://clarivisintelligence.com/products' },
 };
 
 export default function Page() {

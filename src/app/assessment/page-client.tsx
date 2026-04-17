@@ -93,7 +93,7 @@ const pCls = (a:boolean) => `cursor-pointer px-5 py-3 rounded-xl border text-[15
 function TopBar() {
   return (
     <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-[#1f2937] bg-[#0a0f1a]/80 backdrop-blur-md">
-      <Link href="/"><Image src="/images/logo.png" alt="Clarivis" width={100} height={26} /></Link>
+      <Link href="/"><Image src="/images/logo.png" alt="Clarivis Intelligence" width={100} height={26} /></Link>
       <Link href="/" className="flex items-center gap-1.5 text-[#6B7280] text-[13px] hover:text-white transition-colors"><X className="w-4 h-4"/>Exit</Link>
     </div>
   );
@@ -329,7 +329,7 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
     <motion.div variants={phaseV} initial="hidden" animate="show" exit="exit" className="flex h-[calc(100vh-73px)] overflow-hidden">
       {/* Left Panel — desktop only */}
       <div className="hidden lg:flex flex-col w-[300px] shrink-0 bg-[#111827] border-r border-[#1f2937] p-6 overflow-y-auto">
-        <Image src="/images/logo.png" alt="Clarivis" width={110} height={28} className="mb-7"/>
+        <Image src="/images/logo.png" alt="Clarivis Intelligence" width={110} height={28} className="mb-7"/>
         <p className="text-[#0F6E56] text-[11px] font-bold uppercase tracking-wider mb-3">Your Profile</p>
         {([["Name",formData.name],["Company",formData.company],["Industry",formData.industry],["Team",formData.teamSize]] as [string,string][]).filter(([,v])=>v).map(([k,v])=>(
           <div key={k} className="flex justify-between py-2 border-b border-[#1f2937]">

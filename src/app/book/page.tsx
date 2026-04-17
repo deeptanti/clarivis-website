@@ -1,9 +1,9 @@
 import BookPageContent from "./page-client";
 
 export const metadata = {
-  title: "Book an AI Opportunity Session",
-  description:
-    "Book your free 45-minute AI Opportunity Session with Clarivis Intelligence founder Deep Tanti. Walk away with clarity on exactly where AI can transform your business.",
+  title: 'Book a Free AI Opportunity Session — 45 Minutes with Our Founder',
+  description: 'Book a free 45-minute AI Opportunity Session with Clarivis Intelligence. Speak directly with our founder and walk away with a clear, prioritised picture of where AI can generate ROI in your business within 90 days.',
+  alternates: { canonical: 'https://clarivisintelligence.com/book' },
 };
 
 export default function Page() {

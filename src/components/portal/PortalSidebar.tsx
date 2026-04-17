@@ -33,7 +33,7 @@ export function PortalSidebar() {
     <aside className={`${collapsed ? 'w-16' : 'w-60'} min-h-screen bg-[#0d1117] border-r border-[#1f2937] flex flex-col transition-all duration-300 flex-shrink-0`}>
       <div className="p-4 flex items-center justify-between border-b border-[#1f2937]">
         {!collapsed && (
-          <Image src="/images/logo.png" alt="Clarivis" width={120} height={30} />
+          <Image src="/images/logo.png" alt="Clarivis Intelligence" width={120} height={30} />
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}

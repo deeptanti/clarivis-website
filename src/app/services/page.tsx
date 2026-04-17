@@ -1,8 +1,9 @@
 import ServicesPageContent from './page-client';
 
 export const metadata = {
-  title: 'Our Services',
-  description: 'AI consulting and technology services for real estate, healthcare, and agribusiness. Four-stage engagement: free assessment, operational audit, AI build, and ongoing growth plan.'
+  title: 'AI Consulting Services — Real Estate, Healthcare and Agribusiness India',
+  description: 'AI consulting and technology services for real estate developers, healthcare clinics, and agribusiness operators in India. Our four-stage model: free AI assessment, operational audit, custom AI build, and monthly retainer.',
+  alternates: { canonical: 'https://clarivisintelligence.com/services' },
 };
 
 export default function Page() {
