@@ -56,11 +56,9 @@ function isStepValid(step:number,time:TimeOption,f:FormData) {
   }
 }
 function isContactValid(f:FormData) {
-  const phoneDigits = f.phone.replace(/\D/g, '');
   return (
     f.name.trim().length>0 &&
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email) &&
-    phoneDigits.length >= 7  // minimum 7 digits — covers international formats
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)
   );
 }
 function getDefaultOpps(industry: string): Opp[] {
@@ -189,16 +187,17 @@ function Phase2({timeSelected,onSelect,onContinue}:{timeSelected:TimeOption;onSe
 }
 
 /* ─── Phase 3 ── */
-function Phase3({formData,onChange,onContinue,onBack}:{formData:FormData;onChange:(k:keyof FormData,v:string)=>void;onContinue:()=>void;onBack:()=>void}) {
+function Phase3({formData,onChange,onContinue}:{formData:FormData;onChange:(k:keyof FormData,v:string)=>void;onContinue:()=>void}) {
   const valid = isContactValid(formData);
   const phoneDigits = formData.phone.replace(/\D/g, '');
   const phoneInvalid = formData.phone.trim().length > 0 && phoneDigits.length < 7;
   return (
     <motion.div variants={phaseV} initial="hidden" animate="show" exit="exit" className="flex flex-col items-center justify-center min-h-[calc(100vh-73px)] px-6 py-12">
       <div className="w-full max-w-[560px] text-center">
-        <p className="text-[#9CA3AF] text-[12px] uppercase tracking-[0.2em] font-semibold mb-3">BEFORE WE START</p>
+        <AnimatedCheck size={64}/>
+        <p className="text-[#9CA3AF] text-[12px] uppercase tracking-[0.2em] font-semibold mb-3 mt-8">ONE LAST STEP</p>
         <h2 className="text-white text-[32px] lg:text-[36px] font-bold">Where should we send your report?</h2>
-        <p className="text-[#9CA3AF] text-[16px] mt-3 mb-10">We will email your AI Opportunity Snapshot PDF the moment your assessment is complete.</p>
+        <p className="text-[#9CA3AF] text-[16px] mt-3 mb-10">Your AI Opportunity Snapshot is ready. Enter your details and we will send it straight to your inbox.</p>
         <div className="flex flex-col gap-4 text-left mb-8">
           <input type="text" value={formData.name} onChange={e=>onChange("name",e.target.value)} placeholder="Your full name" autoFocus className={iCls} />
           <input type="email" value={formData.email} onChange={e=>onChange("email",e.target.value)} placeholder="your@email.com" className={iCls} />
@@ -206,12 +205,11 @@ function Phase3({formData,onChange,onContinue,onBack}:{formData:FormData;onChang
             <input type="tel" value={formData.phone} onChange={e=>onChange("phone",e.target.value)} placeholder="+91 98765 43210" className={`${iCls} ${phoneInvalid?"border-red-500/50":""}`} />
             {phoneInvalid
               ? <p className="text-red-400 text-[13px] mt-1.5 pl-1">Please enter a valid phone number</p>
-              : <p className="text-[#4B5563] text-[13px] mt-1.5 pl-1">(We may call to discuss your results)</p>
+              : <p className="text-[#4B5563] text-[13px] mt-1.5 pl-1">Phone number (optional)</p>
             }
           </div>
         </div>
-        <button onClick={onContinue} disabled={!valid} className={`w-full py-4 rounded-xl font-bold text-[17px] transition-all ${valid?"bg-[#0F6E56] text-white hover:bg-[#0c5945]":"bg-[#0F6E56]/30 text-white/30 cursor-not-allowed"}`}>Continue to Assessment</button>
-        <button onClick={onBack} className="mt-4 flex items-center gap-1.5 text-[#4B5563] text-[14px] hover:text-[#6B7280] transition-colors mx-auto"><ArrowLeft className="w-3.5 h-3.5"/>Back to time selection</button>
+        <button onClick={onContinue} disabled={!valid} className={`w-full py-4 rounded-xl font-bold text-[17px] transition-all ${valid?"bg-[#0F6E56] text-white hover:bg-[#0c5945]":"bg-[#0F6E56]/30 text-white/30 cursor-not-allowed"}`}>Generate My Report</button>
       </div>
     </motion.div>
   );
@@ -372,7 +370,7 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
         </div>
         <div className="p-4 border-t border-[#1f2937] bg-[#0a0f1a]">
           <div className="flex gap-3 items-end max-w-[800px] mx-auto">
-            <textarea value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();handleSend();}}} rows={1} placeholder={turnsRemaining<=0?"Session complete, generating your report...":"Type your message..."} disabled={disabled} className="flex-1 bg-[#111827] border border-[#1f2937] rounded-xl px-4 py-3.5 text-white text-[16px] placeholder-[#4B5563] focus:outline-none focus:border-[#0F6E56] transition-all disabled:opacity-40 resize-none" style={{maxHeight:"120px"}}/>
+            <textarea value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();handleSend();}}} rows={1} placeholder={turnsRemaining<=0?"Session complete. One more step to claim your report.":"Type your message..."} disabled={disabled} className="flex-1 bg-[#111827] border border-[#1f2937] rounded-xl px-4 py-3.5 text-white text-[16px] placeholder-[#4B5563] focus:outline-none focus:border-[#0F6E56] transition-all disabled:opacity-40 resize-none" style={{maxHeight:"120px"}}/>
             <button onClick={handleSend} disabled={disabled||!input.trim()} className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shrink-0 ${!disabled&&input.trim()?"bg-[#0F6E56] hover:bg-[#0c5945]":"bg-[#1f2937] opacity-40"}`}>
               <Send className="w-4 h-4 text-white"/>
             </button>
@@ -394,7 +392,7 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
           }
           <p className="text-[#9CA3AF] text-[15px] mb-8">Your report will be generated from the conversation so far.</p>
           <div className="flex flex-col gap-3">
-            <button onClick={()=>{trackEvent("p5_chat_ended",{phase:5,screenDetail:"Phase 5: AI Chat — Ended Early",chatTurns:turnsUsed,timeSelected});setShowModal(false);onComplete();}} className="w-full bg-[#0F6E56] text-white font-semibold py-3 rounded-lg hover:bg-[#0c5945] transition-all">Generate My Report</button>
+            <button onClick={()=>{trackEvent("p5_chat_ended",{phase:5,screenDetail:"Phase 5: AI Chat — Ended Early",chatTurns:turnsUsed,timeSelected});setShowModal(false);onComplete();}} className="w-full bg-[#0F6E56] text-white font-semibold py-3 rounded-lg hover:bg-[#0c5945] transition-all">Continue to Report</button>
             <button onClick={()=>setShowModal(false)} className="w-full border border-[#374151] text-[#9CA3AF] font-medium py-3 rounded-lg hover:border-[#6B7280] transition-all">Continue Chatting</button>
           </div>
         </motion.div>
@@ -581,8 +579,9 @@ export default function AssessmentClient() {
   const PHASE_LABELS: Partial<Record<Phase,string>> = {
     1:"Phase 1: Welcome",
     2:"Phase 2: Time Selection",
-    3:"Phase 3: Contact Details",
-    5:"Phase 5: AI Chat",
+    3:"Phase 3: Structured Intake",
+    4:"Phase 4: AI Chat",
+    5:"Phase 5: Contact Details",
     6:"Phase 6: Generating Report",
     7:"Phase 7: Complete",
   };
@@ -618,9 +617,9 @@ export default function AssessmentClient() {
       <AnimatePresence mode="wait">
         {phase===1&&<Phase1 key="p1" onStart={()=>{trackPostHog('assessment_started', { source: 'entry_screen' });trackEvent("p1_start_clicked",{phase:1,screenDetail:"Phase 1: Welcome"});setPhase(2);}}/>}
         {phase===2&&<Phase2 key="p2" timeSelected={timeSelected} onSelect={handleTimeSelect} onContinue={()=>{trackEvent("p2_time_selected",{phase:2,screenDetail:"Phase 2: Time Selection",timeValue:timeSelected});trackPostHog('time_selected', { minutes: timeSelected });setPhase(3);}}/>}
-        {phase===3&&<Phase3 key="p3" formData={formData} onChange={(k,v)=>updateForm(k,v as string)} onContinue={()=>{trackEvent("p3_contact_submitted",{phase:3,screenDetail:"Phase 3: Contact Details",name:formData.name,email:formData.email,phone:formData.phone,timeSelected});identifyPostHog(formData.email, {name: formData.name,email: formData.email,phone: formData.phone,timeSelected: timeSelected,source: 'clarivis_assessment',firstSeen: new Date().toISOString()});trackPostHog('contact_captured', {timeSelected: timeSelected,source: 'assessment'});fireEarlyCapture();setPhase(4);}} onBack={()=>setPhase(2)}/>}
-        {phase===4&&<Phase4 key="p4" timeSelected={timeSelected} formData={formData} onChange={updateForm} onComplete={()=>setPhase(5)} onBack={()=>setPhase(3)} onScreenChange={(label)=>{currentScreenRef.current=label;}}/>}
-        {phase===5&&<Phase5 key="p5" formData={formData} timeSelected={timeSelected} maxTurns={maxTurns} messages={messages} setMessages={setMessages} onComplete={()=>{trackEvent("p5_chat_ended",{phase:5,screenDetail:"Phase 5: AI Chat — Max Turns",chatTurns:Math.floor(messages.length/2),timeSelected});setPhase(6);}} onLogData={(d)=>setLogData(d)}/>}
+        {phase===3&&<Phase4 key="p3" timeSelected={timeSelected} formData={formData} onChange={updateForm} onComplete={()=>setPhase(4)} onBack={()=>setPhase(2)} onScreenChange={(label)=>{currentScreenRef.current=label;}}/>}
+        {phase===4&&<Phase5 key="p4" formData={formData} timeSelected={timeSelected} maxTurns={maxTurns} messages={messages} setMessages={setMessages} onComplete={()=>{trackEvent("p4_chat_ended",{phase:4,screenDetail:"Phase 4: AI Chat — Max Turns",chatTurns:Math.floor(messages.length/2),timeSelected});setPhase(5);}} onLogData={(d)=>setLogData(d)}/>}
+        {phase===5&&<Phase3 key="p5" formData={formData} onChange={(k,v)=>updateForm(k,v as string)} onContinue={()=>{trackEvent("p5_contact_submitted",{phase:5,screenDetail:"Phase 5: Contact Details",name:formData.name,email:formData.email,timeSelected});identifyPostHog(formData.email, {name: formData.name,email: formData.email,phone: formData.phone,timeSelected: timeSelected,source: 'clarivis_assessment',firstSeen: new Date().toISOString()});trackPostHog('contact_captured', {timeSelected: timeSelected,source: 'assessment'});fireEarlyCapture();setPhase(6);}}/>}
         {phase===6&&<Phase6 key="p6" formData={formData} messages={messages} timeSelected={timeSelected} setSnapshotData={setSnapshotData} onComplete={()=>setPhase(7)} logData={logData} assessmentId={assessmentId}/>}
         {phase===7&&<Phase7 key="p7" formData={formData} snapshotData={snapshotData}/>}
       </AnimatePresence>
