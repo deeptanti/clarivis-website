@@ -14,7 +14,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL('https://clarivisintelligence.com'),
   title: {
-    default: 'Clarivis Intelligence — AI Consulting and Technology for Real Estate, Healthcare and Agribusiness',
+    default: 'Clarivis Intelligence: AI Consulting and Technology for Real Estate, Healthcare and Agribusiness',
     template: '%s | Clarivis Intelligence'
   },
   description: 'Clarivis Intelligence is an AI-first consulting and technology firm. We help real estate, healthcare, and agribusiness businesses deploy AI systems that generate measurable ROI within 90 days.',
@@ -42,18 +42,18 @@ export const metadata: Metadata = {
     locale: 'en_IN',
     url: 'https://clarivisintelligence.com',
     siteName: 'Clarivis Intelligence',
-    title: 'Clarivis Intelligence — AI Consulting for Real Estate, Healthcare and Agribusiness',
+    title: 'Clarivis Intelligence: AI Consulting for Real Estate, Healthcare and Agribusiness',
     description: 'Deploy AI systems that generate measurable ROI within 90 days. Specialists in real estate, healthcare, and agribusiness automation.',
     images: [{
       url: '/images/og-image.png',
       width: 1200,
       height: 630,
-      alt: 'Clarivis Intelligence — AI Consulting and Technology'
+      alt: 'Clarivis Intelligence: AI Consulting and Technology'
     }]
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Clarivis Intelligence — AI Consulting for Real Estate, Healthcare and Agribusiness',
+    title: 'Clarivis Intelligence: AI Consulting for Real Estate, Healthcare and Agribusiness',
     description: 'Deploy AI systems that generate measurable ROI within 90 days.',
     images: ['/images/og-image.png']
   },

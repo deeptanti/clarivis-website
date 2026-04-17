@@ -481,7 +481,7 @@ export default function AuditPage() {
           {/* Three columns */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             {[
-              { icon: Tag, title: "₹10,000 founding investment", desc: "The Clarivis Audit starts from ₹50,000. Founding clients access the full experience at ₹10,000 — our investment in building our case study library." },
+              { icon: Tag, title: "₹10,000 founding investment", desc: "The Clarivis Audit starts from ₹50,000. Founding clients access the full experience at ₹10,000, our investment in building our case study library." },
               { icon: Star, title: "Priority attention", desc: "Founding clients receive more of our time, more sessions, and more detailed documentation than any future client." },
               { icon: Award, title: "Case study feature", desc: "Your results will be documented and published as a Clarivis case study. Your business gets visibility. We get proof." },
             ].map((col, idx) => {

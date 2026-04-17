@@ -2,7 +2,7 @@ import AssessmentClient from "./page-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Free AI Readiness Assessment — Get Your AI Opportunity Snapshot',
+  title: 'Free AI Readiness Assessment: Get Your AI Opportunity Snapshot',
   description: 'Take the free Clarivis AI Readiness Assessment. Answer a few questions, have a conversation with our AI, and receive a personalised AI Opportunity Snapshot PDF identifying your top opportunities with indicative ROI. Takes 5 to 20 minutes.',
   alternates: { canonical: 'https://clarivisintelligence.com/assessment' },
 };
@@ -22,7 +22,7 @@ export default function Page() {
           recommended first step. Takes 5 to 20 minutes. No credit card required.
         </p>
         <ul>
-          <li>Completely free — no commitment required</li>
+          <li>Completely free, no commitment required</li>
           <li>Personalised to your industry and business size</li>
           <li>AI Opportunity Snapshot PDF delivered instantly to your email</li>
           <li>Identifies your top three AI opportunities with ROI estimates</li>

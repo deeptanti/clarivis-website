@@ -372,7 +372,7 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
         </div>
         <div className="p-4 border-t border-[#1f2937] bg-[#0a0f1a]">
           <div className="flex gap-3 items-end max-w-[800px] mx-auto">
-            <textarea value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();handleSend();}}} rows={1} placeholder={turnsRemaining<=0?"Session complete — generating your report...":"Type your message..."} disabled={disabled} className="flex-1 bg-[#111827] border border-[#1f2937] rounded-xl px-4 py-3.5 text-white text-[16px] placeholder-[#4B5563] focus:outline-none focus:border-[#0F6E56] transition-all disabled:opacity-40 resize-none" style={{maxHeight:"120px"}}/>
+            <textarea value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();handleSend();}}} rows={1} placeholder={turnsRemaining<=0?"Session complete, generating your report...":"Type your message..."} disabled={disabled} className="flex-1 bg-[#111827] border border-[#1f2937] rounded-xl px-4 py-3.5 text-white text-[16px] placeholder-[#4B5563] focus:outline-none focus:border-[#0F6E56] transition-all disabled:opacity-40 resize-none" style={{maxHeight:"120px"}}/>
             <button onClick={handleSend} disabled={disabled||!input.trim()} className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shrink-0 ${!disabled&&input.trim()?"bg-[#0F6E56] hover:bg-[#0c5945]":"bg-[#1f2937] opacity-40"}`}>
               <Send className="w-4 h-4 text-white"/>
             </button>
@@ -500,7 +500,7 @@ function Phase7({formData,snapshotData}:{formData:FormData;snapshotData:Snapshot
             <div>
               <p className="text-[#0F6E56] text-[11px] font-bold uppercase tracking-wider mb-1">AI Readiness Score</p>
               <p className="text-white text-[16px] font-semibold">
-                {snapshotData.readinessScore >= 70 ? "Strong foundation for AI adoption" : snapshotData.readinessScore >= 50 ? "Ready to start with targeted AI" : "High opportunity — clear starting points identified"}
+                {snapshotData.readinessScore >= 70 ? "Strong foundation for AI adoption" : snapshotData.readinessScore >= 50 ? "Ready to start with targeted AI" : "High opportunity: clear starting points identified"}
               </p>
             </div>
           </motion.div>

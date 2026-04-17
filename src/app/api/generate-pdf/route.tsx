@@ -127,7 +127,7 @@ const SnapshotDocument = ({ data }: { data: any }) => {
             <Text style={{ color: '#6B7280', fontSize: 10, lineHeight: 1.6, marginTop: 8 }}>
               {(readinessScore ?? 0) >= 70 ? "Your processes and team structure are well-suited for rapid AI deployment. The primary work is selecting the right interventions and sequencing them for maximum early impact." :
                 (readinessScore ?? 0) >= 50 ? "You have the foundations in place. The key is identifying the two or three highest-leverage points where AI removes friction your team already feels every day." :
-                  "Lower readiness is not a barrier — it is an opportunity. Businesses at this stage often see the most dramatic transformation because the baseline is unoptimised."}
+                  "Lower readiness is not a barrier: it is an opportunity. Businesses at this stage often see the most dramatic transformation because the baseline is unoptimised."}
             </Text>
           </View>
         </View>
@@ -252,7 +252,7 @@ const SnapshotDocument = ({ data }: { data: any }) => {
         <View style={{ marginBottom: 16 }}>
           <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 'bold', lineHeight: 1.3 }}>The snapshot reveals the opportunity.</Text>
           <Text style={{ color: '#0F6E56', fontSize: 18, fontWeight: 'bold', lineHeight: 1.3 }}>The audit reveals the full picture.</Text>
-          <Text style={{ color: '#9CA3AF', fontSize: 11, lineHeight: 1.7, marginTop: 12 }}>This report was generated from a conversation. The Clarivis AI Operational Audit goes deeper — interviewing your team, mapping every process, and producing a complete implementation plan with documented ROI projections.</Text>
+          <Text style={{ color: '#9CA3AF', fontSize: 11, lineHeight: 1.7, marginTop: 12 }}>This report was generated from a conversation. The Clarivis AI Operational Audit goes deeper, interviewing your team, mapping every process, and producing a complete implementation plan with documented ROI projections.</Text>
         </View>
 
         <View style={{ marginBottom: 14 }}>
@@ -294,7 +294,7 @@ const SnapshotDocument = ({ data }: { data: any }) => {
           <View style={{ width: '65%', backgroundColor: 'transparent' }}>
             <Text style={{ color: '#FFFFFF', fontSize: 15, fontWeight: 'bold' }}>The Clarivis AI Operational Audit</Text>
             <Text style={{ color: '#D1FAE5', fontSize: 11, marginTop: 6 }}>4 weeks. 5 sessions. 6 deliverables.</Text>
-            <Text style={{ color: '#A7F3D0', fontSize: 10, marginTop: 8, lineHeight: 1.5, fontStyle: 'italic' }}>Clients consistently identify operational savings and revenue opportunities that far exceed the audit investment — typically visible within 90 days of implementation.</Text>
+            <Text style={{ color: '#A7F3D0', fontSize: 10, marginTop: 8, lineHeight: 1.5, fontStyle: 'italic' }}>Clients consistently identify operational savings and revenue opportunities that far exceed the audit investment, typically visible within 90 days of implementation.</Text>
           </View>
           <View style={{ width: '35%', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'transparent' }}>
             <Link src="https://clarivisintelligence.com/book" style={{ textDecoration: 'none', marginTop: 16, alignSelf: 'flex-end' }}>
@@ -404,7 +404,7 @@ export async function POST(request: NextRequest) {
 <body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;">
 <div style="max-width:640px;margin:0 auto;background:#0a0f1a;padding:32px;text-align:center;">
   <h1 style="color:#0F6E56;font-size:22px;margin:0 0 24px 0;">Clarivis Intelligence</h1>
-  <p style="color:#fff;font-size:16px;line-height:1.6;margin:0 0 24px 0;text-align:left;">Hi ${userProfile.name.split(' ')[0] || 'there'}, your AI Opportunity Snapshot is ready — please find it attached.</p>
+  <p style="color:#fff;font-size:16px;line-height:1.6;margin:0 0 24px 0;text-align:left;">Hi ${userProfile.name.split(' ')[0] || 'there'}, your AI Opportunity Snapshot is ready. Please find it attached.</p>
   ${topOpp ? `
   <div style="background:#111827;border:1px solid #1f2937;border-radius:12px;padding:24px;text-align:left;margin-bottom:24px;">
     <p style="color:#0F6E56;font-size:12px;font-weight:700;margin:0 0 8px 0;text-transform:uppercase;">Top Highlight</p>
@@ -447,14 +447,14 @@ export async function POST(request: NextRequest) {
       // EMAIL_FROM should be set in env once domain is verified in Resend.
       // Format: "Deep Tanti — Clarivis Intelligence <hello@clarivisintelligence.com>"
       // Until then the onboarding@resend.dev sender is used as a fallback.
-      const fromProspect = process.env.EMAIL_FROM || 'Deep Tanti — Clarivis Intelligence <hello@clarivisintelligence.com>'
+      const fromProspect = process.env.EMAIL_FROM || 'Deep Tanti, Clarivis Intelligence <hello@clarivisintelligence.com>'
       const fromInternal = process.env.EMAIL_FROM_INTERNAL || 'Clarivis Assessment <hello@clarivisintelligence.com>'
 
       await Promise.all([
         resend.emails.send({
           from: fromProspect,
           to: userProfile.email,
-          subject: `Your AI Opportunity Snapshot — ${userProfile.company || userProfile.name}`,
+          subject: `Your AI Opportunity Snapshot: ${userProfile.company || userProfile.name}`,
           html: emailHTML,
           attachments: pdfBuffer ? [{
             filename: `Clarivis-AI-Snapshot-${userProfile.company || userProfile.name}.pdf`,
@@ -464,7 +464,7 @@ export async function POST(request: NextRequest) {
         resend.emails.send({
           from: fromInternal,
           to: process.env.FOUNDER_EMAIL || 'hello@clarivisintelligence.com',
-          subject: `Assessment Complete — ${userProfile.name} — ${userProfile.company} — ${userProfile.industry}`,
+          subject: `Assessment Complete: ${userProfile.name} | ${userProfile.company} | ${userProfile.industry}`,
           html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;">
             <h2 style="color:#0F6E56;">New Assessment Submission</h2>
             <p><strong>Name:</strong> ${userProfile.name}</p>
@@ -478,7 +478,7 @@ export async function POST(request: NextRequest) {
             ${readinessScore ? `<p><strong>AI Readiness Score:</strong> ${readinessScore}/100</p>` : ''}
             ${recommendedFirstStep ? `<p><strong>Recommended First Step:</strong> ${recommendedFirstStep}</p>` : ''}
             <h3>Top Opportunities</h3>
-            <ol>${opportunities.slice(0, 3).map((o: { title: string, indicativeROI: string }) => `<li><strong>${o.title}</strong> — ${o.indicativeROI}</li>`).join('')}</ol>
+            <ol>${opportunities.slice(0, 3).map((o: { title: string, indicativeROI: string }) => `<li><strong>${o.title}</strong>: ${o.indicativeROI}</li>`).join('')}</ol>
             <h3>Conversation</h3>
             <div style="background:#f9f9f9;padding:16px;border-radius:8px;">
               ${conversationHistory.map((m: { role: string, content: string }) => `<p><strong>${m.role === 'user' ? userProfile.name : 'AI Agent'}:</strong> ${m.content}</p>`).join('')}

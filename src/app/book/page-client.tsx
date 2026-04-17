@@ -70,7 +70,7 @@ export default function BookPage() {
           >
             <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-[#0F6E56]/30 bg-[#0F6E56]/15">
               <span className="text-[#0F6E56] text-xs font-semibold uppercase tracking-widest">
-                FREE — 45 MINUTES
+                FREE · 45 MINUTES
               </span>
             </div>
             <h1 className="text-white text-[32px] lg:text-[48px] font-extrabold leading-[1.1] tracking-tight">

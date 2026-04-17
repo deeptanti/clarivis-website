@@ -74,7 +74,7 @@ export default function ServicesPage() {
               {
                 num: "1", icon: Search, title: "Clarivis Assessment", 
                 desc: "A structured self-serve assessment that maps your AI opportunities. Complete it in 5 to 20 minutes and receive your personalised AI Opportunity Snapshot instantly.",
-                deliverable: "AI Opportunity Snapshot — always free"
+                deliverable: "AI Opportunity Snapshot, always free"
               },
               {
                 num: "2", icon: ClipboardList, title: "Operational Audit", 

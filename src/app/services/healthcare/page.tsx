@@ -2,7 +2,7 @@ import HealthcareServicesPageContent from './page-client';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'AI for Healthcare — Clinics, Hospitals and Diagnostic Centres',
+  title: 'AI for Healthcare: Clinics, Hospitals and Diagnostic Centres',
   description: 'AI systems for healthcare businesses. Automated patient appointment management, no-show reduction, billing and revenue cycle automation, clinical operations dashboards, and diagnostic report delivery. Measurable ROI within 90 days.',
   alternates: { canonical: 'https://clarivisintelligence.com/services/healthcare' },
 };

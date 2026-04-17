@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
         await resend.emails.send({
           from: 'Clarivis Intelligence <hello@clarivisintelligence.com>',
           to: 'hello@clarivisintelligence.com',
-          subject: `Assessment Started — ${data.name}`,
+          subject: `Assessment Started: ${data.name}`,
           html: `<div style="font-family:sans-serif;padding:24px;">
             <h2 style="color:#0F6E56;">New Assessment Started</h2>
             <p><strong>Name:</strong> ${data.name}</p>
@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
       await resend.emails.send({
         from: 'Clarivis Intelligence <hello@clarivisintelligence.com>',
         to: 'hello@clarivisintelligence.com',
-        subject: `Assessment Complete — ${data.name} — ${data.company} — ${data.industry}`,
+        subject: `Assessment Complete: ${data.name} | ${data.company} | ${data.industry}`,
         html: `<div style="font-family:sans-serif;padding:24px;">
           <h2 style="color:#0F6E56;">Assessment Completed</h2>
           <p><strong>Name:</strong> ${data.name}</p>
@@ -148,9 +148,9 @@ export async function POST(request: NextRequest) {
       })
 
       await resend.emails.send({
-        from: 'Deep Tanti — Clarivis Intelligence <hello@clarivisintelligence.com>',
+        from: 'Deep Tanti, Clarivis Intelligence <hello@clarivisintelligence.com>',
         to: data.email,
-        subject: `Your AI Opportunity Snapshot — ${data.company || data.name}`,
+        subject: `Your AI Opportunity Snapshot: ${data.company || data.name}`,
         html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
           <div style="background:#0a0f1a;padding:32px;text-align:center;">
             <h1 style="color:#0F6E56;margin:0;">Clarivis Intelligence</h1>

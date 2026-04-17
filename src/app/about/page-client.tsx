@@ -107,7 +107,7 @@ export default function AboutPage() {
               Six capabilities. One integrated practice.
             </h2>
             <p className="text-[#9CA3AF] text-[18px] mt-4 max-w-[600px]">
-              Every engagement draws on the full stack — from diagnosis to deployment to long-term optimisation.
+              Every engagement draws on the full stack: from diagnosis to deployment to long-term optimisation.
             </p>
           </div>
 
@@ -129,7 +129,7 @@ export default function AboutPage() {
                   </svg>
                 ),
                 label: "We Strategise",
-                desc: "We translate audit findings into a prioritised 90-day roadmap — ranked by ROI, sequenced for your team's capacity, and grounded in what is actually buildable."
+                desc: "We translate audit findings into a prioritised 90-day roadmap, ranked by ROI, sequenced for your team's capacity, and grounded in what is actually buildable."
               },
               {
                 icon: (
@@ -147,7 +147,7 @@ export default function AboutPage() {
                   </svg>
                 ),
                 label: "We Deploy",
-                desc: "We handle implementation end to end — integration, testing, team onboarding, and go-live. Most clients have a live AI system in their business within four to six weeks."
+                desc: "We handle implementation end to end: integration, testing, team onboarding, and go-live. Most clients have a live AI system in their business within four to six weeks."
               },
               {
                 icon: (

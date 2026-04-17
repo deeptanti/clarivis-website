@@ -2,7 +2,7 @@ import RealEstateServicesPageContent from './page-client';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'AI for Real Estate — Developers, Brokers and Property Managers',
+  title: 'AI for Real Estate: Developers, Brokers and Property Managers',
   description: 'AI systems built for real estate businesses. Automated lead qualification and follow-up, broker and channel partner portals, payment and collections agents, and live sales pipeline dashboards. Deployed in 4 to 6 weeks with measurable ROI.',
   alternates: { canonical: 'https://clarivisintelligence.com/services/real-estate' },
 };
@@ -55,7 +55,7 @@ const jsonLd = {
           name: 'Can your AI systems integrate with WhatsApp for broker and channel partner management?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Yes. Clarivis builds broker and channel partner portals that replace WhatsApp groups with structured digital platforms featuring real-time inventory, automated commission tracking, and document management — eliminating the lead confusion and confidentiality risks of WhatsApp-based workflows.',
+            text: 'Yes. Clarivis builds broker and channel partner portals that replace WhatsApp groups with structured digital platforms featuring real-time inventory, automated commission tracking, and document management, eliminating the lead confusion and confidentiality risks of WhatsApp-based workflows.',
           },
         },
         {
