@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { 
+import {
   PhoneCall, Users, Bell, BarChart2, FileText, Check,
-  Calendar, Heart, CreditCard, LayoutDashboard, FileSearch
+  Calendar, Heart, CreditCard, LayoutDashboard, FileSearch,
+  ClipboardList, Shield
 } from "lucide-react";
 
 const realEstateProducts = [
@@ -115,11 +116,56 @@ const healthcareProducts = [
 ];
 
 const agribusinessProducts = [
-  { icon: PhoneCall, category: "LEAD MANAGEMENT", name: "AI Lead Qualifier and Follow-up Agent", desc: "Instantly qualify inbound investor and buyer leads with AI. Automated follow-up within 60 seconds via voice and WhatsApp. Never miss a lead regardless of time or volume.", features: ["Inbound lead called within 60 seconds", "Qualification scoring and CRM sync", "Automated follow-up sequences via WhatsApp"] },
-  { icon: Users, category: "HR AND OPERATIONS", name: "Field Staff HR and Attendance System", desc: "Automated attendance tracking, payroll management, and performance visibility for distributed field teams across multiple farm sites.", features: ["GPS-based attendance for field staff", "Automated payroll calculation and records", "Performance tracking and reporting"] },
-  { icon: BarChart2, category: "INTELLIGENCE", name: "Investor and Pipeline Dashboard", desc: "Live management intelligence across investor pipeline, plot availability, payment collections, and revenue forecasting. Real-time visibility for founders and ops teams.", features: ["Live investor pipeline and stage tracking", "Plot inventory and availability management", "Collections and revenue forecasting"] },
-  { icon: Bell, category: "COLLECTIONS", name: "Collections and Payment Agent", desc: "Automated installment and payment reminders delivered via WhatsApp and voice. Reduces collection delays and eliminates manual follow-up.", features: ["Automated reminder sequences", "Payment status tracking and escalation", "WhatsApp and voice delivery"] },
-  { icon: FileText, category: "COMPLIANCE", name: "Compliance and Document Automation", desc: "Auto-generation of investor agreements, land records, and regulatory compliance documents. Reduces legal admin time by over 80%.", features: ["Investor agreement auto-generation", "Land record and title document management", "Regulatory compliance document creation"] }
+  {
+    icon: Users, category: "WORKFORCE",
+    name: "Workforce Management System",
+    desc: "Automated daily attendance tracking, task assignment, and performance visibility for field teams of 100 to 500 workers across multiple sites. Replaces self-reported attendance with structured digital infrastructure.",
+    features: [
+      "Daily attendance tracking replacing self-reported systems",
+      "Task assignment and completion tracking per worker",
+      "Anomaly flagging and daily management reports"
+    ]
+  },
+  {
+    icon: ClipboardList, category: "HR AND APPRAISAL",
+    name: "HR and Appraisal Intelligence",
+    desc: "Digitises appraisal cycles and links performance data to attendance and task records. Flags retention risks before employees leave and gives HR teams structured data for every review.",
+    features: [
+      "Appraisal cycle management with structured scoring",
+      "Performance linked to attendance and task completion",
+      "Retention risk flagging and HR reporting"
+    ]
+  },
+  {
+    icon: BarChart2, category: "INVESTOR PIPELINE",
+    name: "Investor Pipeline CRM",
+    desc: "Structured investor pipeline replacing WhatsApp and spreadsheets. Stage tracking, document management, and automated follow-up sequences for land investment leads with full audit trail.",
+    features: [
+      "Stage-tracked pipeline replacing WhatsApp and spreadsheets",
+      "Automated follow-up sequences and document management",
+      "Full audit trail and pipeline visibility for leadership"
+    ]
+  },
+  {
+    icon: Shield, category: "LEAD ACCESS CONTROL",
+    name: "Lead Access Control and NDA System",
+    desc: "Role-based access to prospect data with digital NDA signing workflows and complete audit trails. Eliminates lead data leaks through open WhatsApp groups and shared spreadsheets.",
+    features: [
+      "Role-based access control for all prospect data",
+      "Digital NDA signing and document workflows",
+      "Full audit trail showing who accessed what and when"
+    ]
+  },
+  {
+    icon: LayoutDashboard, category: "OPERATIONS",
+    name: "Operations Reporting Dashboard",
+    desc: "Consolidates field team performance, collections activity, and investor pipeline into a single live management view. Replaces manual reporting and WhatsApp status updates.",
+    features: [
+      "Live field team, collections, and investor data in one view",
+      "Replaces manual reports and WhatsApp status updates",
+      "Custom views for founders, ops, and HR teams"
+    ]
+  }
 ];
 
 export default function ProductsPageContent() {
@@ -143,10 +189,10 @@ export default function ProductsPageContent() {
               </span>
             </div>
             <h1 className="text-white text-[36px] lg:text-[52px] font-extrabold leading-[1.1] tracking-tight">
-              Ten AI products. Deployed in weeks. Measured from day one.
+              Purpose-built AI systems. Deployed in weeks. Measured from day one.
             </h1>
             <p className="text-[#9CA3AF] text-[18px] leading-[1.8] mt-4 max-w-[600px] mx-auto">
-              Every product in our suite was built on real operational intelligence from the businesses we serve. No generic tools. No off-the-shelf software. Purpose-built AI systems for real estate and healthcare.
+              Every product in our suite was built on real operational intelligence from the businesses we serve. No generic tools. No off-the-shelf software. Purpose-built AI systems for real estate, healthcare, and agribusiness.
             </p>
           </motion.div>
         </div>
@@ -252,9 +298,12 @@ export default function ProductsPageContent() {
                         >
                           Start the Clarivis Assessment
                         </Link>
-                        <button className="flex-1 text-center bg-transparent border border-[#0F6E56]/40 hover:bg-[#0F6E56]/10 text-[#0F6E56] font-medium py-3 rounded-lg transition-colors">
+                        <Link
+                          href={`/services/${activeTab}`}
+                          className="flex-1 text-center bg-transparent border border-[#0F6E56]/40 hover:bg-[#0F6E56]/10 text-[#0F6E56] font-medium py-3 rounded-lg transition-colors"
+                        >
                           Learn More
-                        </button>
+                        </Link>
                       </div>
                     </motion.div>
                   );

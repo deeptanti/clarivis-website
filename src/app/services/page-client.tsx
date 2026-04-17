@@ -73,7 +73,7 @@ export default function ServicesPage() {
             {[
               {
                 num: "1", icon: Search, title: "Clarivis Assessment", 
-                desc: "A structured self-serve assessment that maps your AI opportunities. Complete it in 5 to 30 minutes and receive your personalised AI Opportunity Snapshot instantly.",
+                desc: "A structured self-serve assessment that maps your AI opportunities. Complete it in 5 to 20 minutes and receive your personalised AI Opportunity Snapshot instantly.",
                 deliverable: "AI Opportunity Snapshot — always free"
               },
               {
@@ -213,8 +213,8 @@ export default function ServicesPage() {
 
             {/* Agribusiness Card */}
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
               className="bg-gradient-to-br from-[#0f1f14] to-[#0d1117] border border-[#0F6E56]/30 rounded-[20px] p-8 lg:p-[48px] min-h-[320px] flex flex-col justify-between hover:border-[#0F6E56]/80 hover:shadow-[0_0_30px_rgba(15,110,86,0.15)] transition-all duration-300 group"
@@ -226,23 +226,23 @@ export default function ServicesPage() {
                   </span>
                 </div>
                 <h3 className="text-white text-[24px] lg:text-[28px] font-bold leading-tight mb-4 group-hover:text-white transition-colors">
-                  Agro-realty firms, input suppliers, and commodity traders
+                  Managed farmland, supply chain, and input distribution firms
                 </h3>
                 <p className="text-[#9CA3AF] text-[15px] leading-[1.8]">
-                  AI systems for investor lead management, field staff HR, collections automation, pipeline visibility, and compliance documentation.
+                  AI systems for workforce attendance tracking, investor pipeline management, lead access control, HR and appraisal intelligence, and operational reporting.
                 </p>
                 <div className="mt-6 flex flex-col gap-3">
                   <div className="flex items-start gap-3">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#0F6E56] mt-2 shrink-0" />
-                    <span className="text-[#9CA3AF] text-[14px]">Investor leads qualified and followed up within 60 seconds</span>
+                    <span className="text-[#9CA3AF] text-[14px]">Field team attendance and task tracking fully automated</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#0F6E56] mt-2 shrink-0" />
-                    <span className="text-[#9CA3AF] text-[14px]">Field staff HR and attendance fully automated</span>
+                    <span className="text-[#9CA3AF] text-[14px]">Investor pipeline on a structured CRM, not WhatsApp</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#0F6E56] mt-2 shrink-0" />
-                    <span className="text-[#9CA3AF] text-[14px]">Investor pipeline and collections visible in real time</span>
+                    <span className="text-[#9CA3AF] text-[14px]">Lead data access controlled with role-based permissions and audit trails</span>
                   </div>
                 </div>
               </div>
