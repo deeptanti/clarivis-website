@@ -17,21 +17,22 @@ export const metadata: Metadata = {
     default: 'Clarivis Intelligence — AI Consulting and Technology for Real Estate, Healthcare and Agribusiness',
     template: '%s | Clarivis Intelligence'
   },
-  description: 'Clarivis Intelligence is an AI-first consulting and technology firm based in Rajkot, Gujarat, India. We help real estate, healthcare, and agribusiness businesses deploy AI systems that generate measurable ROI within 90 days.',
+  description: 'Clarivis Intelligence is an AI-first consulting and technology firm. We help real estate, healthcare, and agribusiness businesses deploy AI systems that generate measurable ROI within 90 days.',
   keywords: [
+    'AI consulting firm',
     'AI consulting India',
-    'AI consulting Rajkot',
-    'AI for real estate India',
-    'AI for healthcare India',
-    'AI for agribusiness India',
-    'AI automation India',
-    'business AI consulting Gujarat',
+    'AI for real estate',
+    'AI for healthcare',
+    'AI for agribusiness',
+    'AI automation services',
+    'business process automation AI',
     'AI systems real estate',
     'healthcare AI automation',
     'agribusiness AI systems',
     'AI lead qualification real estate',
-    'clinic appointment AI India',
-    'workforce management AI India',
+    'clinic appointment AI',
+    'workforce management AI',
+    'AI ROI consulting',
     'Clarivis Intelligence',
   ],
   authors: [{ name: 'Clarivis Intelligence' }],
@@ -42,7 +43,7 @@ export const metadata: Metadata = {
     url: 'https://clarivisintelligence.com',
     siteName: 'Clarivis Intelligence',
     title: 'Clarivis Intelligence — AI Consulting for Real Estate, Healthcare and Agribusiness',
-    description: 'Deploy AI systems that generate measurable ROI within 90 days. Specialists in real estate, healthcare, and agribusiness automation. Based in Rajkot, India.',
+    description: 'Deploy AI systems that generate measurable ROI within 90 days. Specialists in real estate, healthcare, and agribusiness automation.',
     images: [{
       url: '/images/og-image.png',
       width: 1200,
@@ -53,7 +54,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Clarivis Intelligence — AI Consulting for Real Estate, Healthcare and Agribusiness',
-    description: 'Deploy AI systems that generate measurable ROI within 90 days. Based in Rajkot, India.',
+    description: 'Deploy AI systems that generate measurable ROI within 90 days.',
     images: ['/images/og-image.png']
   },
   robots: {
@@ -71,76 +72,40 @@ export const metadata: Metadata = {
 
 const organizationJsonLd = {
   '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'Organization',
-      '@id': 'https://clarivisintelligence.com/#organization',
-      name: 'Clarivis Intelligence',
-      url: 'https://clarivisintelligence.com',
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://clarivisintelligence.com/images/logo.png',
-        width: 280,
-        height: 70,
-      },
-      description: 'AI-first consulting and technology firm helping real estate, healthcare, and agribusiness businesses in India deploy AI systems that generate measurable ROI within 90 days.',
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: 'Rajkot',
-        addressRegion: 'Gujarat',
-        addressCountry: 'IN',
-      },
-      contactPoint: {
-        '@type': 'ContactPoint',
-        contactType: 'customer service',
-        email: 'hello@clarivisintelligence.com',
-        telephone: '+91-84018-14334',
-        availableLanguage: ['English', 'Hindi', 'Gujarati'],
-      },
-      sameAs: [
-        'https://www.linkedin.com/company/clarivis-intelligence',
-      ],
-      foundingDate: '2026',
-      areaServed: { '@type': 'Country', name: 'India' },
-      knowsAbout: [
-        'Artificial Intelligence',
-        'AI Consulting',
-        'Real Estate Technology',
-        'Healthcare Automation',
-        'Agribusiness Technology',
-        'Business Process Automation',
-      ],
-    },
-    {
-      '@type': 'LocalBusiness',
-      '@id': 'https://clarivisintelligence.com/#localbusiness',
-      name: 'Clarivis Intelligence',
-      image: 'https://clarivisintelligence.com/images/og-image.png',
-      url: 'https://clarivisintelligence.com',
-      telephone: '+91-84018-14334',
-      email: 'hello@clarivisintelligence.com',
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: 'Rajkot',
-        addressRegion: 'Gujarat',
-        postalCode: '360001',
-        addressCountry: 'IN',
-      },
-      geo: {
-        '@type': 'GeoCoordinates',
-        latitude: 22.3039,
-        longitude: 70.8022,
-      },
-      openingHoursSpecification: {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-        opens: '09:00',
-        closes: '18:00',
-      },
-      priceRange: '₹₹',
-      currenciesAccepted: 'INR',
-      paymentAccepted: 'Bank Transfer, UPI',
-    },
+  '@type': 'Organization',
+  '@id': 'https://clarivisintelligence.com/#organization',
+  name: 'Clarivis Intelligence',
+  url: 'https://clarivisintelligence.com',
+  logo: {
+    '@type': 'ImageObject',
+    url: 'https://clarivisintelligence.com/images/logo.png',
+    width: 280,
+    height: 70,
+  },
+  description: 'AI-first consulting and technology firm helping real estate, healthcare, and agribusiness businesses deploy AI systems that generate measurable ROI within 90 days.',
+  address: {
+    '@type': 'PostalAddress',
+    addressCountry: 'IN',
+  },
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer service',
+    email: 'hello@clarivisintelligence.com',
+    telephone: '+91-84018-14334',
+    availableLanguage: ['English'],
+  },
+  sameAs: [
+    'https://www.linkedin.com/company/clarivis-intelligence',
+  ],
+  foundingDate: '2026',
+  areaServed: 'Worldwide',
+  knowsAbout: [
+    'Artificial Intelligence',
+    'AI Consulting',
+    'Real Estate Technology',
+    'Healthcare Automation',
+    'Agribusiness Technology',
+    'Business Process Automation',
   ],
 };
 
@@ -153,7 +118,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans bg-white text-[#1A1A2E]">
         <PostHogProvider>
-          {/* Organisation + LocalBusiness structured data */}
+          {/* Organisation structured data */}
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}

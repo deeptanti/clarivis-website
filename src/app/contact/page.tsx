@@ -1,8 +1,8 @@
 import ContactPageContent from './page-client';
 
 export const metadata = {
-  title: 'Contact — AI Consulting in Rajkot, Gujarat India',
-  description: 'Contact Clarivis Intelligence, an AI consulting firm based in Rajkot, Gujarat, India. Start with a free AI Readiness Assessment or send us a message at hello@clarivisintelligence.com.',
+  title: 'Contact — Clarivis Intelligence AI Consulting',
+  description: 'Get in touch with Clarivis Intelligence. Start with a free AI Readiness Assessment or reach us directly at hello@clarivisintelligence.com. We work with clients across real estate, healthcare, and agribusiness.',
   alternates: { canonical: 'https://clarivisintelligence.com/contact' },
 };
 

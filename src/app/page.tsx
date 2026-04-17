@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'AI Consulting and Technology for Real Estate, Healthcare and Agribusiness',
-  description: 'Clarivis Intelligence is an AI-first consulting and technology firm based in Rajkot, India. We help growing businesses in real estate, healthcare, and agribusiness deploy AI systems that generate measurable ROI within 90 days. Start with a free AI Readiness Assessment.',
+  description: 'Clarivis Intelligence is an AI-first consulting and technology firm. We help growing businesses in real estate, healthcare, and agribusiness deploy AI systems that generate measurable ROI within 90 days. Start with a free AI Readiness Assessment.',
   alternates: { canonical: 'https://clarivisintelligence.com' },
 };
 

@@ -2,8 +2,8 @@ import RealEstateServicesPageContent from './page-client';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'AI for Real Estate — Developers, Brokers and Property Managers in India',
-  description: 'AI systems built for Indian real estate businesses. Automated lead qualification and follow-up, broker and channel partner portals, payment and collections agents, and live sales pipeline dashboards. Deployed in 4 to 6 weeks.',
+  title: 'AI for Real Estate — Developers, Brokers and Property Managers',
+  description: 'AI systems built for real estate businesses. Automated lead qualification and follow-up, broker and channel partner portals, payment and collections agents, and live sales pipeline dashboards. Deployed in 4 to 6 weeks with measurable ROI.',
   alternates: { canonical: 'https://clarivisintelligence.com/services/real-estate' },
 };
 

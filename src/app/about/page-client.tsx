@@ -90,7 +90,7 @@ export default function AboutPage() {
             </p>
             <div className="w-16 h-[2px] bg-[#0F6E56] mx-auto mt-10 mb-5 opacity-80" />
             <div className="text-[#9CA3AF] text-sm tracking-wide">
-              Clarivis Intelligence &mdash; Rajkot, India
+              Clarivis Intelligence &mdash; India
             </div>
           </motion.div>
         </div>

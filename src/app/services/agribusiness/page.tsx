@@ -2,8 +2,8 @@ import AgribusinessServicesPageContent from './page-client';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'AI for Agribusiness — Managed Farmland, Supply Chain and Input Distribution India',
-  description: 'AI systems for Indian agribusiness operators. Workforce and attendance management for large field teams, investor pipeline CRM, lead access control, HR and appraisal intelligence, and operational reporting dashboards. Built for farmland operators, supply chain firms, and input distributors.',
+  title: 'AI for Agribusiness — Managed Farmland, Supply Chain and Input Distribution',
+  description: 'AI systems for agribusiness operators. Workforce and attendance management for large field teams, investor pipeline CRM, lead access control, HR and appraisal intelligence, and operational reporting dashboards. Built for farmland operators, supply chain firms, and input distributors.',
   alternates: { canonical: 'https://clarivisintelligence.com/services/agribusiness' },
 };
 
