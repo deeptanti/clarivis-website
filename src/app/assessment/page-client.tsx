@@ -4,7 +4,7 @@ import { trackEvent, setupDropoffTracking } from "@/lib/tracker";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ClipboardList, Calendar, Check, X, ArrowLeft, ArrowRight, Send, FileText, Zap, Building2, Activity, Mail, Wheat } from "lucide-react";
+import { ClipboardList, Check, X, ArrowLeft, ArrowRight, Send, FileText, Zap, Building2, Activity, Mail, Wheat } from "lucide-react";
 
 /* ─── Types ── */
 type Phase = 1|2|3|4|5|6|7;
@@ -130,24 +130,7 @@ function Phase1({onStart}:{onStart:()=>void}) {
           <button onClick={onStart} className="w-full sm:w-auto sm:min-w-[220px] bg-[#0F6E56] text-white font-bold py-4 px-8 rounded-xl text-[17px] hover:bg-[#0c5945] transition-all flex items-center justify-center gap-2">Start Assessment <ArrowRight className="w-5 h-5"/></button>
         </div>
         <p className="text-[#4B5563] text-[13px] mt-6">Takes 5–20 minutes depending on the time you choose</p>
-        <div className="mt-10 pt-8 border-t border-[#1f2937] grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <motion.div whileHover={{y:-2}} className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-6 text-left">
-            <ClipboardList className="w-8 h-8 text-[#0F6E56] mb-3"/>
-            <h3 className="text-white font-bold text-[16px] mb-1">Clarivis Assessment</h3>
-            <p className="text-[#6B7280] text-[14px]">Self-serve AI chat. Complete now and receive your report instantly.</p>
-            <span className="inline-block mt-3 text-[#0F6E56] text-[13px] font-semibold">You are here →</span>
-          </motion.div>
-          <motion.div whileHover={{y:-2}} className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-6 text-left opacity-70">
-            <Calendar className="w-8 h-8 text-[#0F6E56] mb-3"/>
-            <h3 className="text-white font-bold text-[16px] mb-1">AI Opportunity Session</h3>
-            <p className="text-[#6B7280] text-[14px]">45 minutes with our founder. Personalised verbal analysis. Walk away with a clear AI roadmap.</p>
-            <div className="flex flex-col gap-3 mb-8">{["45 minutes with our founder","Personalised verbal analysis","Follow-up report within 24 hours"].map((f,i)=>(
-              <div key={i} className="flex items-center gap-2.5"><Check className="w-4 h-4 text-[#0F6E56] shrink-0"/><span className="text-[#9CA3AF] text-[14px]">{f}</span></div>
-            ))}</div>
-            <Link href="/book" className="block w-full border border-[#0F6E56] text-[#0F6E56] font-semibold py-3.5 rounded-lg text-[16px] text-center hover:bg-[#0F6E56]/10 transition-all">Book Your Session</Link>
-          </motion.div>
-        </div>
-        <p className="text-center text-[#6B7280] text-[14px] mt-6">Most people start with the Assessment and book a session after receiving their report.</p>
+        <p className="text-[#4B5563] text-[13px] mt-3">Prefer to talk directly? <Link href="/book" className="underline hover:text-[#6B7280] transition-colors">Book a session instead.</Link></p>
       </div>
     </motion.div>
   );
@@ -338,7 +321,6 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
         <p className="text-[#0F6E56] text-[11px] font-bold uppercase tracking-wider mt-6 mb-3">Your Session</p>
         <span className="inline-block bg-[#0F6E56]/15 border border-[#0F6E56]/30 text-[#0F6E56] text-[12px] font-semibold px-3 py-1 rounded-full w-fit">{timeSelected} minutes</span>
         <p className="text-[#0F6E56] text-[11px] font-bold uppercase tracking-wider mt-6 mb-2">Progress</p>
-        <p className="text-white text-[14px] font-semibold">{turnsRemaining} exchanges remaining</p>
         <div className="mt-2 h-1.5 bg-[#1f2937] rounded-full overflow-hidden">
           <motion.div className="h-full bg-[#0F6E56] rounded-full" animate={{width:`${(turnsUsed/maxTurns)*100}%`}} transition={{duration:0.3}}/>
         </div>
@@ -348,12 +330,10 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
       {/* Right Panel */}
       <div className="flex-1 flex flex-col bg-[#0a0f1a] min-w-0">
         {/* Mobile progress bar */}
-        <div className="lg:hidden px-4 py-2 border-b border-[#1f2937] flex items-center justify-between">
-          <span className="text-[#6B7280] text-[12px]">{turnsUsed}/{maxTurns} exchanges</span>
-          <div className="flex-1 mx-4 h-1 bg-[#1f2937] rounded-full overflow-hidden">
+        <div className="lg:hidden px-4 py-2 border-b border-[#1f2937] flex items-center justify-center">
+          <div className="w-full max-w-[300px] h-1 bg-[#1f2937] rounded-full overflow-hidden">
             <div className="h-full bg-[#0F6E56] rounded-full transition-all" style={{width:`${(turnsUsed/maxTurns)*100}%`}}/>
           </div>
-          <span className="text-[#6B7280] text-[12px]">{timeSelected}min</span>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-4">
@@ -375,9 +355,8 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
               <Send className="w-4 h-4 text-white"/>
             </button>
           </div>
-          <div className="flex justify-between items-center mt-2 max-w-[800px] mx-auto">
-            <p className="text-[#4B5563] text-[12px]">{turnsUsed} of {maxTurns} exchanges used</p>
-            {!disabled&&<button onClick={()=>setShowModal(true)} className="text-[#4B5563] text-[12px] hover:text-[#6B7280] transition-colors">End Session Early</button>}
+          <div className="flex justify-end items-center mt-2 max-w-[800px] mx-auto">
+            {!disabled&&turnsUsed>=MIN_TURNS_FOR_QUALITY&&<button onClick={()=>setShowModal(true)} className="text-[#4B5563] text-[12px] hover:text-[#6B7280] transition-colors">End Session Early</button>}
           </div>
         </div>
       </div>
@@ -498,7 +477,7 @@ function Phase7({formData,snapshotData}:{formData:FormData;snapshotData:Snapshot
             <div>
               <p className="text-[#0F6E56] text-[11px] font-bold uppercase tracking-wider mb-1">AI Readiness Score</p>
               <p className="text-white text-[16px] font-semibold">
-                {snapshotData.readinessScore >= 70 ? "Strong foundation for AI adoption" : snapshotData.readinessScore >= 50 ? "Ready to start with targeted AI" : "High opportunity: clear starting points identified"}
+                {snapshotData.readinessScore >= 70 ? "Strong foundation, ready to scale with AI" : snapshotData.readinessScore >= 50 ? "Solid starting point: targeted AI will accelerate growth" : "Untapped potential: AI can make a significant impact here"}
               </p>
             </div>
           </motion.div>
@@ -550,9 +529,11 @@ function Phase7({formData,snapshotData}:{formData:FormData;snapshotData:Snapshot
         </motion.div>
 
         {/* CTA */}
-        <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:1.15}} className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/book" onClick={() => trackPostHog('book_session_clicked', {source: 'assessment_summary',industry: formData.industry})} className="flex-1 sm:flex-none sm:min-w-[220px] text-center bg-[#0F6E56] text-white font-semibold py-4 rounded-lg text-[15px] hover:bg-[#0c5945] transition-all px-6">Book Your AI Opportunity Session</Link>
-          <Link href="/" className="flex-1 sm:flex-none sm:min-w-[160px] text-center border border-[#1f2937] text-[#9CA3AF] font-medium py-4 rounded-lg text-[15px] hover:border-[#374151] hover:text-white transition-all px-6">Return to Home</Link>
+        <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:1.15}} className="flex flex-col items-center gap-3">
+          <p className="text-[#9CA3AF] text-[15px] leading-relaxed text-center mb-2">The next step is a free 45-minute call with our founder. We go deeper into your top opportunity, validate the ROI estimate for your specific situation, and give you a clear starting point. No obligation.</p>
+          <Link href="/book" onClick={() => trackPostHog('book_session_clicked', {source: 'assessment_summary',industry: formData.industry})} className="w-full sm:w-auto sm:min-w-[280px] text-center bg-[#0F6E56] text-white font-semibold py-4 rounded-lg text-[16px] hover:bg-[#0c5945] transition-all px-8">Book a Session{opps.length > 0 ? `: ${opps[0].title}` : ""}</Link>
+          <p className="text-[#4B5563] text-[12px]">Founding rate available for clients who engage before June 2026.</p>
+          <Link href="/" className="text-[#4B5563] text-[13px] hover:text-[#6B7280] transition-colors mt-1">or return to home</Link>
         </motion.div>
         <motion.p initial={{opacity:0}} animate={{opacity:1}} transition={{delay:1.3}} className="text-center text-[#4B5563] text-[13px] mt-6">
           Questions? Email <a href="mailto:hello@clarivisintelligence.com" className="text-[#6B7280] hover:text-[#0F6E56] transition-colors">hello@clarivisintelligence.com</a>
