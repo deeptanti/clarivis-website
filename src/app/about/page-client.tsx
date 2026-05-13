@@ -415,7 +415,7 @@ export default function AboutPage() {
               Start the Clarivis Assessment
             </Link>
             <Link
-              href="/products"
+              href="/solutions"
               className="w-full sm:w-auto px-8 py-3.5 rounded-md border border-white text-white font-medium transition-all duration-300 hover:bg-[#0F6E56] hover:border-[#0F6E56]"
             >
               View Our Work

@@ -130,7 +130,7 @@ function Phase1({onStart}:{onStart:()=>void}) {
           <button onClick={onStart} className="w-full sm:w-auto sm:min-w-[220px] bg-[#0F6E56] text-white font-bold py-4 px-8 rounded-xl text-[17px] hover:bg-[#0c5945] transition-all flex items-center justify-center gap-2">Start Assessment <ArrowRight className="w-5 h-5"/></button>
         </div>
         <p className="text-[#4B5563] text-[13px] mt-6">Takes 5–20 minutes depending on the time you choose</p>
-        <p className="text-[#4B5563] text-[13px] mt-3">Prefer to talk directly? <Link href="/book" className="underline hover:text-[#6B7280] transition-colors">Book a session instead.</Link></p>
+        <p className="text-[#4B5563] text-[13px] mt-3">Prefer to talk directly? <a href="https://calendly.com/clarivisintelligence/ai_opportunity_session" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#6B7280] transition-colors">Book a session instead.</a></p>
       </div>
     </motion.div>
   );
@@ -531,7 +531,7 @@ function Phase7({formData,snapshotData}:{formData:FormData;snapshotData:Snapshot
         {/* CTA */}
         <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:1.15}} className="flex flex-col items-center gap-3">
           <p className="text-[#9CA3AF] text-[15px] leading-relaxed text-center mb-2">The next step is a free 45-minute call with our founder. We go deeper into your top opportunity, validate the ROI estimate for your specific situation, and give you a clear starting point. No obligation.</p>
-          <Link href="/book" onClick={() => trackPostHog('book_session_clicked', {source: 'assessment_summary',industry: formData.industry})} className="w-full sm:w-auto sm:min-w-[280px] text-center bg-[#0F6E56] text-white font-semibold py-4 rounded-lg text-[16px] hover:bg-[#0c5945] transition-all px-8">Book a Session{opps.length > 0 ? `: ${opps[0].title}` : ""}</Link>
+          <a href="https://calendly.com/clarivisintelligence/ai_opportunity_session" target="_blank" rel="noopener noreferrer" onClick={() => trackPostHog('book_session_clicked', {source: 'assessment_summary',industry: formData.industry})} className="w-full sm:w-auto sm:min-w-[280px] text-center bg-[#0F6E56] text-white font-semibold py-4 rounded-lg text-[16px] hover:bg-[#0c5945] transition-all px-8">Book a Session{opps.length > 0 ? `: ${opps[0].title}` : ""}</a>
           <p className="text-[#4B5563] text-[12px]">Founding rate available for clients who engage before June 2026.</p>
           <Link href="/" className="text-[#4B5563] text-[13px] hover:text-[#6B7280] transition-colors mt-1">or return to home</Link>
         </motion.div>

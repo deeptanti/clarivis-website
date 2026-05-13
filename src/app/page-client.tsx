@@ -597,7 +597,7 @@ export default function Home() {
 
               <div className="mt-12 lg:mt-8">
                 <Link
-                  href="/services/real-estate"
+                  href="/solutions/real-estate"
                   className="block w-full text-center px-6 py-3.5 rounded-md border border-[#0F6E56] text-[#0F6E56] font-medium transition-all duration-300 hover:bg-[#0F6E56] hover:text-white"
                 >
                   Explore Real Estate Solutions
@@ -648,7 +648,7 @@ export default function Home() {
 
               <div className="mt-12 lg:mt-8">
                 <Link
-                  href="/services/healthcare"
+                  href="/solutions/healthcare"
                   className="block w-full text-center px-6 py-3.5 rounded-md border border-[#0F6E56] text-[#0F6E56] font-medium transition-all duration-300 hover:bg-[#0F6E56] hover:text-white"
                 >
                   Explore Healthcare Solutions
@@ -699,7 +699,7 @@ export default function Home() {
 
               <div className="mt-12 lg:mt-8">
                 <Link
-                  href="/services/agribusiness"
+                  href="/solutions/agribusiness"
                   className="block w-full text-center px-6 py-3.5 rounded-md border border-[#0F6E56] text-[#0F6E56] font-medium transition-all duration-300 hover:bg-[#0F6E56] hover:text-white"
                 >
                   Explore Agribusiness Solutions
@@ -897,10 +897,10 @@ export default function Home() {
               Every product ships in 4 to 6 weeks with ROI tracked from day one.
             </p>
             <Link
-              href="/products"
+              href="/solutions"
               className="inline-flex items-center justify-center gap-2 text-[#0F6E56] text-[15px] font-medium hover:opacity-80 transition-opacity"
             >
-              Explore all products
+              Explore all solutions
               <ArrowRight className="w-4 h-4" />
             </Link>
           </motion.div>
