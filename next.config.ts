@@ -9,6 +9,13 @@ const nextConfig: NextConfig = {
         destination: "https://clarivisintelligence.com/:path*",
         permanent: true,
       },
+      { source: "/services", destination: "/solutions", permanent: true },
+      { source: "/services/real-estate", destination: "/solutions/real-estate", permanent: true },
+      { source: "/services/healthcare", destination: "/solutions/healthcare", permanent: true },
+      { source: "/services/agribusiness", destination: "/solutions/agribusiness", permanent: true },
+      { source: "/products", destination: "/solutions", permanent: true },
+      { source: "/audit", destination: "/how-it-works", permanent: true },
+      { source: "/book", destination: "/contact", permanent: true },
     ];
   },
 };
