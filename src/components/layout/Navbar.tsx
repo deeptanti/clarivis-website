@@ -21,12 +21,9 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Home", path: "/" },
+    { name: "How It Works", path: "/how-it-works" },
+    { name: "Solutions", path: "/solutions" },
     { name: "About", path: "/about" },
-    { name: "Services", path: "/services" },
-    { name: "Products", path: "/products" },
-    { name: "Assessment", path: "/assessment" },
-    { name: "Book a Call", path: "/book" },
-    { name: "Contact", path: "/contact" },
   ];
 
   return (
@@ -66,7 +63,7 @@ export default function Navbar() {
               href="/assessment"
               className="bg-[#0F6E56] hover:bg-[#0c5945] text-white px-6 py-2.5 rounded-md font-medium text-sm transition-colors shadow-lg shadow-[#0F6E56]/20"
             >
-              Get Started
+              Start Assessment →
             </Link>
           </div>
 
@@ -123,7 +120,7 @@ export default function Navbar() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="block w-full bg-[#0F6E56] text-white py-4 rounded-md font-medium text-lg text-center"
                 >
-                  Get Started
+                  Start Assessment →
                 </Link>
               </motion.div>
             </nav>
