@@ -51,6 +51,7 @@ export default function Footer() {
             <Link href="/how-it-works" className="text-gray-400 hover:text-[#0F6E56] transition-colors text-sm">How It Works</Link>
             <Link href="/assessment" className="text-gray-400 hover:text-[#0F6E56] transition-colors text-sm">Start Assessment</Link>
             <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#0F6E56] transition-colors text-sm">Book a Call</a>
+            <Link href="/insights" className="text-gray-400 hover:text-[#0F6E56] transition-colors text-sm">Insights</Link>
           </div>
 
           {/* Solutions */}
