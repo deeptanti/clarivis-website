@@ -3,7 +3,6 @@ import Script from 'next/script';
 import { Inter } from "next/font/google";
 import "./globals.css";
 import VisitorTracker from "@/components/VisitorTracker";
-import { PostHogProvider } from "@/components/PostHogProvider";
 import SiteWrapper from "@/components/SiteWrapper";
 
 const inter = Inter({
@@ -117,42 +116,40 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans bg-white text-[#1A1A2E]">
-        <PostHogProvider>
-          {/* Organisation structured data */}
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-          />
+        {/* Organisation structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
 
-          {/* Google Analytics 4 */}
-          <Script
-            src='https://www.googletagmanager.com/gtag/js?id=G-T1127E5MED'
-            strategy='afterInteractive'
-          />
-          <Script id='google-analytics' strategy='afterInteractive'>
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-T1127E5MED');
-            `}
-          </Script>
+        {/* Google Analytics 4 */}
+        <Script
+          src='https://www.googletagmanager.com/gtag/js?id=G-T1127E5MED'
+          strategy='afterInteractive'
+        />
+        <Script id='google-analytics' strategy='afterInteractive'>
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-T1127E5MED');
+          `}
+        </Script>
 
-          {/* Microsoft Clarity */}
-          <Script id='clarity-analytics' strategy='afterInteractive'>
-            {`
-              (function(c,l,a,r,i,t,y){
-                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;
-                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-              })(window, document, 'clarity', 'script', 'w5w4s29qzh');
-            `}
-          </Script>
-          <VisitorTracker />
-          <SiteWrapper>
-            {children}
-          </SiteWrapper>
-        </PostHogProvider>
+        {/* Microsoft Clarity */}
+        <Script id='clarity-analytics' strategy='afterInteractive'>
+          {`
+            (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, 'clarity', 'script', 'w5w4s29qzh');
+          `}
+        </Script>
+        <VisitorTracker />
+        <SiteWrapper>
+          {children}
+        </SiteWrapper>
       </body>
     </html>
   );

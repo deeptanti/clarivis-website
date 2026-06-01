@@ -90,6 +90,11 @@ export function trackEvent(event: string, data: TrackPayload = {}): void {
   else if (event === 'contact_form_submitted')
     ga4EventName = GA4_EVENTS.CONTACT_FORM_SUBMITTED
 
+  // Filter out null values from data to comply with GA4EventPayload type
+  const cleanData = Object.fromEntries(
+    Object.entries(data).filter(([_, v]) => v !== null && v !== undefined)
+  )
+
   const payload: GA4EventPayload = {
     visitId,
     sessionStart,
@@ -98,7 +103,7 @@ export function trackEvent(event: string, data: TrackPayload = {}): void {
     timeOnScreenSeconds: timeOnScreen,
     referrer:           document.referrer || '',
     pageUrl:            window.location.pathname,
-    ...data,
+    ...cleanData,
   }
 
   // Fire and forget — never blocks the UI

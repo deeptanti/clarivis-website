@@ -25,17 +25,6 @@ const QUESTIONS: Record<string,string> = { industry:"What industry are you in?",
 const MIN_TURNS_FOR_QUALITY = 3;
 
 /* ─── Helpers ── */
-function trackPostHog(event: string, properties?: Record<string, unknown>) {
-  if (typeof window !== 'undefined' && (window as unknown as { posthog?: { capture: (e: string, p?: Record<string, unknown>) => void } }).posthog) {
-    (window as unknown as { posthog: { capture: (e: string, p?: Record<string, unknown>) => void } }).posthog.capture(event, properties)
-  }
-}
-
-function identifyPostHog(email: string, properties: Record<string, unknown>) {
-  if (typeof window !== 'undefined' && (window as unknown as { posthog?: { identify: (e: string, p: Record<string, unknown>) => void } }).posthog) {
-    (window as unknown as { posthog: { identify: (e: string, p: Record<string, unknown>) => void } }).posthog.identify(email, properties)
-  }
-}
 function getMaxTurns(t: TimeOption) { return t===5?8:t===10?14:25; }
 function getTotalSteps(t: TimeOption) { return t===5?5:t===10?7:8; }
 function getStepType(step:number, time:TimeOption) {
@@ -217,7 +206,7 @@ function Phase4({timeSelected,formData,onChange,onComplete,onBack,onScreenChange
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[step]);
 
-  const goNext = ()=>{ if(stepType==="confirm"){trackEvent("p4_complete",{phase:4,screenDetail:"Phase 4: Confirm — Start AI Chat",timeSelected,industry:formData.industry,company:formData.company});onComplete();return;} if(!valid)return; trackPostHog('assessment_step_completed', {step: step,totalSteps: total,industry: formData.industry || null});setDir(1);setStep(s=>s+1); };
+  const goNext = ()=>{ if(stepType==="confirm"){trackEvent("p4_complete",{phase:4,screenDetail:"Phase 4: Confirm — Start AI Chat",timeSelected,industry:formData.industry,company:formData.company});onComplete();return;} if(!valid)return; setDir(1);setStep(s=>s+1); };
   const goBack = ()=>{ if(step<=1){onBack();return;} setDir(-1);setStep(s=>s-1); };
   return (
     <motion.div variants={phaseV} initial="hidden" animate="show" exit="exit" className="flex flex-col min-h-[calc(100vh-73px)]">
@@ -294,7 +283,7 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
     setIsTyping(false);
   };
 
-  useEffect(()=>{ if(messages.length===0&&!greetingFired.current){greetingFired.current=true;trackPostHog('chat_started', {industry: formData.industry,timeSelected: timeSelected,company: formData.company});callAPI([]);} },[]);
+  useEffect(()=>{ if(messages.length===0&&!greetingFired.current){greetingFired.current=true;callAPI([]);} },[]);
 
   const handleSend = async()=>{
     if(!input.trim()||disabled) return;
@@ -302,7 +291,6 @@ function Phase5({formData,timeSelected,maxTurns,messages,setMessages,onComplete,
     const next = [...messages,msg];
     const turnNum = turnsUsed+1;
     trackEvent("p5_turn_sent",{phase:5,screenDetail:`Phase 5: AI Chat — Turn ${turnNum}`,chatTurns:turnNum,timeSelected});
-    trackPostHog('chat_turn', {turnNumber: turnNum,maxTurns: maxTurns,industry: formData.industry});
     setMessages(next); setInput(""); await callAPI(next);
   };
 
@@ -387,8 +375,6 @@ function Phase6({formData,messages,timeSelected,setSnapshotData,onComplete,logDa
 
   useEffect(()=>{
     if(hasCompleted.current) return;
-    identifyPostHog(formData.email, {name: formData.name,email: formData.email,phone: formData.phone,company: formData.company,industry: formData.industry,teamSize: formData.teamSize,mainChallenge: formData.mainChallenge,completedAssessment: true,assessmentCompletedAt: new Date().toISOString()});
-    trackPostHog('assessment_completed', {industry: formData.industry,timeSelected: timeSelected,company: formData.company,totalTurns: Math.floor(messages.length / 2)});
 
     // ── RACE CONDITION FIX ──────────────────────────────────────────────────
     // We no longer use a fixed setTimeout to advance to Phase 7.
@@ -531,7 +517,7 @@ function Phase7({formData,snapshotData}:{formData:FormData;snapshotData:Snapshot
         {/* CTA */}
         <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:1.15}} className="flex flex-col items-center gap-3">
           <p className="text-[#9CA3AF] text-[15px] leading-relaxed text-center mb-2">The next step is a free 45-minute call with our founder. We go deeper into your top opportunity, validate the ROI estimate for your specific situation, and give you a clear starting point. No obligation.</p>
-          <a href="https://calendly.com/clarivisintelligence/ai_opportunity_session" target="_blank" rel="noopener noreferrer" onClick={() => trackPostHog('book_session_clicked', {source: 'assessment_summary',industry: formData.industry})} className="w-full sm:w-auto sm:min-w-[280px] text-center bg-[#0F6E56] text-white font-semibold py-4 rounded-lg text-[16px] hover:bg-[#0c5945] transition-all px-8">Book a Session{opps.length > 0 ? `: ${opps[0].title}` : ""}</a>
+          <a href="https://calendly.com/clarivisintelligence/ai_opportunity_session" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto sm:min-w-[280px] text-center bg-[#0F6E56] text-white font-semibold py-4 rounded-lg text-[16px] hover:bg-[#0c5945] transition-all px-8">Book a Session{opps.length > 0 ? `: ${opps[0].title}` : ""}</a>
           <p className="text-[#4B5563] text-[12px]">Founding rate available for clients who engage before June 2026.</p>
           <Link href="/" className="text-[#4B5563] text-[13px] hover:text-[#6B7280] transition-colors mt-1">or return to home</Link>
         </motion.div>
@@ -596,11 +582,11 @@ export default function AssessmentClient() {
     <div className="fixed inset-0 z-[60] bg-[#0a0f1a] overflow-y-auto flex flex-col">
       <TopBar/>
       <AnimatePresence mode="wait">
-        {phase===1&&<Phase1 key="p1" onStart={()=>{trackPostHog('assessment_started', { source: 'entry_screen' });trackEvent("p1_start_clicked",{phase:1,screenDetail:"Phase 1: Welcome"});setPhase(2);}}/>}
-        {phase===2&&<Phase2 key="p2" timeSelected={timeSelected} onSelect={handleTimeSelect} onContinue={()=>{trackEvent("p2_time_selected",{phase:2,screenDetail:"Phase 2: Time Selection",timeValue:timeSelected});trackPostHog('time_selected', { minutes: timeSelected });setPhase(3);}}/>}
+        {phase===1&&<Phase1 key="p1" onStart={()=>{trackEvent("p1_start_clicked",{phase:1,screenDetail:"Phase 1: Welcome"});setPhase(2);}}/>}
+        {phase===2&&<Phase2 key="p2" timeSelected={timeSelected} onSelect={handleTimeSelect} onContinue={()=>{trackEvent("p2_time_selected",{phase:2,screenDetail:"Phase 2: Time Selection",timeValue:timeSelected});setPhase(3);}}/>}
         {phase===3&&<Phase4 key="p3" timeSelected={timeSelected} formData={formData} onChange={updateForm} onComplete={()=>setPhase(4)} onBack={()=>setPhase(2)} onScreenChange={(label)=>{currentScreenRef.current=label;}}/>}
         {phase===4&&<Phase5 key="p4" formData={formData} timeSelected={timeSelected} maxTurns={maxTurns} messages={messages} setMessages={setMessages} onComplete={()=>{trackEvent("p4_chat_ended",{phase:4,screenDetail:"Phase 4: AI Chat — Max Turns",chatTurns:Math.floor(messages.length/2),timeSelected});setPhase(5);}} onLogData={(d)=>setLogData(d)}/>}
-        {phase===5&&<Phase3 key="p5" formData={formData} onChange={(k,v)=>updateForm(k,v as string)} onContinue={()=>{trackEvent("p5_contact_submitted",{phase:5,screenDetail:"Phase 5: Contact Details",name:formData.name,email:formData.email,timeSelected});identifyPostHog(formData.email, {name: formData.name,email: formData.email,phone: formData.phone,timeSelected: timeSelected,source: 'clarivis_assessment',firstSeen: new Date().toISOString()});trackPostHog('contact_captured', {timeSelected: timeSelected,source: 'assessment'});fireEarlyCapture();setPhase(6);}}/>}
+        {phase===5&&<Phase3 key="p5" formData={formData} onChange={(k,v)=>updateForm(k,v as string)} onContinue={()=>{trackEvent("p5_contact_submitted",{phase:5,screenDetail:"Phase 5: Contact Details",name:formData.name,email:formData.email,timeSelected});fireEarlyCapture();setPhase(6);}}/>}
         {phase===6&&<Phase6 key="p6" formData={formData} messages={messages} timeSelected={timeSelected} setSnapshotData={setSnapshotData} onComplete={()=>setPhase(7)} logData={logData} assessmentId={assessmentId}/>}
         {phase===7&&<Phase7 key="p7" formData={formData} snapshotData={snapshotData}/>}
       </AnimatePresence>
