@@ -3,8 +3,115 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Mail, MapPin, Clock, Send, Phone } from "lucide-react";
+import { useState } from "react";
+import { trackEvent } from "@/lib/tracker";
+import { GA4_EVENTS } from "@/lib/ga4-events";
+
+interface FormData {
+  fullName: string;
+  company: string;
+  email: string;
+  phone: string;
+  industry: string;
+  message: string;
+}
 
 export default function ContactPage() {
+  const [formData, setFormData] = useState<FormData>({
+    fullName: '',
+    company: '',
+    email: '',
+    phone: '',
+    industry: 'Real Estate',
+    message: '',
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.fullName,
+          email: formData.email,
+          company: formData.company,
+          phone: formData.phone,
+          industry: formData.industry,
+          message: formData.message,
+        }),
+      });
+
+      if (response.ok) {
+        // Track successful submission
+        trackEvent(GA4_EVENTS.CONTACT_FORM_SUBMITTED, {
+          email: formData.email,
+          industry: formData.industry,
+          company_provided: !!formData.company,
+          vertical: formData.industry.toLowerCase(),
+        });
+
+        setSubmitted(true);
+        setFormData({
+          fullName: '',
+          company: '',
+          email: '',
+          phone: '',
+          industry: 'Real Estate',
+          message: '',
+        });
+      } else {
+        alert('Something went wrong. Please try again.');
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      alert('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <main className="w-full">
+        <section className="relative w-full pt-[120px] pb-[80px] overflow-hidden bg-[#1A1A2E]">
+          <div className="container relative z-10 mx-auto px-6 max-w-[700px] text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <h1 className="text-white text-[36px] lg:text-[52px] font-extrabold leading-[1.1] tracking-tight">
+                Thank you for reaching out!
+              </h1>
+              <p className="text-[#9CA3AF] text-[18px] leading-[1.8] mt-4">
+                We've received your message and will get back to you within 24 hours.
+              </p>
+              <Link
+                href="/"
+                className="inline-block mt-6 bg-[#0F6E56] hover:bg-[#0c5945] text-white px-8 py-3 rounded-md font-medium transition-colors"
+              >
+                Return Home
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="w-full">
       {/* Hero Section */}
@@ -35,7 +142,7 @@ export default function ContactPage() {
       <section className="relative w-full py-[80px] bg-[#0d1117] overflow-hidden">
         <div className="container relative z-10 mx-auto px-6 max-w-[1200px]">
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-8 items-start">
-            
+
             {/* Left Column - Form */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -48,28 +155,56 @@ export default function ContactPage() {
                 <h2 className="text-white text-[24px] font-bold">Send us a message</h2>
                 <p className="text-[#9CA3AF] text-[14px] mt-1 mb-8">We respond within 24 hours.</p>
 
-                <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                <form className="space-y-6" onSubmit={handleSubmit}>
                   {/* Full Name */}
                   <div>
                     <label className="block text-[#9CA3AF] text-sm mb-2">Full Name (required)</label>
-                    <input type="text" required className="w-full bg-[#0d1117] border border-[#1f2937] rounded-[10px] px-5 py-3.5 text-white text-[15px] focus:outline-none focus:border-[#0F6E56] focus:shadow-[0_0_10px_rgba(15,110,86,0.2)] transition-all" />
+                    <input
+                      type="text"
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleChange}
+                      required
+                      className="w-full bg-[#0d1117] border border-[#1f2937] rounded-[10px] px-5 py-3.5 text-white text-[15px] focus:outline-none focus:border-[#0F6E56] focus:shadow-[0_0_10px_rgba(15,110,86,0.2)] transition-all"
+                    />
                   </div>
-                  
+
                   {/* Company Name */}
                   <div>
                     <label className="block text-[#9CA3AF] text-sm mb-2">Company Name (required)</label>
-                    <input type="text" required className="w-full bg-[#0d1117] border border-[#1f2937] rounded-[10px] px-5 py-3.5 text-white text-[15px] focus:outline-none focus:border-[#0F6E56] focus:shadow-[0_0_10px_rgba(15,110,86,0.2)] transition-all" />
+                    <input
+                      type="text"
+                      name="company"
+                      value={formData.company}
+                      onChange={handleChange}
+                      required
+                      className="w-full bg-[#0d1117] border border-[#1f2937] rounded-[10px] px-5 py-3.5 text-white text-[15px] focus:outline-none focus:border-[#0F6E56] focus:shadow-[0_0_10px_rgba(15,110,86,0.2)] transition-all"
+                    />
                   </div>
 
                   {/* Email & Phone */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-[#9CA3AF] text-sm mb-2">Email Address (required)</label>
-                      <input type="email" required className="w-full bg-[#0d1117] border border-[#1f2937] rounded-[10px] px-5 py-3.5 text-white text-[15px] focus:outline-none focus:border-[#0F6E56] focus:shadow-[0_0_10px_rgba(15,110,86,0.2)] transition-all" />
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        className="w-full bg-[#0d1117] border border-[#1f2937] rounded-[10px] px-5 py-3.5 text-white text-[15px] focus:outline-none focus:border-[#0F6E56] focus:shadow-[0_0_10px_rgba(15,110,86,0.2)] transition-all"
+                      />
                     </div>
                     <div>
                       <label className="block text-[#9CA3AF] text-sm mb-2">Phone Number (optional)</label>
-                      <input type="tel" placeholder="+91 98765 43210" className="w-full bg-[#0d1117] border border-[#1f2937] rounded-[10px] px-5 py-3.5 text-white text-[15px] focus:outline-none focus:border-[#0F6E56] focus:shadow-[0_0_10px_rgba(15,110,86,0.2)] transition-all placeholder:text-[#4B5563]" />
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        placeholder="+91 98765 43210"
+                        className="w-full bg-[#0d1117] border border-[#1f2937] rounded-[10px] px-5 py-3.5 text-white text-[15px] focus:outline-none focus:border-[#0F6E56] focus:shadow-[0_0_10px_rgba(15,110,86,0.2)] transition-all placeholder:text-[#4B5563]"
+                      />
                     </div>
                   </div>
 
@@ -78,7 +213,11 @@ export default function ContactPage() {
                     <label className="block text-[#9CA3AF] text-sm mb-2">Industry</label>
                     {/* Add a wrapper div to handle the custom dropdown arrow */}
                     <div className="relative">
-                      <select className="w-full bg-[#0d1117] border border-[#1f2937] rounded-[10px] px-5 py-3.5 text-white text-[15px] focus:outline-none focus:border-[#0F6E56] focus:shadow-[0_0_10px_rgba(15,110,86,0.2)] transition-all appearance-none cursor-pointer">
+                      <select
+                        name="industry"
+                        value={formData.industry}
+                        onChange={handleChange}
+                        className="w-full bg-[#0d1117] border border-[#1f2937] rounded-[10px] px-5 py-3.5 text-white text-[15px] focus:outline-none focus:border-[#0F6E56] focus:shadow-[0_0_10px_rgba(15,110,86,0.2)] transition-all appearance-none cursor-pointer">
                         <option>Real Estate</option>
                         <option>Healthcare</option>
                         <option>Agribusiness</option>
@@ -95,14 +234,25 @@ export default function ContactPage() {
                   {/* Message */}
                   <div>
                     <label className="block text-[#9CA3AF] text-sm mb-2">Message (required)</label>
-                    <textarea rows={4} required className="w-full bg-[#0d1117] border border-[#1f2937] rounded-[10px] px-5 py-3.5 text-white text-[15px] focus:outline-none focus:border-[#0F6E56] focus:shadow-[0_0_10px_rgba(15,110,86,0.2)] transition-all resize-none"></textarea>
+                    <textarea
+                      rows={4}
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
+                      className="w-full bg-[#0d1117] border border-[#1f2937] rounded-[10px] px-5 py-3.5 text-white text-[15px] focus:outline-none focus:border-[#0F6E56] focus:shadow-[0_0_10px_rgba(15,110,86,0.2)] transition-all resize-none">
+                    </textarea>
                   </div>
 
                   {/* Submit Button */}
                   <div className="pt-2">
-                    <button type="submit" className="w-full bg-[#0F6E56] hover:bg-[#0c5945] text-white font-semibold py-4 rounded-[10px] flex items-center justify-center gap-2 transition-colors">
-                      Send Message
-                      <Send className="w-5 h-5" />
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full bg-[#0F6E56] hover:bg-[#0c5945] disabled:bg-[#064a38] disabled:cursor-not-allowed text-white font-semibold py-4 rounded-[10px] flex items-center justify-center gap-2 transition-colors"
+                    >
+                      {loading ? 'Sending...' : 'Send Message'}
+                      {!loading && <Send className="w-5 h-5" />}
                     </button>
                     <p className="text-center text-[#6B7280] text-[13px] mt-4">
                       Your information is never shared with third parties.
@@ -114,7 +264,7 @@ export default function ContactPage() {
 
             {/* Right Column - Info Cards */}
             <div className="w-full lg:w-[45%] flex flex-col gap-6">
-              
+
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -186,7 +336,7 @@ export default function ContactPage() {
 
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5, delay: 0.4, ease: "easeOut" }}
                 className="bg-gradient-to-b from-[#071a14] to-[#0d1117] border border-[#0F6E56]/30 rounded-[16px] p-8 mt-2"
@@ -221,11 +371,11 @@ export default function ContactPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#071a14] to-[#0a0f1a] h-[120%] -top-[10%] -z-10" />
         {/* Radial Depth Glow */}
         <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,rgba(15,110,86,0.08)_0%,transparent_60%)] -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0" />
-        
+
         <div className="container relative z-10 mx-auto px-6 max-w-[800px] text-center">
           <div className="mb-6">
             <h2 className="text-white text-[36px] lg:text-[56px] font-extrabold leading-[1.1] tracking-tight">
-              <motion.span 
+              <motion.span
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
@@ -237,7 +387,7 @@ export default function ContactPage() {
             </h2>
           </div>
 
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
