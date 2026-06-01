@@ -4,6 +4,8 @@
  * to /api/track-visit on every phase/step transition.
  */
 
+import { GA4_EVENTS, GA4EventPayload } from './ga4-events'
+
 const VISIT_ID_KEY   = 'cv_visit_id'
 const SESSION_START  = 'cv_session_start'
 const SCREEN_ENTRY   = 'cv_screen_entry'
@@ -78,15 +80,30 @@ export function trackEvent(event: string, data: TrackPayload = {}): void {
   // Reset timer for the next screen
   markScreenEntry()
 
-  const payload = {
+  // Map legacy event names to GA4 names
+  let ga4EventName = event
+  if (event === 'p1_start_clicked') ga4EventName = GA4_EVENTS.ASSESSMENT_STARTED
+  else if (event.startsWith('p') && event.includes('_step_entered'))
+    ga4EventName = GA4_EVENTS.ASSESSMENT_PHASE_PROGRESSED
+  else if (event === 'assessment_completed')
+    ga4EventName = GA4_EVENTS.ASSESSMENT_COMPLETED
+  else if (event === 'contact_form_submitted')
+    ga4EventName = GA4_EVENTS.CONTACT_FORM_SUBMITTED
+
+  // Filter out null values from data to comply with GA4EventPayload type
+  const cleanData = Object.fromEntries(
+    Object.entries(data).filter(([_, v]) => v !== null && v !== undefined)
+  )
+
+  const payload: GA4EventPayload = {
     visitId,
     sessionStart,
-    event,
+    event: ga4EventName,
     timestamp:          new Date().toISOString(),
     timeOnScreenSeconds: timeOnScreen,
     referrer:           document.referrer || '',
     pageUrl:            window.location.pathname,
-    ...data,
+    ...cleanData,
   }
 
   // Fire and forget — never blocks the UI
