@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import Link from 'next/link'
 
 interface AssessmentCTAProps {
@@ -5,6 +8,8 @@ interface AssessmentCTAProps {
 }
 
 export default function AssessmentCTA({ verticalName }: AssessmentCTAProps) {
+  const [ctaHovered, setCtaHovered] = useState(false)
+
   return (
     <section
       style={{
@@ -22,7 +27,13 @@ export default function AssessmentCTA({ verticalName }: AssessmentCTAProps) {
         </p>
         <Link
           href="/assessment"
-          className="inline-flex items-center gap-2 bg-[#0F6E56] hover:bg-[#0c5945] text-white px-8 py-3.5 rounded-md font-medium text-sm mt-8 transition-colors"
+          className="inline-flex items-center gap-2 text-white px-8 py-3.5 rounded-md font-medium text-sm mt-8 transition-opacity"
+          style={{
+            backgroundColor: 'var(--v-accent)',
+            opacity: ctaHovered ? 0.85 : 1,
+          }}
+          onMouseEnter={() => setCtaHovered(true)}
+          onMouseLeave={() => setCtaHovered(false)}
         >
           Start Free Assessment
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">

@@ -9,6 +9,8 @@ import { Menu, X } from "lucide-react";
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [ctaHovered, setCtaHovered] = useState(false);
+  const [mobileCtaHovered, setMobileCtaHovered] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,17 +31,24 @@ export default function Navbar() {
 
   return (
     <>
+      <style>{`
+        .nav-link:hover { color: var(--v-signal) !important; }
+        .nav-link-underline { background-color: var(--v-signal); }
+      `}</style>
+
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${isScrolled
-            ? "bg-[#1A1A2E]/80 backdrop-blur-md py-4 shadow-sm"
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
+          isScrolled
+            ? "backdrop-blur-md py-4 shadow-sm"
             : "bg-transparent py-6"
-          }`}
+        }`}
+        style={isScrolled ? { backgroundColor: "var(--v-fa)" } : undefined}
       >
         <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
           {/* Logo */}
           <Link
             href="/"
-            className="text-[#0F6E56] font-bold text-2xl tracking-tight z-50 relative"
+            className="font-bold text-2xl tracking-tight z-50 relative"
           >
             <Image src='/images/logo.png' alt='Clarivis Intelligence' width={220} height={55} priority />
           </Link>
@@ -50,10 +59,10 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.path}
-                className="group relative text-white font-medium text-sm transition-colors hover:text-[#0F6E56]"
+                className="group relative nav-link text-white font-medium text-sm transition-colors"
               >
                 {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#0F6E56] transition-all duration-300 group-hover:w-full"></span>
+                <span className="nav-link-underline absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full"></span>
               </Link>
             ))}
           </nav>
@@ -62,7 +71,13 @@ export default function Navbar() {
           <div className="hidden md:block">
             <Link
               href="/assessment"
-              className="bg-[#0F6E56] hover:bg-[#0c5945] text-white px-6 py-2.5 rounded-md font-medium text-sm transition-colors shadow-lg shadow-[#0F6E56]/20"
+              className="text-white px-6 py-2.5 rounded-md font-medium text-sm shadow-lg transition-opacity"
+              style={{
+                backgroundColor: "var(--v-accent)",
+                opacity: ctaHovered ? 0.85 : 1,
+              }}
+              onMouseEnter={() => setCtaHovered(true)}
+              onMouseLeave={() => setCtaHovered(false)}
             >
               Start Assessment →
             </Link>
@@ -91,7 +106,8 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: "-100%" }}
             transition={{ duration: 0.4, ease: "easeInOut" }}
-            className="fixed inset-0 z-40 bg-[#1A1A2E] flex flex-col items-center justify-center pt-20 px-6"
+            className="fixed inset-0 z-40 flex flex-col items-center justify-center pt-20 px-6"
+            style={{ backgroundColor: "var(--v-fa)" }}
           >
             <nav className="flex flex-col space-y-6 text-center w-full max-w-sm">
               {navLinks.map((link, i) => (
@@ -104,7 +120,7 @@ export default function Navbar() {
                   <Link
                     href={link.path}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="block text-white text-2xl font-medium tracking-wide hover:text-[#0F6E56] py-2"
+                    className="block nav-link text-white text-2xl font-medium tracking-wide py-2"
                   >
                     {link.name}
                   </Link>
@@ -119,7 +135,13 @@ export default function Navbar() {
                 <Link
                   href="/assessment"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block w-full bg-[#0F6E56] text-white py-4 rounded-md font-medium text-lg text-center"
+                  className="block w-full text-white py-4 rounded-md font-medium text-lg text-center transition-opacity"
+                  style={{
+                    backgroundColor: "var(--v-accent)",
+                    opacity: mobileCtaHovered ? 0.85 : 1,
+                  }}
+                  onMouseEnter={() => setMobileCtaHovered(true)}
+                  onMouseLeave={() => setMobileCtaHovered(false)}
                 >
                   Start Assessment →
                 </Link>

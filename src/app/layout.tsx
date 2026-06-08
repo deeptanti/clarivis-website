@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import VisitorTracker from "@/components/VisitorTracker";
 import SiteWrapper from "@/components/SiteWrapper";
+import { VerticalThemeProvider } from "@/components/providers/VerticalThemeProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -184,9 +185,11 @@ export default function RootLayout({
           `}
         </Script>
         <VisitorTracker />
-        <SiteWrapper>
-          {children}
-        </SiteWrapper>
+        <VerticalThemeProvider>
+          <SiteWrapper>
+            {children}
+          </SiteWrapper>
+        </VerticalThemeProvider>
       </body>
     </html>
   );
