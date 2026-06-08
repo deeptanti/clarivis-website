@@ -1,6 +1,18 @@
 export type ContentType = 'guide' | 'article' | 'glossary' | 'faq';
 export type Vertical = 'real-estate' | 'healthcare' | 'agribusiness';
 
+export type ArticleStat = {
+  value: string
+  label: string
+  description: string
+  source: string
+}
+
+export type FAQItem = {
+  question: string
+  answer: string
+}
+
 export interface ContentRow {
   id: string;
   slug: string;
@@ -15,6 +27,10 @@ export interface ContentRow {
   published_at: string | null;
   related_glossary_slug: string | null;
   pillar_vertical: Vertical | null;
+  summary?: string | null;
+  stats?: ArticleStat[] | null;
+  faq?: FAQItem[] | null;
+  read_time?: number | null;
   created_at: string;
   updated_at: string;
 }
