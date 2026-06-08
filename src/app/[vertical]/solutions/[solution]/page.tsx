@@ -1,12 +1,18 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import {
   isValidVertical,
   getVertical,
   getSolutionBySlug,
   getAllPublishedSolutions,
 } from '@/lib/verticals'
+import SectionTag from '@/components/vertical/SectionTag'
+import StepSequence from '@/components/vertical/StepSequence'
+import OutcomeCard from '@/components/vertical/OutcomeCard'
+import AssessmentCTA from '@/components/vertical/AssessmentCTA'
 
 export const revalidate = 3600
 
@@ -61,138 +67,182 @@ export default async function SolutionPage({
 
   if (!solution) notFound()
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://clarivisintelligence.com' },
+      { '@type': 'ListItem', position: 2, name: vertical?.name ?? verticalSlug, item: `https://clarivisintelligence.com/${verticalSlug}` },
+      { '@type': 'ListItem', position: 3, name: 'Solutions', item: `https://clarivisintelligence.com/${verticalSlug}/solutions` },
+      { '@type': 'ListItem', position: 4, name: solution.name, item: `https://clarivisintelligence.com/${verticalSlug}/solutions/${solutionSlug}` },
+    ],
+  }
+
+  const serviceJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: solution.name,
+    description: solution.description ?? solution.tagline ?? '',
+    provider: { '@id': 'https://clarivisintelligence.com/#organization' },
+    areaServed: 'IN',
+    ...(solution.build_price_min != null && {
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: 'INR',
+        priceRange: `Rs ${solution.build_price_min} to Rs ${solution.build_price_max ?? solution.build_price_min}`,
+      },
+    }),
+  }
+
   return (
-    <main className="w-full min-h-screen bg-[#0A0F1A]">
-      {/* Hero */}
-      <section className="relative w-full pt-[120px] pb-[80px] bg-[#111827]">
-        <div className="container mx-auto px-6 max-w-[800px] text-center">
-          <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-[#0F6E56]/30 bg-[#0F6E56]/15">
-            <span className="text-[#0F6E56] text-xs font-semibold uppercase tracking-widest">
-              {vertical?.name ?? verticalSlug}
-            </span>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
+      <main className="w-full min-h-screen">
+        {/* SECTION 1 — HERO */}
+        <section style={{ backgroundColor: 'var(--v-fa)' }} className="w-full pt-[140px] pb-[80px]">
+          <div className="max-w-[760px] mx-auto px-6 text-center">
+            <SectionTag label={vertical?.name ?? verticalSlug} />
+            <h1 className="text-white text-[40px] lg:text-[52px] font-extrabold leading-[1.1] tracking-tight mt-5 mb-4">
+              {solution.name}
+            </h1>
+            {solution.tagline && (
+              <p style={{ color: 'var(--v-muted)' }} className="text-[20px] mb-6 leading-relaxed">
+                {solution.tagline}
+              </p>
+            )}
+            {solution.roi_claim && (
+              <div
+                style={{
+                  backgroundColor: 'color-mix(in srgb, var(--v-signal) 10%, transparent)',
+                  border: '1px solid color-mix(in srgb, var(--v-signal) 30%, transparent)',
+                  color: 'var(--v-signal)',
+                }}
+                className="text-[16px] font-semibold px-6 py-3 rounded-xl inline-block mb-8"
+              >
+                {solution.roi_claim}
+              </div>
+            )}
+            <div>
+              <Link
+                href="/assessment"
+                className="inline-flex items-center gap-2 bg-[#0F6E56] hover:bg-[#0c5945] text-white px-8 py-3.5 rounded-md font-medium text-sm transition-colors"
+              >
+                Start Free Assessment
+              </Link>
+            </div>
           </div>
-          <h1 className="text-white text-[36px] lg:text-[48px] font-extrabold leading-[1.1] tracking-tight mb-4">
-            {solution.name}
-          </h1>
-          {solution.tagline && (
-            <p className="text-[#9CA3AF] text-[20px] leading-[1.6] mb-4">{solution.tagline}</p>
-          )}
-          {solution.roi_claim && (
-            <p className="text-[#0F6E56] text-[16px] font-semibold mb-8">{solution.roi_claim}</p>
-          )}
-          <Link
-            href="/assessment"
-            className="inline-flex items-center gap-2 bg-[#0F6E56] hover:bg-[#0c5945] text-white px-8 py-3.5 rounded-md font-medium text-sm transition-colors shadow-lg shadow-[#0F6E56]/20"
-          >
-            Start Your Free Assessment
-          </Link>
-        </div>
-      </section>
-
-      <div className="container mx-auto px-6 max-w-[860px] py-[60px] space-y-16">
-        {/* Problem */}
-        {solution.problem && (
-          <section>
-            <h2 className="text-white text-[24px] font-bold mb-4">The problem</h2>
-            <p className="text-[#CBD5E1] text-[16px] leading-[1.8]">{solution.problem}</p>
-          </section>
-        )}
-
-        {/* How it works */}
-        {solution.how_it_works && solution.how_it_works.length > 0 && (
-          <section>
-            <h2 className="text-white text-[24px] font-bold mb-6">How it works</h2>
-            <ol className="space-y-4">
-              {solution.how_it_works.map((item, i) => (
-                <li
-                  key={i}
-                  className="flex gap-5 bg-[#111827] border border-[#1f2937] rounded-[12px] p-6"
-                >
-                  <span className="w-8 h-8 rounded-full bg-[#0F6E56]/20 border border-[#0F6E56]/40 flex items-center justify-center text-[#0F6E56] text-[13px] font-bold shrink-0">
-                    {i + 1}
-                  </span>
-                  <div>
-                    <p className="text-white font-semibold text-[15px] mb-1">{item.step}</p>
-                    <p className="text-[#6B7280] text-[14px] leading-[1.6]">{item.description}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </section>
-        )}
-
-        {/* Outcomes */}
-        {solution.outcomes && solution.outcomes.length > 0 && (
-          <section>
-            <h2 className="text-white text-[24px] font-bold mb-6">What you get</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {solution.outcomes.map((outcome, i) => (
-                <div
-                  key={i}
-                  className="bg-[#111827] border border-[#1f2937] rounded-[12px] p-6"
-                >
-                  <h3 className="text-white font-bold text-[16px] mb-2">{outcome.title}</h3>
-                  <p className="text-[#6B7280] text-[14px] leading-[1.6]">{outcome.description}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Pricing */}
-        {(solution.build_price_min || solution.retainer_min) && (
-          <section className="bg-[#111827] border border-[#1f2937] rounded-[16px] p-8">
-            <h2 className="text-white text-[20px] font-bold mb-6">Investment</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {solution.build_price_min && (
-                <div>
-                  <p className="text-[#4B5563] text-[12px] uppercase tracking-wider mb-1">Build</p>
-                  <p className="text-white text-[24px] font-bold">
-                    Rs {solution.build_price_min.toLocaleString('en-IN')}
-                    {solution.build_price_max && (
-                      <span className="text-[#6B7280]">
-                        {' '}— Rs {solution.build_price_max.toLocaleString('en-IN')}
-                      </span>
-                    )}
-                  </p>
-                  <p className="text-[#4B5563] text-[13px] mt-1">Fixed scope, deployed in 4 to 6 weeks</p>
-                </div>
-              )}
-              {solution.retainer_min && (
-                <div>
-                  <p className="text-[#4B5563] text-[12px] uppercase tracking-wider mb-1">Monthly retainer</p>
-                  <p className="text-white text-[24px] font-bold">
-                    Rs {solution.retainer_min.toLocaleString('en-IN')}
-                    {solution.retainer_max && (
-                      <span className="text-[#6B7280]">
-                        {' '}— Rs {solution.retainer_max.toLocaleString('en-IN')}
-                      </span>
-                    )}
-                    <span className="text-[16px] text-[#6B7280]">/mo</span>
-                  </p>
-                  <p className="text-[#4B5563] text-[13px] mt-1">Monitoring, optimisation, and support</p>
-                </div>
-              )}
-            </div>
-          </section>
-        )}
-
-        {/* Bottom CTA */}
-        <section className="rounded-[20px] border border-[#0F6E56]/30 bg-[#0F6E56]/10 p-10 text-center">
-          <h2 className="text-white text-[22px] font-bold mb-3">
-            Ready to see if this is right for your business?
-          </h2>
-          <p className="text-[#9CA3AF] text-[15px] mb-6 max-w-[480px] mx-auto leading-relaxed">
-            Start with the free Clarivis Assessment. It takes 5 to 20 minutes and identifies your highest-impact AI opportunity.
-          </p>
-          <Link
-            href="/assessment"
-            className="inline-flex items-center gap-2 bg-[#0F6E56] hover:bg-[#0c5945] text-white px-8 py-3.5 rounded-md font-medium text-sm transition-colors"
-          >
-            Start Your Free Assessment
-          </Link>
         </section>
-      </div>
-    </main>
+
+        {/* SECTION 2 — THE PROBLEM */}
+        {solution.problem && (
+          <section style={{ backgroundColor: 'var(--v-fb)' }} className="py-20">
+            <div className="max-w-[760px] mx-auto px-6">
+              <div style={{ borderLeft: '3px solid var(--v-accent)' }} className="pl-4 mb-8">
+                <h2 className="text-white text-[26px] font-bold">The problem</h2>
+              </div>
+              <p style={{ color: 'var(--v-muted)' }} className="text-[17px] leading-[1.9]">
+                {solution.problem}
+              </p>
+            </div>
+          </section>
+        )}
+
+        {/* SECTION 3 — HOW IT WORKS */}
+        {solution.how_it_works && solution.how_it_works.length > 0 && (
+          <section style={{ backgroundColor: 'var(--v-fa)' }} className="py-20">
+            <div className="max-w-[760px] mx-auto px-6">
+              <div style={{ borderLeft: '3px solid var(--v-accent)' }} className="pl-4 mb-8">
+                <h2 className="text-white text-[26px] font-bold">How it works</h2>
+              </div>
+              <StepSequence steps={solution.how_it_works} />
+            </div>
+          </section>
+        )}
+
+        {/* SECTION 4 — OUTCOMES */}
+        {solution.outcomes && solution.outcomes.length > 0 && (
+          <section style={{ backgroundColor: 'var(--v-fb)' }} className="py-20">
+            <div className="max-w-[1100px] mx-auto px-6">
+              <div style={{ borderLeft: '3px solid var(--v-accent)' }} className="pl-4 mb-10">
+                <h2 className="text-white text-[26px] font-bold">What changes</h2>
+              </div>
+              <div className={`grid grid-cols-1 ${solution.outcomes.length >= 3 ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-5`}>
+                {solution.outcomes.map((outcome, i) => (
+                  <OutcomeCard key={i} title={outcome.title} description={outcome.description} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* SECTION 5 — BODY CONTENT */}
+        {solution.body && (
+          <section style={{ backgroundColor: 'var(--v-fa)' }} className="py-20">
+            <div className="max-w-[760px] mx-auto px-6">
+              <div
+                className="prose prose-invert max-w-none prose-headings:text-white prose-headings:font-bold prose-headings:mt-10 prose-headings:mb-4 prose-h2:text-[24px] prose-strong:text-white"
+                style={{ color: 'var(--v-muted)' }}
+              >
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{solution.body}</ReactMarkdown>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* SECTION 6 — PRICING */}
+        {solution.build_price_min != null && (
+          <section style={{ backgroundColor: 'var(--v-fb)' }} className="py-16">
+            <div className="max-w-[760px] mx-auto px-6">
+              <div style={{ borderLeft: '3px solid var(--v-accent)' }} className="pl-4 mb-8">
+                <h2 className="text-white text-[26px] font-bold">Investment</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div>
+                  <p style={{ color: 'var(--v-muted)' }} className="text-[12px] uppercase tracking-wider mb-1">
+                    One-time build
+                  </p>
+                  <p className="text-white text-[22px] font-bold">
+                    Rs {solution.build_price_min.toLocaleString('en-IN')}
+                    {solution.build_price_max != null && (
+                      <span style={{ color: 'var(--v-muted)' }}>
+                        {' '}to Rs {solution.build_price_max.toLocaleString('en-IN')}
+                      </span>
+                    )}
+                  </p>
+                </div>
+                {solution.retainer_min != null && (
+                  <div>
+                    <p style={{ color: 'var(--v-muted)' }} className="text-[12px] uppercase tracking-wider mb-1">
+                      Monthly retainer
+                    </p>
+                    <p className="text-white text-[22px] font-bold">
+                      Rs {solution.retainer_min.toLocaleString('en-IN')}
+                      {solution.retainer_max != null && (
+                        <span style={{ color: 'var(--v-muted)' }}>
+                          {' '}to Rs {solution.retainer_max.toLocaleString('en-IN')}
+                        </span>
+                      )}/month
+                    </p>
+                  </div>
+                )}
+              </div>
+              <p style={{ color: 'var(--v-muted)' }} className="text-[12px] mt-6">
+                Exact pricing confirmed during the audit.
+              </p>
+            </div>
+          </section>
+        )}
+
+        {/* SECTION 7 — ASSESSMENT CTA */}
+        <AssessmentCTA verticalName={vertical?.name ?? verticalSlug} />
+      </main>
+    </>
   )
 }

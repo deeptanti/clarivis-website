@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import {
   isValidVertical,
   getVertical,
@@ -8,8 +10,9 @@ import {
   getSolutionsByVertical,
   getAllPublishedAudiences,
 } from '@/lib/verticals'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
+import SectionTag from '@/components/vertical/SectionTag'
+import ProblemCard from '@/components/vertical/ProblemCard'
+import AssessmentCTA from '@/components/vertical/AssessmentCTA'
 
 export const revalidate = 3600
 
@@ -49,6 +52,17 @@ export async function generateMetadata({
     alternates: {
       canonical: `https://clarivisintelligence.com/${verticalSlug}/${audienceSlug}`,
     },
+    other: {
+      'schema-org': JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://clarivisintelligence.com' },
+          { '@type': 'ListItem', position: 2, name: verticalSlug, item: `https://clarivisintelligence.com/${verticalSlug}` },
+          { '@type': 'ListItem', position: 3, name: audience.name, item: `https://clarivisintelligence.com/${verticalSlug}/${audienceSlug}` },
+        ],
+      }),
+    },
   }
 }
 
@@ -70,100 +84,101 @@ export default async function AudiencePage({
   if (!audience) notFound()
 
   return (
-    <main className="w-full min-h-screen bg-[#0A0F1A]">
-      {/* Hero */}
-      <section className="relative w-full pt-[120px] pb-[80px] bg-[#111827]">
-        <div className="container mx-auto px-6 max-w-[800px] text-center">
-          <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-[#0F6E56]/30 bg-[#0F6E56]/15">
-            <span className="text-[#0F6E56] text-xs font-semibold uppercase tracking-widest">
-              {vertical?.name ?? verticalSlug}
-            </span>
-          </div>
-          <h1 className="text-white text-[36px] lg:text-[48px] font-extrabold leading-[1.1] tracking-tight mb-4">
+    <main className="w-full min-h-screen">
+      {/* SECTION 1 — HERO */}
+      <section style={{ backgroundColor: 'var(--v-fa)' }} className="w-full pt-[140px] pb-[80px]">
+        <div className="max-w-[760px] mx-auto px-6 text-center">
+          <SectionTag label={vertical?.name ?? verticalSlug} />
+          <h1 className="text-white text-[40px] lg:text-[52px] font-extrabold leading-[1.1] tracking-tight mt-5 mb-4">
             {audience.name}
           </h1>
           {audience.description && (
-            <p className="text-[#9CA3AF] text-[18px] leading-[1.8] max-w-[600px] mx-auto mb-8">
+            <p style={{ color: 'var(--v-muted)' }} className="text-[18px] leading-relaxed max-w-[600px] mx-auto mb-10">
               {audience.description}
             </p>
           )}
           <Link
             href="/assessment"
-            className="inline-flex items-center gap-2 bg-[#0F6E56] hover:bg-[#0c5945] text-white px-8 py-3.5 rounded-md font-medium text-sm transition-colors shadow-lg shadow-[#0F6E56]/20"
+            className="inline-flex items-center gap-2 bg-[#0F6E56] hover:bg-[#0c5945] text-white px-8 py-3.5 rounded-md font-medium text-sm transition-colors"
           >
-            Start Your Free Assessment
+            Start Free Assessment
           </Link>
         </div>
       </section>
 
-      <div className="container mx-auto px-6 max-w-[860px] py-[60px] space-y-16">
-        {/* Pain points */}
-        {audience.pain_points && audience.pain_points.length > 0 && (
-          <section>
-            <h2 className="text-white text-[24px] font-bold mb-6">Key challenges</h2>
-            <ul className="space-y-3">
+      {/* SECTION 2 — THE PROBLEM */}
+      {audience.pain_points && audience.pain_points.length > 0 && (
+        <section style={{ backgroundColor: 'var(--v-fb)' }} className="py-20">
+          <div className="max-w-[1100px] mx-auto px-6">
+            <div style={{ borderLeft: '3px solid var(--v-accent)' }} className="pl-4 mb-10">
+              <h2 className="text-white text-[26px] font-bold">What this costs you</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {audience.pain_points.map((point, i) => (
-                <li
-                  key={i}
-                  className="flex gap-3 bg-[#111827] border border-[#1f2937] rounded-[12px] p-5"
-                >
-                  <span className="text-[#0F6E56] font-bold text-[16px] shrink-0">—</span>
-                  <p className="text-[#CBD5E1] text-[15px] leading-[1.7]">{point}</p>
-                </li>
+                <ProblemCard key={i} problem={point} />
               ))}
-            </ul>
-          </section>
-        )}
+            </div>
+          </div>
+        </section>
+      )}
 
-        {/* Body markdown */}
-        {audience.body && (
-          <section className="prose prose-invert prose-p:text-[#CBD5E1] prose-headings:text-white prose-a:text-[#0F6E56] prose-strong:text-white prose-li:text-[#CBD5E1] max-w-none">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{audience.body}</ReactMarkdown>
-          </section>
-        )}
+      {/* SECTION 3 — BODY CONTENT */}
+      {audience.body && (
+        <section style={{ backgroundColor: 'var(--v-fa)' }} className="py-20">
+          <div className="max-w-[760px] mx-auto px-6">
+            <div
+              className="prose prose-invert max-w-none prose-headings:text-white prose-headings:font-bold prose-headings:mt-10 prose-headings:mb-4 prose-h2:text-[24px] prose-strong:text-white"
+              style={{ color: 'var(--v-muted)' }}
+            >
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{audience.body}</ReactMarkdown>
+            </div>
+          </div>
+        </section>
+      )}
 
-        {/* Solutions for this audience */}
-        {solutions.length > 0 && (
-          <section>
-            <h2 className="text-white text-[24px] font-bold mb-6">AI solutions for your business</h2>
+      {/* SECTION 4 — SOLUTIONS FOR THIS AUDIENCE */}
+      {solutions.length > 0 && (
+        <section style={{ backgroundColor: 'var(--v-fb)' }} className="py-20">
+          <div className="max-w-[1100px] mx-auto px-6">
+            <div style={{ borderLeft: '3px solid var(--v-accent)' }} className="pl-4 mb-10">
+              <h2 className="text-white text-[26px] font-bold">
+                What we build for {audience.name}
+              </h2>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {solutions.map((solution) => (
                 <Link
                   key={solution.id}
                   href={`/${verticalSlug}/solutions/${solution.slug}`}
-                  className="block bg-[#111827] border border-[#1f2937] hover:border-[#0F6E56]/60 rounded-[16px] p-7 transition-all duration-200 hover:-translate-y-0.5"
+                  className="block pl-6 p-7 rounded-2xl transition-all duration-200 hover:-translate-y-0.5"
+                  style={{
+                    backgroundColor: 'var(--v-fa)',
+                    borderLeft: '3px solid var(--v-accent)',
+                  }}
                 >
-                  <h3 className="text-white text-[17px] font-bold mb-2">{solution.name}</h3>
+                  <h3 className="text-white text-[17px] font-bold mb-1">{solution.name}</h3>
                   {solution.tagline && (
-                    <p className="text-[#6B7280] text-[13px] leading-[1.6] mb-3">
+                    <p style={{ color: 'var(--v-muted)' }} className="text-[13px] mb-4">
                       {solution.tagline}
                     </p>
                   )}
                   {solution.roi_claim && (
-                    <p className="text-[#0F6E56] text-[13px] font-medium">{solution.roi_claim}</p>
+                    <p style={{ color: 'var(--v-signal)' }} className="text-[13px] font-medium flex items-center gap-1.5">
+                      <span>✓</span> {solution.roi_claim}
+                    </p>
                   )}
+                  <p style={{ color: 'var(--v-accent)' }} className="text-[12px] font-medium mt-4">
+                    View solution →
+                  </p>
                 </Link>
               ))}
             </div>
-          </section>
-        )}
-
-        {/* Bottom CTA */}
-        <section className="rounded-[20px] border border-[#0F6E56]/30 bg-[#0F6E56]/10 p-10 text-center">
-          <h2 className="text-white text-[22px] font-bold mb-3">
-            Ready to see what AI can do for your business?
-          </h2>
-          <p className="text-[#9CA3AF] text-[15px] mb-6 max-w-[480px] mx-auto leading-relaxed">
-            The Clarivis Assessment is free, takes 5 to 20 minutes, and ends with a personalised AI Opportunity Snapshot. No credit card, no commitment.
-          </p>
-          <Link
-            href="/assessment"
-            className="inline-flex items-center gap-2 bg-[#0F6E56] hover:bg-[#0c5945] text-white px-8 py-3.5 rounded-md font-medium text-sm transition-colors"
-          >
-            Start Your Free Assessment
-          </Link>
+          </div>
         </section>
-      </div>
+      )}
+
+      {/* SECTION 5 — ASSESSMENT CTA */}
+      <AssessmentCTA verticalName={vertical?.name ?? verticalSlug} />
     </main>
   )
 }

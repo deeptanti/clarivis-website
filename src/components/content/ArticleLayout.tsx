@@ -72,7 +72,7 @@ export default function ArticleLayout({ content, glossaryTerm, verticalSlug }: A
 
         <div className="flex items-center gap-3 mt-6 pt-6 border-t border-white/10">
           <div
-            className="w-9 h-9 rounded-full bg-[#0F6E56] flex items-center justify-content-center text-white text-xs font-bold flex-shrink-0"
+            className="w-9 h-9 rounded-full bg-[#0F6E56] flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
           >
             DT
           </div>
