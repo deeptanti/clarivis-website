@@ -2,8 +2,10 @@ import HomePageContent from './page-client';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'AI Consulting and Technology for Real Estate, Healthcare and Agribusiness',
-  description: 'Clarivis Intelligence is an AI-first consulting and technology firm. We help growing businesses in real estate, healthcare, and agribusiness deploy AI systems that generate measurable ROI within 90 days. Start with a free AI Readiness Assessment.',
+  title: {
+    absolute: 'Clarivis Intelligence: AI Consulting for Real Estate, Healthcare and Agribusiness',
+  },
+  description: 'AI-first consulting and technology firm for real estate, healthcare, and agribusiness in India. Start with a free AI Readiness Assessment and receive your AI Opportunity Snapshot.',
   alternates: { canonical: 'https://clarivisintelligence.com' },
 };
 
@@ -16,14 +18,6 @@ const websiteJsonLd = {
   description: 'AI-first consulting and technology firm for real estate, healthcare, and agribusiness in India.',
   publisher: {
     '@id': 'https://clarivisintelligence.com/#organization',
-  },
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: {
-      '@type': 'EntryPoint',
-      urlTemplate: 'https://clarivisintelligence.com/?q={search_term_string}',
-    },
-    'query-input': 'required name=search_term_string',
   },
 };
 

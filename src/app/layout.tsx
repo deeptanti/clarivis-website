@@ -71,9 +71,10 @@ export const metadata: Metadata = {
 
 const organizationJsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
+  '@type': 'ProfessionalService',
   '@id': 'https://clarivisintelligence.com/#organization',
   name: 'Clarivis Intelligence',
+  legalName: 'Clarivis Intelligence Private Limited',
   url: 'https://clarivisintelligence.com',
   logo: {
     '@type': 'ImageObject',
@@ -81,30 +82,61 @@ const organizationJsonLd = {
     width: 280,
     height: 70,
   },
-  description: 'AI-first consulting and technology firm helping real estate, healthcare, and agribusiness businesses deploy AI systems that generate measurable ROI within 90 days.',
+  image: 'https://clarivisintelligence.com/images/og-image.png',
+  description: 'AI-first consulting and technology firm helping real estate, healthcare, and agribusiness businesses in India deploy AI systems that generate measurable ROI within 90 days.',
+  slogan: 'Clarity in every decision. Intelligence in every system.',
+  foundingDate: '2026',
   address: {
     '@type': 'PostalAddress',
+    addressLocality: 'Rajkot',
+    addressRegion: 'Gujarat',
+    postalCode: '360007',
     addressCountry: 'IN',
   },
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'customer service',
     email: 'hello@clarivisintelligence.com',
-    telephone: '+91-84018-14334',
-    availableLanguage: ['English'],
+    telephone: '+918401814334',
+    availableLanguage: ['English', 'Hindi', 'Gujarati'],
+    areaServed: 'IN',
   },
   sameAs: [
     'https://www.linkedin.com/company/clarivis-intelligence',
+    'https://www.instagram.com/clarivisintelligence',
   ],
-  foundingDate: '2026',
-  areaServed: 'Worldwide',
+  areaServed: ['IN'],
+  knowsAbout: [
+    'Artificial Intelligence Consulting',
+    'Business Process Automation',
+    'Real Estate Technology India',
+    'Healthcare Automation India',
+    'Agribusiness Technology India',
+    'AI Systems Integration',
+    'Operational Audits',
+  ],
+};
+
+const founderJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': 'https://clarivisintelligence.com/#founder',
+  name: 'Deep Tanti',
+  jobTitle: 'Founder and CEO',
+  worksFor: {
+    '@id': 'https://clarivisintelligence.com/#organization',
+  },
+  url: 'https://clarivisintelligence.com/about',
+  sameAs: [
+    'https://www.linkedin.com/in/deeptanti',
+  ],
   knowsAbout: [
     'Artificial Intelligence',
-    'AI Consulting',
-    'Real Estate Technology',
-    'Healthcare Automation',
-    'Agribusiness Technology',
+    'Machine Learning',
+    'Cloud Engineering',
+    'Healthcare Technology',
     'Business Process Automation',
+    'Analytics',
   ],
 };
 
@@ -120,6 +152,11 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        {/* Founder structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(founderJsonLd) }}
         />
 
         {/* Google Analytics 4 */}

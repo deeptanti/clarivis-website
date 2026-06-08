@@ -2,7 +2,8 @@ import Link from "next/link";
 
 export const metadata = {
   title: "Terms of Use",
-  description: "Terms of Use for Clarivis Intelligence website and services.",
+  description: "Terms of Use for the Clarivis Intelligence website and services.",
+  alternates: { canonical: 'https://clarivisintelligence.com/terms' },
 };
 
 const sections = [

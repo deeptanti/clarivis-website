@@ -13,21 +13,28 @@ const VERTICAL_LABELS: Record<string, string> = {
 interface ArticleLayoutProps {
   content: ContentRow;
   glossaryTerm?: ContentSummary | null;
+  verticalSlug?: string;
 }
 
-export default function ArticleLayout({ content, glossaryTerm }: ArticleLayoutProps) {
-  const pillarHref = content.pillar_vertical
-    ? `/solutions/${content.pillar_vertical}`
-    : "/solutions";
-  const pillarLabel = content.pillar_vertical
-    ? `AI Solutions for ${VERTICAL_LABELS[content.pillar_vertical]}`
+export default function ArticleLayout({ content, glossaryTerm, verticalSlug }: ArticleLayoutProps) {
+  const effectiveVertical = verticalSlug ?? content.vertical ?? content.pillar_vertical;
+  const pillarHref = effectiveVertical
+    ? `/${effectiveVertical}`
+    : "/";
+  const pillarLabel = effectiveVertical
+    ? `AI Solutions for ${VERTICAL_LABELS[effectiveVertical] ?? effectiveVertical}`
     : "AI Solutions";
+  const insightsHref = effectiveVertical ? `/${effectiveVertical}/insights` : "/";
+  const glossaryHref = (slug: string) =>
+    effectiveVertical
+      ? `/${effectiveVertical}/insights/glossary/${slug}`
+      : `/insights/glossary/${slug}`;
 
   return (
     <article className="w-full max-w-[760px] mx-auto px-6 py-[80px]">
       {/* Breadcrumb */}
       <nav className="flex flex-wrap items-center gap-2 text-[#6B7280] text-[13px] mb-8">
-        <Link href="/insights" className="hover:text-[#0F6E56] transition-colors">
+        <Link href={insightsHref} className="hover:text-[#0F6E56] transition-colors">
           Insights
         </Link>
         {content.vertical && (
@@ -62,6 +69,22 @@ export default function ArticleLayout({ content, glossaryTerm }: ArticleLayoutPr
             })}
           </p>
         )}
+
+        <div className="flex items-center gap-3 mt-6 pt-6 border-t border-white/10">
+          <div
+            className="w-9 h-9 rounded-full bg-[#0F6E56] flex items-center justify-content-center text-white text-xs font-bold flex-shrink-0"
+          >
+            DT
+          </div>
+          <div>
+            <p className="text-white text-[13px] font-semibold">Deep Tanti</p>
+            <p className="text-[#6B7280] text-[12px]">
+              Founder, Clarivis Intelligence. AI and cloud engineer with experience
+              building ML systems for a 150,000-user healthtech platform.
+              M.Sc Analytics, Harrisburg University.
+            </p>
+          </div>
+        </div>
       </header>
 
       {/* Body */}
@@ -79,7 +102,7 @@ export default function ArticleLayout({ content, glossaryTerm }: ArticleLayoutPr
         </Link>
         {glossaryTerm && (
           <Link
-            href={`/insights/glossary/${glossaryTerm.slug}`}
+            href={glossaryHref(glossaryTerm.slug)}
             className="text-[#0F6E56] text-[14px] font-medium hover:opacity-75 transition-opacity"
           >
             → {glossaryTerm.title}

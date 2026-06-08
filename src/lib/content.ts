@@ -50,6 +50,29 @@ export async function getAllPublishedSlugs(): Promise<
   return data ?? [];
 }
 
+export async function getAllPublishedSlugsByVertical(
+  vertical: string
+): Promise<Pick<ContentRow, 'slug' | 'content_type' | 'vertical'>[]> {
+  const { data } = await getSupabase()
+    .from('content')
+    .select('slug, content_type, vertical')
+    .eq('published', true)
+    .eq('vertical', vertical);
+  return data ?? [];
+}
+
+export async function listContentByVertical(
+  vertical: string
+): Promise<ContentSummary[]> {
+  const { data } = await getSupabase()
+    .from('content')
+    .select('id, slug, content_type, vertical, title, description, published_at')
+    .eq('vertical', vertical)
+    .eq('published', true)
+    .order('published_at', { ascending: false });
+  return data ?? [];
+}
+
 export async function getRelatedGlossaryTerm(slug: string): Promise<ContentSummary | null> {
   const { data } = await getSupabase()
     .from('content')

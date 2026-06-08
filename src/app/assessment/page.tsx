@@ -2,8 +2,8 @@ import AssessmentClient from "./page-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Free AI Readiness Assessment: Get Your AI Opportunity Snapshot',
-  description: 'Take the free Clarivis AI Readiness Assessment. Answer a few questions, have a conversation with our AI, and receive a personalised AI Opportunity Snapshot PDF identifying your top opportunities with indicative ROI. Takes 5 to 20 minutes.',
+  title: 'Free AI Readiness Assessment for Your Business',
+  description: 'Take the free Clarivis AI Readiness Assessment. Receive a personalised AI Opportunity Snapshot PDF with your top opportunities and indicative ROI. Takes 5 to 20 minutes.',
   alternates: { canonical: 'https://clarivisintelligence.com/assessment' },
 };
 

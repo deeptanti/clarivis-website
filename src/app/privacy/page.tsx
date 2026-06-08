@@ -4,6 +4,7 @@ export const metadata = {
   title: "Privacy Policy",
   description:
     "Privacy Policy for Clarivis Intelligence. How we collect, use, and protect your data.",
+  alternates: { canonical: 'https://clarivisintelligence.com/privacy' },
 };
 
 const sections = [

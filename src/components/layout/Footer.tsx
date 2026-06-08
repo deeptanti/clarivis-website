@@ -19,14 +19,14 @@ export default function Footer() {
               Clarity in every decision. Intelligence in every system.
             </p>
             <div className="flex space-x-4 pt-2">
-              <a href="#" className="text-gray-400 hover:text-[#0F6E56] transition-colors" aria-label="LinkedIn">
+              <a href="https://www.linkedin.com/company/clarivis-intelligence" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#0F6E56] transition-colors" aria-label="LinkedIn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
                   <rect width="4" height="12" x="2" y="9" />
                   <circle cx="4" cy="4" r="2" />
                 </svg>
               </a>
-              <a href="#" className="text-gray-400 hover:text-[#0F6E56] transition-colors" aria-label="Instagram">
+              <a href="https://www.instagram.com/clarivisintelligence" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#0F6E56] transition-colors" aria-label="Instagram">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
@@ -70,7 +70,7 @@ export default function Footer() {
           <div className="flex items-center gap-4">
             <a href="mailto:hello@clarivisintelligence.com" className="hover:text-[#0F6E56] transition-colors">hello@clarivisintelligence.com</a>
             <span className="text-gray-600">·</span>
-            <a href="tel:+918401814334" className="hover:text-[#0F6E56] transition-colors">+91 840 181 4334</a>
+            <a href="tel:+918401814334" className="hover:text-[#0F6E56] transition-colors">+91 84018 14334</a>
           </div>
         </div>
       </div>

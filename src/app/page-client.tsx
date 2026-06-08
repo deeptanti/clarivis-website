@@ -254,7 +254,7 @@ export default function Home() {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="text-[#9CA3AF] text-[18px] max-w-[600px] mx-auto mb-12 lg:mb-20"
             >
-              Growing businesses in real estate and healthcare face the same invisible problems. Until they do not.
+              Growing businesses in real estate, healthcare, and agribusiness face the same invisible problems. Until they do not.
             </motion.p>
           </div>
 

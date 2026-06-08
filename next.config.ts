@@ -16,6 +16,16 @@ const nextConfig: NextConfig = {
       { source: "/products", destination: "/solutions", permanent: true },
       { source: "/audit", destination: "/how-it-works", permanent: true },
       { source: "/book", destination: "/contact", permanent: true },
+      { source: "/solutions", destination: "/", permanent: true },
+      { source: "/solutions/real-estate", destination: "/real-estate", permanent: true },
+      { source: "/solutions/healthcare", destination: "/healthcare", permanent: true },
+      { source: "/solutions/agribusiness", destination: "/agribusiness", permanent: true },
+      { source: "/insights", destination: "/", permanent: false },
+      {
+        source: "/insights/guides/:vertical/:slug",
+        destination: "/:vertical/insights/guides/:slug",
+        permanent: true,
+      },
     ];
   },
 };
