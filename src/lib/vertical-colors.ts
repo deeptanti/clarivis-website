@@ -15,7 +15,7 @@ export const VERTICAL_COLORS: Record<string, Record<string, string>> = {
   },
   'agribusiness': {
     '--v-fa':     '#1C1208',
-    '--v-fb':     '#111827',
+    '--v-fb':     '#251A09',
     '--v-accent': '#BA7517',
     '--v-signal': '#EF9F27',
     '--v-muted':  '#D6C4A8',
