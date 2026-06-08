@@ -41,29 +41,28 @@ export default function ArticleLayout({
 
   return (
     <article className="w-full max-w-[760px] mx-auto px-6 py-[80px]">
-      {/* Breadcrumb */}
-      <nav className="flex flex-wrap items-center gap-2 text-[#6B7280] text-[13px] mb-8">
-        <Link
-          href={insightsHref}
-          className="hover:opacity-75 transition-opacity"
-          style={{ color: 'var(--v-accent)' }}
-        >
-          Insights
-        </Link>
-        {content.vertical && (
-          <>
-            <span>/</span>
-            <span className="capitalize">{VERTICAL_LABELS[content.vertical]}</span>
-          </>
-        )}
-        <span>/</span>
-        <span className="truncate max-w-[240px]" style={{ color: 'var(--v-muted)' }}>
-          {content.title}
-        </span>
-      </nav>
-
-      {/* Header — only rendered in standalone mode */}
+      {/* Breadcrumb + header — only rendered in standalone mode */}
       {showHeader && (
+        <>
+        <nav className="flex flex-wrap items-center gap-2 text-[#6B7280] text-[13px] mb-8">
+          <Link
+            href={insightsHref}
+            className="hover:opacity-75 transition-opacity"
+            style={{ color: 'var(--v-accent)' }}
+          >
+            Insights
+          </Link>
+          {content.vertical && (
+            <>
+              <span>/</span>
+              <span className="capitalize">{VERTICAL_LABELS[content.vertical]}</span>
+            </>
+          )}
+          <span>/</span>
+          <span className="truncate max-w-[240px]" style={{ color: 'var(--v-muted)' }}>
+            {content.title}
+          </span>
+        </nav>
         <header className="mb-10">
           {content.vertical && (
             <div
@@ -114,6 +113,7 @@ export default function ArticleLayout({
             </div>
           </div>
         </header>
+        </>
       )}
 
       {/* Body */}
@@ -123,28 +123,30 @@ export default function ArticleLayout({
 
       {embed}
 
-      {/* Internal links */}
-      <div className="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row gap-5">
-        <Link
-          href={pillarHref}
-          className="text-[14px] font-medium hover:opacity-75 transition-opacity"
-          style={{ color: 'var(--v-accent)' }}
-        >
-          → {pillarLabel}
-        </Link>
-        {glossaryTerm && (
-          <Link
-            href={glossaryHref(glossaryTerm.slug)}
-            className="text-[14px] font-medium hover:opacity-75 transition-opacity"
-            style={{ color: 'var(--v-accent)' }}
-          >
-            → {glossaryTerm.title}
-          </Link>
-        )}
-      </div>
-
-      {/* Assessment CTA — only in standalone mode; guide page provides its own */}
-      {showHeader && <AssessmentCTA />}
+      {/* Internal links + CTA — only in standalone mode */}
+      {showHeader && (
+        <>
+          <div className="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row gap-5">
+            <Link
+              href={pillarHref}
+              className="text-[14px] font-medium hover:opacity-75 transition-opacity"
+              style={{ color: 'var(--v-accent)' }}
+            >
+              → {pillarLabel}
+            </Link>
+            {glossaryTerm && (
+              <Link
+                href={glossaryHref(glossaryTerm.slug)}
+                className="text-[14px] font-medium hover:opacity-75 transition-opacity"
+                style={{ color: 'var(--v-accent)' }}
+              >
+                → {glossaryTerm.title}
+              </Link>
+            )}
+          </div>
+          <AssessmentCTA />
+        </>
+      )}
     </article>
   );
 }
