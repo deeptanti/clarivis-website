@@ -224,21 +224,9 @@ export const markdownComponents: Components = {
     return (
       <h2
         id={slug}
-        className="text-white text-[26px] font-bold mt-14 mb-5 scroll-mt-[140px] flex items-center"
+        className="text-white text-[26px] font-bold mt-14 mb-5 scroll-mt-[140px]"
         style={{ borderLeft: '3px solid var(--v-accent)', paddingLeft: '1rem' }}
       >
-        <span
-          style={{
-            display: 'inline-block',
-            width: '6px',
-            height: '6px',
-            borderRadius: '50%',
-            background: 'var(--v-signal)',
-            marginRight: '0.75rem',
-            marginBottom: '2px',
-            flexShrink: 0,
-          }}
-        />
         {children}
       </h2>
     )

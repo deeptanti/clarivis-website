@@ -388,32 +388,29 @@ export default async function GuidePage({
             </div>
 
             {/* Right column — sticky sidebar */}
-            <aside className="w-[280px] flex-shrink-0 hidden lg:block">
+            <aside
+              className="w-[280px] flex-shrink-0 hidden lg:block"
+              style={{
+                position: 'sticky',
+                top: '120px',
+                maxHeight: 'calc(100vh - 140px)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1rem',
+              }}
+            >
               <div
                 style={{
-                  position: 'sticky',
-                  top: '120px',
-                  alignSelf: 'flex-start',
-                  maxHeight: 'calc(100vh - 140px)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '1rem',
-                  overflow: 'hidden',
+                  flex: '1 1 auto',
+                  overflowY: 'auto',
+                  minHeight: 0,
+                  paddingRight: '4px',
                 }}
               >
-                <div
-                  style={{
-                    flex: '1 1 auto',
-                    overflowY: 'auto',
-                    minHeight: 0,
-                    paddingRight: '4px',
-                  }}
-                >
-                  <TableOfContents body={content.body ?? ''} title={content.title} />
-                </div>
-                <div style={{ flexShrink: 0 }}>
-                  <MiniCalc vertical={verticalSlug} />
-                </div>
+                <TableOfContents body={content.body ?? ''} title={content.title} />
+              </div>
+              <div style={{ flexShrink: 0 }}>
+                <MiniCalc vertical={verticalSlug} />
               </div>
             </aside>
           </div>
