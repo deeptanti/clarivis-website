@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { useCalcContext } from './CalcContext'
 
 function formatInr(n: number): string {
   const rounded = Math.round(n)
@@ -15,8 +16,17 @@ function formatLabel(n: number): string {
 }
 
 export function RealEstateCalc() {
-  const [leads, setLeads] = useState(150)
+  const ctx = useCalcContext()
+  const [localLeads, setLocalLeads] = useState(150)
   const [dealValue, setDealValue] = useState(4500000)
+
+  const leads = ctx != null ? ctx.primaryValue : localLeads
+
+  function handleLeadsChange(n: number) {
+    if (ctx != null) ctx.setPrimaryValue(n)
+    else setLocalLeads(n)
+  }
+
   const loss = Math.round(leads * 0.35 * dealValue)
 
   return (
@@ -38,7 +48,7 @@ export function RealEstateCalc() {
           max={500}
           step={10}
           value={leads}
-          onChange={(e) => setLeads(Number(e.target.value))}
+          onChange={(e) => handleLeadsChange(Number(e.target.value))}
           className="w-full"
         />
       </div>

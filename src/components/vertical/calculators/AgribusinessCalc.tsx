@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { useCalcContext } from './CalcContext'
 
 function formatInr(n: number): string {
   const rounded = Math.round(n)
@@ -9,8 +10,17 @@ function formatInr(n: number): string {
 }
 
 export function AgribusinessCalc() {
-  const [workers, setWorkers] = useState(200)
+  const ctx = useCalcContext()
+  const [localWorkers, setLocalWorkers] = useState(200)
   const [wage, setWage] = useState(450)
+
+  const workers = ctx != null ? ctx.primaryValue : localWorkers
+
+  function handleWorkersChange(n: number) {
+    if (ctx != null) ctx.setPrimaryValue(n)
+    else setLocalWorkers(n)
+  }
+
   const discrepancy = Math.round(workers * wage * 26 * 0.04)
 
   return (
@@ -32,7 +42,7 @@ export function AgribusinessCalc() {
           max={600}
           step={10}
           value={workers}
-          onChange={(e) => setWorkers(Number(e.target.value))}
+          onChange={(e) => handleWorkersChange(Number(e.target.value))}
           className="w-full"
         />
       </div>

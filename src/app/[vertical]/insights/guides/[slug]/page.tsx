@@ -19,6 +19,7 @@ import MiniCalc from '@/components/vertical/MiniCalc'
 import MidArticleCTA from '@/components/vertical/MidArticleCTA'
 import RelatedGuides from '@/components/vertical/RelatedGuides'
 import { AnimatedSection } from '@/components/vertical/AnimatedSection'
+import { CalcProvider } from '@/components/vertical/calculators/CalcContext'
 import { markdownComponents } from '@/components/vertical/markdown/MarkdownComponents'
 
 export const revalidate = 3600
@@ -176,6 +177,11 @@ export default async function GuidePage({
     verticalSlug === 'healthcare' ? <HealthcareCalc /> :
     verticalSlug === 'agribusiness' ? <AgribusinessCalc /> :
     null
+
+  const calcDefault =
+    verticalSlug === 'real-estate' ? 150 :
+    verticalSlug === 'healthcare' ? 60 :
+    200
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
@@ -336,86 +342,88 @@ export default async function GuidePage({
         </>
       )}
 
-      {/* SECTION 4 — Full calculator */}
-      {verticalCalcNode && (
-        <>
-          <AnimatedSection>
-            <section style={{ background: 'var(--v-fb)' }} className="py-16 px-6">
-              <div className="max-w-[900px] mx-auto">
-                <div style={{ borderLeft: '3px solid var(--v-accent)' }} className="pl-4 mb-8">
-                  <h2 className="text-white text-[22px] font-bold">
-                    Calculate your cost right now
-                  </h2>
-                  <p className="text-[14px] mt-1" style={{ color: 'var(--v-muted)' }}>
-                    Enter your numbers and see the monthly impact before reading further.
-                  </p>
+      <CalcProvider defaultValue={calcDefault}>
+        {/* SECTION 4 — Full calculator */}
+        {verticalCalcNode && (
+          <>
+            <AnimatedSection>
+              <section style={{ background: 'var(--v-fb)' }} className="py-16 px-6">
+                <div className="max-w-[900px] mx-auto">
+                  <div style={{ borderLeft: '3px solid var(--v-accent)' }} className="pl-4 mb-8">
+                    <h2 className="text-white text-[22px] font-bold">
+                      Calculate your cost right now
+                    </h2>
+                    <p className="text-[14px] mt-1" style={{ color: 'var(--v-muted)' }}>
+                      Enter your numbers and see the monthly impact before reading further.
+                    </p>
+                  </div>
+                  {verticalCalcNode}
                 </div>
-                {verticalCalcNode}
-              </div>
-            </section>
-          </AnimatedSection>
-          <SectionDivider />
-        </>
-      )}
+              </section>
+            </AnimatedSection>
+            <SectionDivider />
+          </>
+        )}
 
-      {/* SECTION 5 — Two-column reading layout */}
-      <section style={{ background: 'var(--v-fa)' }} className="py-12 px-6">
-        <div className="max-w-[1200px] mx-auto">
-          <div
-            style={{
-              display: 'flex',
-              gap: '3rem',
-              alignItems: 'flex-start',
-            }}
-          >
-            {/* Left column — article body */}
-            <div className="flex-1 min-w-0" style={{ maxWidth: '680px' }}>
-              <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
-                {bodyFirst}
-              </ReactMarkdown>
-
-              {bodySecond && (
-                <AnimatedSection>
-                  <MidArticleCTA verticalName={verticalName} stats={content.stats ?? null} />
-                </AnimatedSection>
-              )}
-
-              {bodySecond && (
-                <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
-                  {bodySecond}
-                </ReactMarkdown>
-              )}
-            </div>
-
-            {/* Right column — sticky sidebar */}
-            <aside
-              className="w-[280px] flex-shrink-0 hidden lg:block"
+        {/* SECTION 5 — Two-column reading layout */}
+        <section style={{ background: 'var(--v-fa)' }} className="py-12 px-6">
+          <div className="max-w-[1200px] mx-auto">
+            <div
               style={{
-                position: 'sticky',
-                top: '120px',
-                maxHeight: 'calc(100vh - 140px)',
                 display: 'flex',
-                flexDirection: 'column',
-                gap: '1rem',
+                gap: '3rem',
+                alignItems: 'flex-start',
               }}
             >
-              <div
+              {/* Left column — article body */}
+              <div className="flex-1 min-w-0" style={{ maxWidth: '680px' }}>
+                <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                  {bodyFirst}
+                </ReactMarkdown>
+
+                {bodySecond && (
+                  <AnimatedSection>
+                    <MidArticleCTA verticalName={verticalName} stats={content.stats ?? null} />
+                  </AnimatedSection>
+                )}
+
+                {bodySecond && (
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                    {bodySecond}
+                  </ReactMarkdown>
+                )}
+              </div>
+
+              {/* Right column — sticky sidebar */}
+              <aside
+                className="w-[280px] flex-shrink-0 hidden lg:block"
                 style={{
-                  flex: '1 1 auto',
-                  overflowY: 'auto',
-                  minHeight: 0,
-                  paddingRight: '4px',
+                  position: 'sticky',
+                  top: '120px',
+                  maxHeight: 'calc(100vh - 140px)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1rem',
                 }}
               >
-                <TableOfContents body={content.body ?? ''} title={content.title} />
-              </div>
-              <div style={{ flexShrink: 0 }}>
-                <MiniCalc vertical={verticalSlug} />
-              </div>
-            </aside>
+                <div
+                  style={{
+                    flex: '1 1 auto',
+                    overflowY: 'auto',
+                    minHeight: 0,
+                    paddingRight: '4px',
+                  }}
+                >
+                  <TableOfContents body={content.body ?? ''} title={content.title} />
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <MiniCalc vertical={verticalSlug} />
+                </div>
+              </aside>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </CalcProvider>
 
       <SectionDivider />
 

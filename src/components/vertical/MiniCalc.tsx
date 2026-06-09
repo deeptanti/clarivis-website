@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { JSX } from 'react'
+import { useCalcContext } from './calculators/CalcContext'
 
 interface MiniCalcProps {
   vertical: string
@@ -15,7 +16,15 @@ function formatInr(n: number): string {
 }
 
 function RealEstateMiniCalc(): JSX.Element {
-  const [leads, setLeads] = useState(150)
+  const ctx = useCalcContext()
+  const [local, setLocal] = useState(150)
+  const leads = ctx != null ? ctx.primaryValue : local
+
+  function handleChange(n: number) {
+    if (ctx != null) ctx.setPrimaryValue(n)
+    else setLocal(n)
+  }
+
   const result = leads * 0.35 * 4500000
   return (
     <>
@@ -26,10 +35,10 @@ function RealEstateMiniCalc(): JSX.Element {
       <input
         type="range"
         min={20}
-        max={300}
-        step={5}
+        max={500}
+        step={10}
         value={leads}
-        onChange={(e) => setLeads(Number(e.target.value))}
+        onChange={(e) => handleChange(Number(e.target.value))}
         className="w-full mb-4"
         aria-label="Monthly inbound leads"
       />
@@ -47,7 +56,15 @@ function RealEstateMiniCalc(): JSX.Element {
 }
 
 function HealthcareMiniCalc(): JSX.Element {
-  const [appointments, setAppointments] = useState(60)
+  const ctx = useCalcContext()
+  const [local, setLocal] = useState(60)
+  const appointments = ctx != null ? ctx.primaryValue : local
+
+  function handleChange(n: number) {
+    if (ctx != null) ctx.setPrimaryValue(n)
+    else setLocal(n)
+  }
+
   const result = appointments * 0.35 * 500 * 26
   return (
     <>
@@ -58,10 +75,10 @@ function HealthcareMiniCalc(): JSX.Element {
       <input
         type="range"
         min={10}
-        max={150}
+        max={200}
         step={5}
         value={appointments}
-        onChange={(e) => setAppointments(Number(e.target.value))}
+        onChange={(e) => handleChange(Number(e.target.value))}
         className="w-full mb-4"
         aria-label="Daily appointments"
       />
@@ -79,7 +96,15 @@ function HealthcareMiniCalc(): JSX.Element {
 }
 
 function AgribusinessMiniCalc(): JSX.Element {
-  const [workers, setWorkers] = useState(200)
+  const ctx = useCalcContext()
+  const [local, setLocal] = useState(200)
+  const workers = ctx != null ? ctx.primaryValue : local
+
+  function handleChange(n: number) {
+    if (ctx != null) ctx.setPrimaryValue(n)
+    else setLocal(n)
+  }
+
   const result = workers * 450 * 26 * 0.04
   return (
     <>
@@ -90,10 +115,10 @@ function AgribusinessMiniCalc(): JSX.Element {
       <input
         type="range"
         min={20}
-        max={400}
+        max={600}
         step={10}
         value={workers}
-        onChange={(e) => setWorkers(Number(e.target.value))}
+        onChange={(e) => handleChange(Number(e.target.value))}
         className="w-full mb-4"
         aria-label="Field workers"
       />

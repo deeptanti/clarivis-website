@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { useCalcContext } from './CalcContext'
 
 function formatInr(n: number): string {
   const rounded = Math.round(n)
@@ -9,9 +10,18 @@ function formatInr(n: number): string {
 }
 
 export function HealthcareCalc() {
-  const [appointments, setAppointments] = useState(60)
+  const ctx = useCalcContext()
+  const [localAppts, setLocalAppts] = useState(60)
   const [fee, setFee] = useState(500)
   const [rate, setRate] = useState(35)
+
+  const appointments = ctx != null ? ctx.primaryValue : localAppts
+
+  function handleApptsChange(n: number) {
+    if (ctx != null) ctx.setPrimaryValue(n)
+    else setLocalAppts(n)
+  }
+
   const loss = Math.round(appointments * (rate / 100) * fee * 26)
 
   return (
@@ -33,7 +43,7 @@ export function HealthcareCalc() {
           max={200}
           step={5}
           value={appointments}
-          onChange={(e) => setAppointments(Number(e.target.value))}
+          onChange={(e) => handleApptsChange(Number(e.target.value))}
           className="w-full"
         />
       </div>
