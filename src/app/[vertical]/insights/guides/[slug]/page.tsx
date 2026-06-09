@@ -5,7 +5,9 @@ import remarkGfm from 'remark-gfm'
 import Link from 'next/link'
 import { getContentBySlug, getAllPublishedSlugsByVertical } from '@/lib/content'
 import { isValidVertical, getVertical } from '@/lib/verticals'
-import { CalcEmbed } from '@/components/vertical/calculators/CalcEmbed'
+import { RealEstateCalc } from '@/components/vertical/calculators/RealEstateCalc'
+import { HealthcareCalc } from '@/components/vertical/calculators/HealthcareCalc'
+import { AgribusinessCalc } from '@/components/vertical/calculators/AgribusinessCalc'
 import SectionTag from '@/components/vertical/SectionTag'
 import QuickAnswer from '@/components/vertical/QuickAnswer'
 import ArticleStatRow from '@/components/vertical/ArticleStatRow'
@@ -16,6 +18,7 @@ import TableOfContents from '@/components/vertical/TableOfContents'
 import MiniCalc from '@/components/vertical/MiniCalc'
 import MidArticleCTA from '@/components/vertical/MidArticleCTA'
 import RelatedGuides from '@/components/vertical/RelatedGuides'
+import { AnimatedSection } from '@/components/vertical/AnimatedSection'
 import { markdownComponents } from '@/components/vertical/markdown/MarkdownComponents'
 
 export const revalidate = 3600
@@ -99,6 +102,15 @@ function extractH2Headings(body: string): Array<{ text: string; slug: string }> 
     })
 }
 
+function extractIntroBody(body: string): { intro: string; rest: string } {
+  const lines = body.split('\n')
+  const firstH2Index = lines.findIndex((line) => line.startsWith('## '))
+  if (firstH2Index <= 0) return { intro: '', rest: body }
+  const intro = lines.slice(0, firstH2Index).join('\n').trim()
+  const rest = lines.slice(firstH2Index).join('\n')
+  return { intro, rest }
+}
+
 function splitBodyAtMidpoint(body: string): [string, string] {
   const lines = body.split('\n')
   const midChar = body.length / 2
@@ -125,6 +137,17 @@ function splitBodyAtMidpoint(body: string): [string, string] {
   return [firstHalf, secondHalf]
 }
 
+const SectionDivider = () => (
+  <div
+    style={{
+      height: '1px',
+      background:
+        'linear-gradient(90deg, transparent 0%, var(--v-accent) 20%, var(--v-accent) 80%, transparent 100%)',
+      opacity: 0.2,
+    }}
+  />
+)
+
 export default async function GuidePage({
   params,
 }: {
@@ -145,7 +168,14 @@ export default async function GuidePage({
   const verticalName = vertical?.name ?? verticalSlug
 
   const headings = extractH2Headings(content.body ?? '')
-  const [bodyFirst, bodySecond] = splitBodyAtMidpoint(content.body ?? '')
+  const { intro: introBody, rest: restBody } = extractIntroBody(content.body ?? '')
+  const [bodyFirst, bodySecond] = splitBodyAtMidpoint(restBody)
+
+  const verticalCalcNode =
+    verticalSlug === 'real-estate' ? <RealEstateCalc /> :
+    verticalSlug === 'healthcare' ? <HealthcareCalc /> :
+    verticalSlug === 'agribusiness' ? <AgribusinessCalc /> :
+    null
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
@@ -223,7 +253,6 @@ export default async function GuidePage({
             {content.title}
           </h1>
 
-          {/* Breadcrumb */}
           <nav
             className="flex flex-wrap items-center gap-2 text-[13px] mb-6"
             style={{ color: 'var(--v-muted)' }}
@@ -242,7 +271,6 @@ export default async function GuidePage({
             <span className="truncate max-w-[200px]">{content.title}</span>
           </nav>
 
-          {/* Author and meta row */}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-6">
             <div className="flex items-center gap-3">
               <div
@@ -272,73 +300,165 @@ export default async function GuidePage({
             )}
           </div>
 
-          {content.summary && <QuickAnswer summary={content.summary} />}
+          {content.summary && (
+            <AnimatedSection>
+              <QuickAnswer summary={content.summary} />
+            </AnimatedSection>
+          )}
         </div>
       </section>
 
-      {/* SECTION 2 — Calculator (before prose) */}
-      <section style={{ background: 'var(--v-fb)' }} className="py-16 px-6">
-        <div className="max-w-[900px] mx-auto">
-          <div style={{ borderLeft: '3px solid var(--v-accent)' }} className="pl-4 mb-8">
-            <h2 className="text-white text-[22px] font-bold">
-              Calculate your cost right now
-            </h2>
-            <p className="text-[14px] mt-1" style={{ color: 'var(--v-muted)' }}>
-              Enter your numbers and see the monthly impact before reading further.
-            </p>
-          </div>
-          <CalcEmbed vertical={verticalSlug} />
-        </div>
-      </section>
+      <SectionDivider />
 
-      {/* SECTION 3 — Stat row (conditional) */}
-      {content.stats && content.stats.length > 0 && (
-        <section style={{ background: 'var(--v-fa)' }} className="py-16 px-6">
-          <div className="max-w-[1100px] mx-auto">
-            <ArticleStatRow stats={content.stats} />
-          </div>
-        </section>
+      {/* SECTION 2 — Intro paragraphs (prose before first H2) */}
+      {introBody && (
+        <>
+          <section style={{ background: 'var(--v-fa)' }} className="py-8 px-6">
+            <div className="max-w-[900px] mx-auto">
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                {introBody}
+              </ReactMarkdown>
+            </div>
+          </section>
+          <SectionDivider />
+        </>
       )}
 
-      {/* SECTION 4 — Two-column reading layout */}
+      {/* SECTION 3 — Stat row */}
+      {content.stats && content.stats.length > 0 && (
+        <>
+          <section style={{ background: 'var(--v-fa)' }} className="py-16 px-6">
+            <div className="max-w-[1100px] mx-auto">
+              <ArticleStatRow stats={content.stats} />
+            </div>
+          </section>
+          <SectionDivider />
+        </>
+      )}
+
+      {/* SECTION 4 — Full calculator */}
+      {verticalCalcNode && (
+        <>
+          <AnimatedSection>
+            <section style={{ background: 'var(--v-fb)' }} className="py-16 px-6">
+              <div className="max-w-[900px] mx-auto">
+                <div style={{ borderLeft: '3px solid var(--v-accent)' }} className="pl-4 mb-8">
+                  <h2 className="text-white text-[22px] font-bold">
+                    Calculate your cost right now
+                  </h2>
+                  <p className="text-[14px] mt-1" style={{ color: 'var(--v-muted)' }}>
+                    Enter your numbers and see the monthly impact before reading further.
+                  </p>
+                </div>
+                {verticalCalcNode}
+              </div>
+            </section>
+          </AnimatedSection>
+          <SectionDivider />
+        </>
+      )}
+
+      {/* SECTION 5 — Two-column reading layout */}
       <section style={{ background: 'var(--v-fa)' }} className="py-12 px-6">
         <div className="max-w-[1200px] mx-auto">
-          <div className="flex gap-12 items-start">
+          <div
+            style={{
+              display: 'flex',
+              gap: '3rem',
+              alignItems: 'flex-start',
+            }}
+          >
             {/* Left column — article body */}
             <div className="flex-1 min-w-0" style={{ maxWidth: '680px' }}>
               <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
                 {bodyFirst}
               </ReactMarkdown>
 
-              {bodySecond && <MidArticleCTA verticalName={verticalName} />}
+              {bodySecond && (
+                <AnimatedSection>
+                  <MidArticleCTA verticalName={verticalName} stats={content.stats ?? null} />
+                </AnimatedSection>
+              )}
 
               {bodySecond && (
                 <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
                   {bodySecond}
                 </ReactMarkdown>
               )}
-
-              {content.faq && content.faq.length > 0 && (
-                <FAQSection items={content.faq} articleUrl={canonicalUrl} />
-              )}
-
-              <RelatedSolutions vertical={verticalSlug} />
-
-              <RelatedGuides vertical={verticalSlug} currentSlug={slug} />
             </div>
 
             {/* Right column — sticky sidebar */}
             <aside className="w-[280px] flex-shrink-0 hidden lg:block">
-              <div className="sticky top-[120px] flex flex-col gap-6">
-                <TableOfContents body={content.body ?? ''} title={content.title} />
-                <MiniCalc vertical={verticalSlug} />
+              <div
+                style={{
+                  position: 'sticky',
+                  top: '120px',
+                  alignSelf: 'flex-start',
+                  maxHeight: 'calc(100vh - 140px)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1rem',
+                  overflow: 'hidden',
+                }}
+              >
+                <div
+                  style={{
+                    flex: '1 1 auto',
+                    overflowY: 'auto',
+                    minHeight: 0,
+                    paddingRight: '4px',
+                  }}
+                >
+                  <TableOfContents body={content.body ?? ''} title={content.title} />
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <MiniCalc vertical={verticalSlug} />
+                </div>
               </div>
             </aside>
           </div>
         </div>
       </section>
 
-      {/* SECTION 5 — Assessment CTA */}
+      <SectionDivider />
+
+      {/* SECTION 6 — FAQ */}
+      {content.faq && content.faq.length > 0 && (
+        <>
+          <AnimatedSection>
+            <section style={{ background: 'var(--v-fa)' }} className="py-12 px-6">
+              <div className="max-w-[900px] mx-auto">
+                <FAQSection items={content.faq} articleUrl={canonicalUrl} />
+              </div>
+            </section>
+          </AnimatedSection>
+          <SectionDivider />
+        </>
+      )}
+
+      {/* SECTION 7 — Related solutions */}
+      <AnimatedSection>
+        <section style={{ background: 'var(--v-fa)' }} className="py-12 px-6">
+          <div className="max-w-[900px] mx-auto">
+            <RelatedSolutions vertical={verticalSlug} />
+          </div>
+        </section>
+      </AnimatedSection>
+
+      <SectionDivider />
+
+      {/* SECTION 8 — Related guides */}
+      <AnimatedSection>
+        <section style={{ background: 'var(--v-fa)' }} className="py-12 px-6">
+          <div className="max-w-[900px] mx-auto">
+            <RelatedGuides vertical={verticalSlug} currentSlug={slug} />
+          </div>
+        </section>
+      </AnimatedSection>
+
+      <SectionDivider />
+
+      {/* SECTION 9 — Assessment CTA */}
       <AssessmentCTA verticalName={verticalName} />
     </main>
   )

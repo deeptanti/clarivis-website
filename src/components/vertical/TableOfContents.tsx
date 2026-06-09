@@ -60,15 +60,7 @@ export default function TableOfContents({ body, title }: TableOfContentsProps) {
   if (headings.length === 0) return null
 
   return (
-    <nav
-      style={{
-        position: 'sticky',
-        top: '120px',
-        maxHeight: 'calc(100vh - 140px)',
-        overflowY: 'auto',
-      }}
-      aria-label={`Table of contents for ${title}`}
-    >
+    <nav aria-label={`Table of contents for ${title}`}>
       <p
         className="text-[11px] uppercase tracking-widest font-semibold mb-4"
         style={{ color: 'var(--v-accent)' }}
