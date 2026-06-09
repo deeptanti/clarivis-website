@@ -83,3 +83,24 @@ export async function getRelatedGlossaryTerm(slug: string): Promise<ContentSumma
     .single();
   return data ?? null;
 }
+
+export type ContentGuideSummary = Pick<
+  ContentRow,
+  'slug' | 'vertical' | 'title' | 'description' | 'read_time' | 'content_type'
+>
+
+export async function getRelatedGuides(
+  vertical: string,
+  currentSlug: string,
+  limit = 3
+): Promise<ContentGuideSummary[]> {
+  const { data } = await getSupabase()
+    .from('content')
+    .select('slug, vertical, title, description, read_time, content_type')
+    .eq('vertical', vertical)
+    .eq('content_type', 'guide')
+    .eq('published', true)
+    .neq('slug', currentSlug)
+    .limit(limit)
+  return data ?? []
+}

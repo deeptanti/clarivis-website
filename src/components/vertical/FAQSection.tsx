@@ -56,7 +56,7 @@ export default function FAQSection({ items, articleUrl }: FAQSectionProps) {
             {item.question}
           </p>
           <p
-            className="text-[15px] leading-relaxed"
+            className="faq-answer text-[15px] leading-relaxed"
             style={{ color: 'var(--v-muted)' }}
           >
             {item.answer}

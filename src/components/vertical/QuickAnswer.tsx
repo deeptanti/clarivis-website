@@ -5,6 +5,7 @@ interface QuickAnswerProps {
 export default function QuickAnswer({ summary }: QuickAnswerProps) {
   return (
     <div
+      className="quick-answer"
       style={{
         background: 'color-mix(in srgb, var(--v-accent) 8%, transparent)',
         borderLeft: '3px solid var(--v-accent)',
