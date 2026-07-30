@@ -250,19 +250,14 @@ function buildVCard(){
     'FN:'+CARD.name,
     'ORG:'+CARD.org,
     'TITLE:'+CARD.title,
+    'PHOTO;ENCODING=b;TYPE=JPEG:'+PHOTO_B64,
     'TEL;TYPE=CELL:'+CARD.phone,
     'EMAIL:'+CARD.email,
     'URL:'+CARD.website,
     'URL:'+CARD.linkedin,
-    'ADR;TYPE=WORK:;;;'+CARD.city+';'+CARD.state+';;'+CARD.country
-  ];
-  // Apple-style vCard 3.0 photo: ENCODING=b, folded at 75 chars, CRLF + space continuations
-  const ph = 'PHOTO;ENCODING=b;TYPE=JPEG:' + PHOTO_B64;
-  const folded = [ph.slice(0, 75)];
-  for (let i = 75; i < ph.length; i += 74) folded.push(' ' + ph.slice(i, i + 74));
-  lines.push(folded.join('\r\n'));
-  lines.push('END:VCARD');
-  return lines.join('\r\n');
+    'ADR;TYPE=WORK:;;;'+CARD.city+';'+CARD.state+';;'+CARD.country,
+    'END:VCARD'
+  ].join('\r\n');
 }
 
 function toast(msg){
